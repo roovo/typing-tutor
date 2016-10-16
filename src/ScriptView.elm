@@ -25,7 +25,7 @@ viewChunk chunk =
                     ]
 
                 Current ->
-                    [ ( "color", "gray" )
+                    [ ( "color", "black" )
                     , ( "background-color", "yellow" )
                     ]
 

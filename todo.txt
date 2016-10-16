@@ -1,5 +1,3 @@
-- track how many errored characters have been typed
-- require backspace(s) after errors
 - detect if finished
 - calculate statistics
 
@@ -15,3 +13,7 @@ done
 - see if grouping each letter with a status makes things simpler
 - why can't I correct the last chracter?
 - backspaces go back
+- track how many errored characters have been typed
+- require backspace(s) after errors
+- don't handle backspaces separately
+- could I put a movement element in the Chunk

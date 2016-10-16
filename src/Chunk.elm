@@ -1,11 +1,17 @@
-module Chunk exposing (Chunk, Status(..), init, isCorrect, resetStatus, updateStatus)
+module Chunk exposing (Chunk, Status(..), init, parseChar)
 
+import Char
 import String
+
+
+backspaceCode =
+    8
 
 
 type alias Chunk =
     { content : String
     , status : Status
+    , next : Int
     }
 
 
@@ -20,22 +26,57 @@ init : String -> Chunk
 init string =
     { content = string
     , status = Waiting
+    , next = 0
     }
 
 
-resetStatus : Chunk -> Chunk
-resetStatus chunk =
-    { chunk | status = Waiting }
+parseChar : Char -> Chunk -> Chunk
+parseChar char chunk =
+    let
+        matchingChar =
+            chunk.content == String.fromChar char
+
+        backSpace =
+            Char.toCode char == backspaceCode
+    in
+        if matchingChar && isErrorFree chunk then
+            { chunk | status = Completed, next = 1 }
+        else if backSpace && isErrorFree chunk then
+            { chunk | status = Waiting, next = -1 }
+        else if backSpace then
+            { chunk | status = removeError chunk.status, next = 0 }
+        else
+            { chunk | status = addError chunk.status, next = 0 }
 
 
-updateStatus : Char -> Chunk -> Chunk
-updateStatus char chunk =
-    if chunk.content == String.fromChar char then
-        { chunk | status = Completed }
-    else
-        { chunk | status = Error 1 }
+isErrorFree : Chunk -> Bool
+isErrorFree chunk =
+    case chunk.status of
+        Error _ ->
+            False
+
+        _ ->
+            True
 
 
-isCorrect : Chunk -> Bool
-isCorrect chunk =
-    chunk.status == Completed
+addError : Status -> Status
+addError status =
+    case status of
+        Error count ->
+            Error (count + 1)
+
+        _ ->
+            Error 1
+
+
+removeError : Status -> Status
+removeError status =
+    case status of
+        Error 1 ->
+            Waiting
+
+        Error count ->
+            Error (count - 1)
+
+        _ ->
+            status

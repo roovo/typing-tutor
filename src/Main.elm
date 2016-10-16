@@ -50,6 +50,10 @@ init toType =
 -- UPDATE
 
 
+backspaceChar =
+    (Char.fromCode 8)
+
+
 type Msg
     = KeyPress KeyCode
     | KeyDown KeyCode
@@ -62,16 +66,19 @@ update msg model =
             ( { model
                 | script = Script.tick (Char.fromCode keyCode) model.script
               }
-            , Cmd.none )
+            , Cmd.none
+            )
 
         KeyDown keyCode ->
             if keyCode == 8 then
                 ( { model
-                    | script = Script.backspace model.script
+                    | script = Script.tick backspaceChar model.script
                   }
-                , Cmd.none )
+                , Cmd.none
+                )
             else
                 ( model, Cmd.none )
+
 
 
 -- VIEW

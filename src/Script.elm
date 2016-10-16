@@ -1,5 +1,6 @@
-module Script exposing (Script, backspace, chunks, init, tick)
+module Script exposing (Script, chunks, init, tick)
 
+import Char
 import Chunk exposing (Chunk, Status(..))
 import Html exposing (Html)
 import Html.Attributes
@@ -10,106 +11,100 @@ import String
 -- MODEL
 
 
+backspaceChar =
+    Char.fromCode 8
+
+
 type alias Script =
-    { typing : Maybe (Zipper Chunk)
+    { workBook : Maybe (Zipper Chunk)
     }
 
 
 init : String -> Script
 init toType =
-    { typing =
+    { workBook =
         toType
             |> String.split ""
             |> List.map Chunk.init
             |> Zipper.fromList
-            |> setCurrentStatus
+            |> Maybe.map setCurrentStatus
     }
 
 
 chunks : Script -> List Chunk
 chunks script =
-    script.typing
+    script.workBook
         |> Maybe.map Zipper.toList
         |> Maybe.withDefault []
 
 
 tick : Char -> Script -> Script
 tick char script =
-    { script | typing = newCharacter char script.typing }
+    { script | workBook = newCharacter char script.workBook }
 
 
-backspace : Script -> Script
-backspace script =
-    { script | typing = rewind script.typing }
+newCharacter : Char -> Maybe (Zipper Chunk) -> Maybe (Zipper Chunk)
+newCharacter char workBook =
+    case workBook of
+        Just chunkZipper ->
+            chunkZipper
+                |> Zipper.update (Chunk.parseChar char)
+                |> moveZipper
+                |> Maybe.map setCurrentStatus
+
+        Nothing ->
+            workBook
 
 
-moveOnIfCorrect : Zipper Chunk -> Maybe (Zipper Chunk)
-moveOnIfCorrect chunkZipper =
+moveZipper : Zipper Chunk -> Maybe (Zipper Chunk)
+moveZipper chunkZipper =
     let
         currentChunk =
             Zipper.current chunkZipper
 
-        chunksRemain =
-            chunkZipper
-                |> Zipper.after
-                |> List.isEmpty
-                |> not
-    in
-        case ( Chunk.isCorrect currentChunk, chunksRemain ) of
-            ( True, True ) ->
-                chunkZipper
-                    |> Zipper.next
-                    |> setCurrentStatus
-
-            ( _, _ ) ->
-                Just chunkZipper
-
-
-setCurrentStatus : Maybe (Zipper Chunk) -> Maybe (Zipper Chunk)
-setCurrentStatus chunkZipper =
-    chunkZipper
-        |> Maybe.map (Zipper.update (\c -> { c | status = Current }))
-
-
-newCharacter : Char -> Maybe (Zipper Chunk) -> Maybe (Zipper Chunk)
-newCharacter char typing =
-    case typing of
-        Just chunkZipper ->
-            chunkZipper
-                |> Zipper.update (Chunk.updateStatus char)
-                |> moveOnIfCorrect
-
-        Nothing ->
-            typing
-
-
-moveBack : Zipper Chunk -> Maybe (Zipper Chunk)
-moveBack chunkZipper =
-    let
         beyondStart =
             chunkZipper
                 |> Zipper.before
                 |> List.isEmpty
                 |> not
     in
-        case beyondStart of
-            True ->
-                chunkZipper
-                    |> Zipper.previous
-                    |> setCurrentStatus
-
-            _ ->
-                Just chunkZipper
-                    |> setCurrentStatus
-
-
-rewind : Maybe (Zipper Chunk) -> Maybe (Zipper Chunk)
-rewind typing =
-    case typing of
-        Just chunkZipper ->
+        if currentChunk.next > 0 && chunksRemain chunkZipper then
             chunkZipper
-                |> Zipper.update Chunk.resetStatus
-                |> moveBack
+                |> Zipper.next
+        else if currentChunk.next < 0 && beyondStart then
+            chunkZipper
+                |> Zipper.previous
+        else
+            Just chunkZipper
 
-        Nothing ->
-            typing
+
+chunksRemain : Zipper Chunk -> Bool
+chunksRemain chunkZipper =
+    chunkZipper
+        |> Zipper.after
+        |> List.isEmpty
+        |> not
+
+
+setCurrentStatus : Zipper Chunk -> Zipper Chunk
+setCurrentStatus chunkZipper =
+    let
+        foo chunk =
+            { chunk
+                | status =
+                    case chunk.status of
+                        Waiting ->
+                            Current
+
+                        Completed ->
+                            (if chunksRemain chunkZipper then
+                                Current
+                             else
+                                chunk.status
+                            )
+
+                        _ ->
+                            chunk.status
+            }
+    in
+        Zipper.update foo chunkZipper
