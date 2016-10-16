@@ -1,3 +1,14 @@
+reading
+=======
+
+http://prismjs.com/
+
+    - Prism.tokenize(text, grammar) #=> An array of strings, tokens (class Prism.Token) and other arrays
+
+
+project setup
+=============
+
 # use elm-live - puts it in ./node_modules
 > npm install elm-live
 
