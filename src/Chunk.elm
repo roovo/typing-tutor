@@ -11,7 +11,7 @@ type alias Chunk =
 
 type Status
     = Waiting
-    | Error
+    | Error Int
     | Current
     | Completed
 
@@ -33,7 +33,7 @@ updateStatus char chunk =
     if chunk.content == String.fromChar char then
         { chunk | status = Completed }
     else
-        { chunk | status = Error }
+        { chunk | status = Error 1 }
 
 
 isCorrect : Chunk -> Bool

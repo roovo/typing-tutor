@@ -24,7 +24,7 @@ chunk =
                 \() ->
                     Chunk.init "a"
                         |> Chunk.updateStatus 'b'
-                        |> Expect.equal { content = "a", status = Error }
+                        |> Expect.equal { content = "a", status = Error 1 }
             ]
         , describe "resetStatus"
             [ test "resets the status to Waiting" <|

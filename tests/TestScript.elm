@@ -49,7 +49,7 @@ script =
                         |> Script.chunks
                         |> Expect.equal
                             [ { content = "a", status = Completed }
-                            , { content = "b", status = Error }
+                            , { content = "b", status = Error 1 }
                             , { content = "c", status = Waiting }
                             ]
             , test "won't advance past the end of the string" <|

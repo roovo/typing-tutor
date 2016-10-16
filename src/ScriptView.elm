@@ -29,7 +29,7 @@ viewChunk chunk =
                     , ( "background-color", "yellow" )
                     ]
 
-                Error ->
+                Error _ ->
                     [ ( "color", "gray" )
                     , ( "background-color", "red" )
                     ]
