@@ -39,4 +39,4 @@ viewChunk chunk =
                     ]
             )
         ]
-        [ Html.text chunk.text ]
+        [ Html.text chunk.content ]

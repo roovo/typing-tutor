@@ -1,10 +1,10 @@
-module Chunk exposing (Chunk, Status(..), initChunk, isCorrect, resetStatus, updateStatus)
+module Chunk exposing (Chunk, Status(..), init, isCorrect, resetStatus, updateStatus)
 
 import String
 
 
 type alias Chunk =
-    { text : String
+    { content : String
     , status : Status
     }
 
@@ -16,9 +16,9 @@ type Status
     | Completed
 
 
-initChunk : String -> Chunk
-initChunk string =
-    { text = string
+init : String -> Chunk
+init string =
+    { content = string
     , status = Waiting
     }
 
@@ -30,7 +30,7 @@ resetStatus chunk =
 
 updateStatus : Char -> Chunk -> Chunk
 updateStatus char chunk =
-    if chunk.text == String.fromChar char then
+    if chunk.content == String.fromChar char then
         { chunk | status = Completed }
     else
         { chunk | status = Error }

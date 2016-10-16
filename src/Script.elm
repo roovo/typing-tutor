@@ -1,6 +1,6 @@
 module Script exposing (Script, backspace, chunks, init, tick)
 
-import Chunk exposing (Chunk, Status(..), initChunk)
+import Chunk exposing (Chunk, Status(..))
 import Html exposing (Html)
 import Html.Attributes
 import List.Zipper as Zipper exposing (Zipper)
@@ -20,7 +20,7 @@ init toType =
     { typing =
         toType
             |> String.split ""
-            |> List.map initChunk
+            |> List.map Chunk.init
             |> Zipper.fromList
             |> setCurrentStatus
     }
