@@ -2,7 +2,6 @@ module ScriptView exposing (view)
 
 import Html exposing (Html)
 import Html.Attributes
-import List.Zipper as Zipper exposing (Zipper)
 import Script exposing (Script)
 
 
@@ -15,23 +14,17 @@ view : Script -> Html msg
 view script =
     Html.code
         []
-        (case script.typing of
-            Just zippedString ->
-                ([ viewCurent zippedString ] ++ (viewAfter zippedString))
-
-            Nothing ->
-                [ Html.text "" ]
-        )
+        ([ viewCurent script ] ++ (viewRemaining script))
 
 
-viewCurent : Zipper String -> Html msg
-viewCurent zippedString =
-    viewCharacter Current (Zipper.current zippedString)
+viewCurent : Script -> Html msg
+viewCurent script =
+    viewCharacter Current (Script.current script)
 
 
-viewAfter : Zipper String -> List (Html msg)
-viewAfter zippedString =
-    Zipper.after zippedString
+viewRemaining : Script -> List (Html msg)
+viewRemaining script =
+    Script.remaining script
         |> List.map (viewCharacter Outstanding)
 
 

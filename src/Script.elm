@@ -1,4 +1,4 @@
-module Script exposing (Script, init)
+module Script exposing (Script, current, init, remaining)
 
 import Html exposing (Html)
 import Html.Attributes
@@ -21,3 +21,21 @@ init toType =
             |> String.split ""
             |> Zipper.fromList
     }
+
+
+current : Script -> String
+current script =
+    case script.typing of
+        Nothing ->
+            ""
+        Just zippedString ->
+            Zipper.current zippedString
+
+
+remaining : Script -> List String
+remaining script =
+    case script.typing of
+        Nothing ->
+            []
+        Just zippedString ->
+            Zipper.after zippedString

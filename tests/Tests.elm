@@ -2,19 +2,40 @@ module Tests exposing (..)
 
 import Test exposing (..)
 import Expect
-import String
+import Script
 
+
+script : Test
+script =
+    describe "Script"
+    [ describe "current"
+          [ test "returns the first character of a new script" <|
+              \() ->
+                  Script.init "abcde"
+                      |> Script.current
+                      |> Expect.equal "a"
+          , test "returns an empty string if the script is empty" <|
+              \() ->
+                  Script.init ""
+                      |> Script.current
+                      |> Expect.equal ""
+          ]
+    , describe "remaining"
+          [ test "returns a List of the tail characters of a new script" <|
+              \() ->
+                  Script.init "abcde"
+                      |> Script.remaining
+                      |> Expect.equal ["b", "c", "d", "e"]
+          , test "returns an empty List if the script is empty" <|
+              \() ->
+                  Script.init ""
+                      |> Script.remaining
+                      |> Expect.equal []
+          ]
+    ]
 
 all : Test
 all =
-    describe "A Test Suite"
-        [ test "Addition" <|
-            \() ->
-                Expect.equal (3 + 7) 10
-        , test "String.left" <|
-            \() ->
-                Expect.equal "a" (String.left 1 "abcdefg")
-        , test "This test should fail" <|
-            \() ->
-                Expect.fail "failed as expected!"
+    describe "Tests"
+        [ script
         ]
