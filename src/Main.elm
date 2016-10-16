@@ -2,11 +2,12 @@ module Main exposing (..)
 
 import Html exposing (Html)
 import Html.App
+import Script exposing (Script)
 
 
 main =
     Html.App.program
-        { init = init
+        { init = init "Something to type"
         , subscriptions = (\_ -> Sub.none)
         , update = update
         , view = view
@@ -18,13 +19,13 @@ main =
 
 
 type alias Model =
-    { text : String
+    { script : Script
     }
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( { text = "Something to type"
+init : String -> ( Model, Cmd Msg )
+init toType =
+    ( { script = Script.init toType
       }
     , Cmd.none
     )
@@ -49,5 +50,12 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    Html.div []
-        [ Html.text model.text ]
+    Html.div
+        []
+        [ Html.code
+            []
+            [ Html.text ""
+            ]
+        , Html.hr [] []
+        , Html.text <| toString model
+        ]
