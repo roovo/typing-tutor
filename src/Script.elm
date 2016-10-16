@@ -25,39 +25,31 @@ init toType =
 
 current : Script -> String
 current script =
-    case script.typing of
-        Nothing ->
-            ""
-
-        Just zippedString ->
-            Zipper.current zippedString
+    script.typing
+        |> Maybe.map Zipper.current
+        |> Maybe.withDefault ""
 
 
 completed : Script -> List String
 completed script =
-    case script.typing of
-        Nothing ->
-            []
-
-        Just zippedString ->
-            Zipper.before zippedString
+    script.typing
+        |> Maybe.map Zipper.before
+        |> Maybe.withDefault []
 
 
 remaining : Script -> List String
 remaining script =
-    case script.typing of
-        Nothing ->
-            []
-
-        Just zippedString ->
-            Zipper.after zippedString
+    script.typing
+        |> Maybe.map Zipper.after
+        |> Maybe.withDefault []
 
 
 tick : Char -> Script -> Script
 tick char script =
-    case script.typing of
-        Nothing ->
-            script
-
-        Just zippedString ->
+    let
+        advance zippedString =
             { script | typing = Zipper.next zippedString }
+    in
+        script.typing
+            |> Maybe.map advance
+            |> Maybe.withDefault script
