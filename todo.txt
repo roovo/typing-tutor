@@ -1,4 +1,9 @@
-- show red if incorrect letter typed
+- see if grouping each letter with a status makes things simpler
+- why can't I correct the last chracter?
+- track how many errored characters have been typed
+- require backspace(s) after errors
+- detect if finished
+- calculate statistics
 
 
 done
@@ -8,3 +13,4 @@ done
 - have first character class "current" (background yellow)
 - read keyboard input & advance current character class when letter typed
 - only advance if correct letter typed
+- show red if incorrect letter typed

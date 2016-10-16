@@ -2,13 +2,14 @@ module ScriptView exposing (view)
 
 import Html exposing (Html)
 import Html.Attributes
-import Script exposing (Script)
+import Script exposing (Script, Status(..))
 
 
 type CharacterClass
     = Current
     | Outstanding
     | Completed
+    | InError
 
 
 view : Script -> Html msg
@@ -23,7 +24,11 @@ view script =
 
 viewCurent : Script -> Html msg
 viewCurent script =
-    viewCharacter Current (Script.current script)
+    case Script.currentStatus script of
+        Error ->
+            viewCharacter InError (Script.current script)
+        _ ->
+            viewCharacter Current (Script.current script)
 
 
 viewCompleted : Script -> List (Html msg)
@@ -50,6 +55,11 @@ viewCharacter class char =
                 Current ->
                     [ ( "color", "gray" )
                     , ( "background-color", "yellow" )
+                    ]
+
+                InError ->
+                    [ ( "color", "gray" )
+                    , ( "background-color", "red" )
                     ]
 
                 Outstanding ->

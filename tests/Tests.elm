@@ -2,7 +2,7 @@ module Tests exposing (..)
 
 import Test exposing (..)
 import Expect
-import Script
+import Script exposing (Status(..))
 
 
 script : Test
@@ -19,6 +19,32 @@ script =
                     Script.init ""
                         |> Script.current
                         |> Expect.equal ""
+            ]
+        , describe "currentStatus"
+            [ test "returns Waiting for a new script" <|
+                \() ->
+                    Script.init "abcde"
+                        |> Script.currentStatus
+                        |> Expect.equal Waiting
+            , test "returns Waiting after a correct character is typed" <|
+                \() ->
+                    Script.init "abcd"
+                        |> Script.tick 'a'
+                        |> Script.currentStatus
+                        |> Expect.equal Waiting
+            , test "returns Error after an incorrect character is typed" <|
+                \() ->
+                    Script.init "abcd"
+                        |> Script.tick 'b'
+                        |> Script.currentStatus
+                        |> Expect.equal Error
+            , test "returns Waiting after an incorrect character is corrected" <|
+                \() ->
+                    Script.init "abcd"
+                        |> Script.tick 'b'
+                        |> Script.tick 'a'
+                        |> Script.currentStatus
+                        |> Expect.equal Waiting
             ]
         , describe "remaining"
             [ test "returns a List of the tail characters of a new script" <|
