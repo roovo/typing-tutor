@@ -2,52 +2,24 @@ module ScriptView exposing (view)
 
 import Html exposing (Html)
 import Html.Attributes
-import Script exposing (Script, Status(..))
-
-
-type CharacterClass
-    = Current
-    | Outstanding
-    | Completed
-    | InError
+import Script exposing (Script)
+import Chunk exposing (Chunk, Status(..))
 
 
 view : Script -> Html msg
 view script =
     Html.code
         []
-        ((viewCompleted script)
-            ++ [ viewCurent script ]
-            ++ (viewRemaining script)
+        (Script.chunks script
+            |> List.map viewChunk
         )
 
 
-viewCurent : Script -> Html msg
-viewCurent script =
-    case Script.currentStatus script of
-        Error ->
-            viewCharacter InError (Script.current script)
-        _ ->
-            viewCharacter Current (Script.current script)
-
-
-viewCompleted : Script -> List (Html msg)
-viewCompleted script =
-    Script.completed script
-        |> List.map (viewCharacter Completed)
-
-
-viewRemaining : Script -> List (Html msg)
-viewRemaining script =
-    Script.remaining script
-        |> List.map (viewCharacter Outstanding)
-
-
-viewCharacter : CharacterClass -> String -> Html msg
-viewCharacter class char =
+viewChunk : Chunk -> Html msg
+viewChunk chunk =
     Html.span
         [ Html.Attributes.style
-            (case class of
+            (case chunk.status of
                 Completed ->
                     [ ( "color", "black" )
                     ]
@@ -57,14 +29,14 @@ viewCharacter class char =
                     , ( "background-color", "yellow" )
                     ]
 
-                InError ->
+                Error ->
                     [ ( "color", "gray" )
                     , ( "background-color", "red" )
                     ]
 
-                Outstanding ->
+                Waiting ->
                     [ ( "color", "gray" )
                     ]
             )
         ]
-        [ Html.text char ]
+        [ Html.text chunk.text ]

@@ -2,97 +2,62 @@ module Tests exposing (..)
 
 import Test exposing (..)
 import Expect
-import Script exposing (Status(..))
+import Script exposing (Script)
+import Chunk exposing (Chunk, Status(..))
 
 
 script : Test
 script =
     describe "Script"
-        [ describe "current"
-            [ test "returns the first character of a new script" <|
-                \() ->
-                    Script.init "abcde"
-                        |> Script.current
-                        |> Expect.equal "a"
-            , test "returns an empty string if the script is empty" <|
+        [ describe "chunks"
+            [ test "returns an empty list for an empty string" <|
                 \() ->
                     Script.init ""
-                        |> Script.current
-                        |> Expect.equal ""
-            ]
-        , describe "currentStatus"
-            [ test "returns Waiting for a new script" <|
-                \() ->
-                    Script.init "abcde"
-                        |> Script.currentStatus
-                        |> Expect.equal Waiting
-            , test "returns Waiting after a correct character is typed" <|
-                \() ->
-                    Script.init "abcd"
-                        |> Script.tick 'a'
-                        |> Script.currentStatus
-                        |> Expect.equal Waiting
-            , test "returns Error after an incorrect character is typed" <|
-                \() ->
-                    Script.init "abcd"
-                        |> Script.tick 'b'
-                        |> Script.currentStatus
-                        |> Expect.equal Error
-            , test "returns Waiting after an incorrect character is corrected" <|
-                \() ->
-                    Script.init "abcd"
-                        |> Script.tick 'b'
-                        |> Script.tick 'a'
-                        |> Script.currentStatus
-                        |> Expect.equal Waiting
-            ]
-        , describe "remaining"
-            [ test "returns a List of the tail characters of a new script" <|
-                \() ->
-                    Script.init "abcde"
-                        |> Script.remaining
-                        |> Expect.equal [ "b", "c", "d", "e" ]
-            , test "returns an empty List if the script is empty" <|
-                \() ->
-                    Script.init ""
-                        |> Script.remaining
+                        |> Script.chunks
                         |> Expect.equal []
-            ]
-        , describe "completed"
-            [ test "returns an empty List for a new script" <|
+            , test "returns a single chunk for a single character string" <|
                 \() ->
-                    Script.init "abcde"
-                        |> Script.completed
-                        |> Expect.equal []
-            , test "returns characters that have not been entered" <|
+                    Script.init "a"
+                        |> Script.chunks
+                        |> Expect.equal [ { text = "a", status = Current } ]
+            , test "returns multiple chunks for a multi-character string" <|
                 \() ->
-                    Script.init "abcde"
-                        |> Script.tick 'a'
-                        |> Script.tick 'b'
-                        |> Script.completed
-                        |> Expect.equal [ "a", "b" ]
+                    Script.init "abc"
+                        |> Script.chunks
+                        |> Expect.equal [ { text = "a", status = Current }
+                                        , { text = "b", status = Waiting }
+                                        , { text = "c", status = Waiting }
+                                        ]
             ]
         , describe "tick"
             [ test "advances to the next character in the string" <|
                 \() ->
-                    Script.init "abcde"
+                    Script.init "abc"
                         |> Script.tick 'a'
-                        |> Script.current
-                        |> Expect.equal "b"
+                        |> Script.chunks
+                        |> Expect.equal [ { text = "a", status = Completed }
+                                        , { text = "b", status = Current }
+                                        , { text = "c", status = Waiting }
+                                        ]
             , test "won't advance if the wrong character is given" <|
                 \() ->
                     Script.init "abc"
                         |> Script.tick 'a'
                         |> Script.tick 'c'
-                        |> Script.current
-                        |> Expect.equal "b"
+                        |> Script.chunks
+                        |> Expect.equal [ { text = "a", status = Completed }
+                                        , { text = "b", status = Error }
+                                        , { text = "c", status = Waiting }
+                                        ]
             , test "won't advance past the end of the string" <|
                 \() ->
                     Script.init "ab"
                         |> Script.tick 'a'
                         |> Script.tick 'b'
-                        |> Script.current
-                        |> Expect.equal "b"
+                        |> Script.chunks
+                        |> Expect.equal [ { text = "a", status = Completed }
+                                        , { text = "b", status = Completed }
+                                        ]
             ]
         ]
 

@@ -1,5 +1,6 @@
-module Script exposing (Script, Status(..), completed, current, currentStatus, init, remaining, tick)
+module Script exposing (Script, chunks, init, tick)
 
+import Chunk exposing (Chunk, Status(..), initChunk)
 import Html exposing (Html)
 import Html.Attributes
 import List.Zipper as Zipper exposing (Zipper)
@@ -10,14 +11,8 @@ import String
 
 
 type alias Script =
-    { typing : Maybe (Zipper String)
-    , currentStatus : Status
+    { typing : Maybe (Zipper Chunk)
     }
-
-
-type Status
-    = Waiting
-    | Error
 
 
 init : String -> Script
@@ -25,57 +20,59 @@ init toType =
     { typing =
         toType
             |> String.split ""
+            |> List.map initChunk
             |> Zipper.fromList
-    , currentStatus = Waiting
+            |> setCurrentStatus
     }
 
 
-currentStatus : Script -> Status
-currentStatus script =
-    script.currentStatus
-
-
-current : Script -> String
-current script =
+chunks : Script -> List Chunk
+chunks script =
     script.typing
-        |> Maybe.map Zipper.current
-        |> Maybe.withDefault ""
-
-
-completed : Script -> List String
-completed script =
-    script.typing
-        |> Maybe.map Zipper.before
-        |> Maybe.withDefault []
-
-
-remaining : Script -> List String
-remaining script =
-    script.typing
-        |> Maybe.map Zipper.after
+        |> Maybe.map Zipper.toList
         |> Maybe.withDefault []
 
 
 tick : Char -> Script -> Script
 tick char script =
-    let
-        charMatches zippedString =
-            Zipper.current zippedString == String.fromChar char
+    { script | typing = newCharacter char script.typing }
 
-        advance zippedString =
-            if
-                charMatches zippedString
-                    && not (List.isEmpty (Zipper.after zippedString))
-            then
-                { script
-                    | typing = Zipper.next zippedString
-                    , currentStatus = Waiting
-                }
-            else if not (charMatches zippedString) then
-                { script | currentStatus = Error }
-            else
-                script
+
+moveOnIfCorrect : Zipper Chunk -> Maybe (Zipper Chunk)
+moveOnIfCorrect chunkZipper =
+    let
+        currentChunk =
+            Zipper.current chunkZipper
+
+        chunksRemain =
+            chunkZipper
+                |> Zipper.after
+                |> List.isEmpty
+                |> not
     in
-        script.typing
-            |> Maybe.map advance
-            |> Maybe.withDefault script
+        case ( Chunk.isCorrect currentChunk, chunksRemain ) of
+            ( True, True ) ->
+                chunkZipper
+                    |> Zipper.next
+                    |> setCurrentStatus
+
+            ( _, _ ) ->
+                Just chunkZipper
+
+
+setCurrentStatus : Maybe (Zipper Chunk) -> Maybe (Zipper Chunk)
+setCurrentStatus chunkZipper =
+    chunkZipper
+        |> Maybe.map (Zipper.update (\c -> { c | status = Current }))
+
+
+newCharacter : Char -> Maybe (Zipper Chunk) -> Maybe (Zipper Chunk)
+newCharacter char typing =
+    case typing of
+        Just chunkZipper ->
+            chunkZipper
+                |> Zipper.update (Chunk.updateStatus char)
+                |> moveOnIfCorrect
+
+        Nothing ->
+            typing
