@@ -54,6 +54,15 @@ script =
                         |> Script.current
                         |> Expect.equal "b"
             ]
+        , describe "tick"
+            [ test "won't advance past the end of the string" <|
+                \() ->
+                    Script.init "ab"
+                        |> Script.tick 'a'
+                        |> Script.tick 'b'
+                        |> Script.current
+                        |> Expect.equal "b"
+            ]
         ]
 
 

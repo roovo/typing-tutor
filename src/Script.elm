@@ -48,7 +48,12 @@ tick : Char -> Script -> Script
 tick char script =
     let
         advance zippedString =
-            { script | typing = Zipper.next zippedString }
+            case Zipper.after zippedString of
+                [] ->
+                    script
+
+                _ ->
+                    { script | typing = Zipper.next zippedString }
     in
         script.typing
             |> Maybe.map advance
