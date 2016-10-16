@@ -47,13 +47,17 @@ remaining script =
 tick : Char -> Script -> Script
 tick char script =
     let
-        advance zippedString =
-            case Zipper.after zippedString of
-                [] ->
-                    script
+        charMatches zippedString =
+            Zipper.current zippedString == String.fromChar char
 
-                _ ->
-                    { script | typing = Zipper.next zippedString }
+        advance zippedString =
+            if
+                charMatches zippedString
+                    && not (List.isEmpty (Zipper.after zippedString))
+            then
+                { script | typing = Zipper.next zippedString }
+            else
+                script
     in
         script.typing
             |> Maybe.map advance

@@ -50,12 +50,17 @@ script =
             [ test "advances to the next character in the string" <|
                 \() ->
                     Script.init "abcde"
-                        |> Script.tick 'z'
+                        |> Script.tick 'a'
                         |> Script.current
                         |> Expect.equal "b"
-            ]
-        , describe "tick"
-            [ test "won't advance past the end of the string" <|
+            , test "won't advance if the wrong character is given" <|
+                \() ->
+                    Script.init "abc"
+                        |> Script.tick 'a'
+                        |> Script.tick 'c'
+                        |> Script.current
+                        |> Expect.equal "b"
+            , test "won't advance past the end of the string" <|
                 \() ->
                     Script.init "ab"
                         |> Script.tick 'a'
