@@ -1,4 +1,4 @@
-module Script exposing (Script, current, init, remaining)
+module Script exposing (Script, current, init, remaining, tick)
 
 import Html exposing (Html)
 import Html.Attributes
@@ -28,6 +28,7 @@ current script =
     case script.typing of
         Nothing ->
             ""
+
         Just zippedString ->
             Zipper.current zippedString
 
@@ -37,5 +38,16 @@ remaining script =
     case script.typing of
         Nothing ->
             []
+
         Just zippedString ->
             Zipper.after zippedString
+
+
+tick : Char -> Script -> Script
+tick char script =
+    case script.typing of
+        Nothing ->
+            script
+
+        Just zippedString ->
+            { script | typing = Zipper.next zippedString }
