@@ -1,5 +1,6 @@
 module Main exposing (..)
 
+import Char
 import Html exposing (Html)
 import Html.App
 import Keyboard exposing (KeyCode)
@@ -54,7 +55,10 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case Debug.log "msg" msg of
         KeyPress keyCode ->
-            ( model, Cmd.none )
+            ( { model
+                | script = Script.tick (Char.fromCode keyCode) model.script
+              }
+            , Cmd.none )
 
 
 
