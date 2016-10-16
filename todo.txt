@@ -1,7 +1,11 @@
-- hardcode a basic input string & show in code block as spans class "outstanding"
-- have first character class "current"
 - read keyboard input & advance current character class when letter typed
 - only advance if correct letter typed
 - set class to "correct" after typed correctly
 - show red if incorrect letter typed
 
+
+done
+====
+- hardcode a basic input string
+- show in code block as spans class "outstanding" (gray)
+- have first character class "current" (background yellow)

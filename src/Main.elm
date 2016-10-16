@@ -54,7 +54,7 @@ view model =
         []
         [ Html.code
             []
-            [ Html.text ""
+            [ Script.view model.script
             ]
         , Html.hr [] []
         , Html.text <| toString model
