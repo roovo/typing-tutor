@@ -4,6 +4,7 @@ import Html exposing (Html)
 import Html.App
 import Keyboard exposing (KeyCode)
 import Script exposing (Script)
+import ScriptView
 
 
 main =
@@ -66,7 +67,7 @@ view model =
         []
         [ Html.code
             []
-            [ Script.view model.script
+            [ ScriptView.view model.script
             ]
         , Html.hr [] []
         , Html.text <| toString model
