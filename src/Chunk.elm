@@ -1,4 +1,4 @@
-module Chunk exposing (Chunk, Status(..), initChunk, isCorrect, updateStatus)
+module Chunk exposing (Chunk, Status(..), initChunk, isCorrect, resetStatus, updateStatus)
 
 import String
 
@@ -21,6 +21,11 @@ initChunk string =
     { text = string
     , status = Waiting
     }
+
+
+resetStatus : Chunk -> Chunk
+resetStatus chunk =
+    { chunk | status = Waiting }
 
 
 updateStatus : Char -> Chunk -> Chunk

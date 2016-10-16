@@ -14,3 +14,4 @@ done
 - show red if incorrect letter typed
 - see if grouping each letter with a status makes things simpler
 - why can't I correct the last chracter?
+- backspaces go back

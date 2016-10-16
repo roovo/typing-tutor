@@ -1,4 +1,4 @@
-module Script exposing (Script, chunks, init, tick)
+module Script exposing (Script, backspace, chunks, init, tick)
 
 import Chunk exposing (Chunk, Status(..), initChunk)
 import Html exposing (Html)
@@ -38,6 +38,11 @@ tick char script =
     { script | typing = newCharacter char script.typing }
 
 
+backspace : Script -> Script
+backspace script =
+    { script | typing = rewind script.typing }
+
+
 moveOnIfCorrect : Zipper Chunk -> Maybe (Zipper Chunk)
 moveOnIfCorrect chunkZipper =
     let
@@ -73,6 +78,38 @@ newCharacter char typing =
             chunkZipper
                 |> Zipper.update (Chunk.updateStatus char)
                 |> moveOnIfCorrect
+
+        Nothing ->
+            typing
+
+
+moveBack : Zipper Chunk -> Maybe (Zipper Chunk)
+moveBack chunkZipper =
+    let
+        beyondStart =
+            chunkZipper
+                |> Zipper.before
+                |> List.isEmpty
+                |> not
+    in
+        case beyondStart of
+            True ->
+                chunkZipper
+                    |> Zipper.previous
+                    |> setCurrentStatus
+
+            _ ->
+                Just chunkZipper
+                    |> setCurrentStatus
+
+
+rewind : Maybe (Zipper Chunk) -> Maybe (Zipper Chunk)
+rewind typing =
+    case typing of
+        Just chunkZipper ->
+            chunkZipper
+                |> Zipper.update Chunk.resetStatus
+                |> moveBack
 
         Nothing ->
             typing

@@ -23,7 +23,10 @@ main =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Keyboard.presses KeyPress
+    Sub.batch
+        [ Keyboard.presses KeyPress
+        , Keyboard.downs KeyDown
+        ]
 
 
 
@@ -49,6 +52,7 @@ init toType =
 
 type Msg
     = KeyPress KeyCode
+    | KeyDown KeyCode
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -60,6 +64,14 @@ update msg model =
               }
             , Cmd.none )
 
+        KeyDown keyCode ->
+            if keyCode == 8 then
+                ( { model
+                    | script = Script.backspace model.script
+                  }
+                , Cmd.none )
+            else
+                ( model, Cmd.none )
 
 
 -- VIEW
