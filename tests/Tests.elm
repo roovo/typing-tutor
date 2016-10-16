@@ -32,6 +32,20 @@ script =
                         |> Script.remaining
                         |> Expect.equal []
             ]
+        , describe "completed"
+            [ test "returns an empty List for a new script" <|
+                \() ->
+                    Script.init "abcde"
+                        |> Script.completed
+                        |> Expect.equal []
+            , test "returns characters that have not been entered" <|
+                \() ->
+                    Script.init "abcde"
+                        |> Script.tick 'a'
+                        |> Script.tick 'b'
+                        |> Script.completed
+                        |> Expect.equal ["a", "b"]
+            ]
         , describe "tick"
             [ test "advances to the next character in the string" <|
                 \() ->

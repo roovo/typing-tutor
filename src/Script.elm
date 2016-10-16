@@ -1,4 +1,4 @@
-module Script exposing (Script, current, init, remaining, tick)
+module Script exposing (Script, completed, current, init, remaining, tick)
 
 import Html exposing (Html)
 import Html.Attributes
@@ -31,6 +31,16 @@ current script =
 
         Just zippedString ->
             Zipper.current zippedString
+
+
+completed : Script -> List String
+completed script =
+    case script.typing of
+        Nothing ->
+            []
+
+        Just zippedString ->
+            Zipper.before zippedString
 
 
 remaining : Script -> List String
