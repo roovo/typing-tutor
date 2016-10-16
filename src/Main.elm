@@ -2,16 +2,26 @@ module Main exposing (..)
 
 import Html exposing (Html)
 import Html.App
+import Keyboard exposing (KeyCode)
 import Script exposing (Script)
 
 
 main =
     Html.App.program
         { init = init "Something to type"
-        , subscriptions = (\_ -> Sub.none)
+        , subscriptions = subscriptions
         , update = update
         , view = view
         }
+
+
+
+-- SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Keyboard.presses KeyPress
 
 
 
@@ -36,12 +46,14 @@ init toType =
 
 
 type Msg
-    = NothingYet
+    = KeyPress KeyCode
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
+    case Debug.log "msg" msg of
+        KeyPress keyCode ->
+            ( model, Cmd.none )
 
 
 
