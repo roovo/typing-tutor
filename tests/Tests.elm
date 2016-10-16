@@ -44,7 +44,7 @@ script =
                         |> Script.tick 'a'
                         |> Script.tick 'b'
                         |> Script.completed
-                        |> Expect.equal ["a", "b"]
+                        |> Expect.equal [ "a", "b" ]
             ]
         , describe "tick"
             [ test "advances to the next character in the string" <|
