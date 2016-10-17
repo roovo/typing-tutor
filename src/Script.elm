@@ -5,6 +5,7 @@ import Chunk exposing (Chunk, Status(..))
 import Html exposing (Html)
 import Html.Attributes
 import List.Zipper as Zipper exposing (Zipper)
+import SafeZipper
 import String
 
 
@@ -50,32 +51,27 @@ newCharacter char workBook =
             chunkZipper
                 |> Zipper.update (Chunk.parseChar char)
                 |> moveZipper
-                |> Maybe.map setCurrentStatus
+                |> setCurrentStatus
+                |> Just
 
         Nothing ->
             workBook
 
 
-moveZipper : Zipper Chunk -> Maybe (Zipper Chunk)
+moveZipper : Zipper Chunk -> Zipper Chunk
 moveZipper chunkZipper =
     let
         currentChunk =
             Zipper.current chunkZipper
-
-        beyondStart =
-            chunkZipper
-                |> Zipper.before
-                |> List.isEmpty
-                |> not
     in
-        if currentChunk.next > 0 && chunksRemain chunkZipper then
+        if currentChunk.next > 0 then
             chunkZipper
-                |> Zipper.next
-        else if currentChunk.next < 0 && beyondStart then
+                |> SafeZipper.next
+        else if currentChunk.next < 0 then
             chunkZipper
-                |> Zipper.previous
+                |> SafeZipper.previous
         else
-            Just chunkZipper
+            chunkZipper
 
 
 chunksRemain : Zipper Chunk -> Bool
