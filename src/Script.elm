@@ -22,9 +22,9 @@ type alias Script =
 
 
 init : String -> Script
-init toType =
+init source =
     { workBook =
-        toType
+        source
             |> String.split ""
             |> List.map Chunk.init
             |> Zipper.fromList
@@ -41,21 +41,18 @@ chunks script =
 
 tick : Char -> Script -> Script
 tick char script =
-    { script | workBook = newCharacter char script.workBook }
+    { script
+        | workBook =
+            script.workBook
+                |> Maybe.map (updateCurrentChunk char)
+                |> Maybe.map moveZipper
+                |> Maybe.map setCurrentStatus
+    }
 
 
-newCharacter : Char -> Maybe (Zipper Chunk) -> Maybe (Zipper Chunk)
-newCharacter char workBook =
-    case workBook of
-        Just chunkZipper ->
-            chunkZipper
-                |> Zipper.update (Chunk.parseChar char)
-                |> moveZipper
-                |> setCurrentStatus
-                |> Just
-
-        Nothing ->
-            workBook
+updateCurrentChunk : Char -> Zipper Chunk -> Zipper Chunk
+updateCurrentChunk char workbook =
+    Zipper.update (Chunk.consumeChar char) workbook
 
 
 moveZipper : Zipper Chunk -> Zipper Chunk
