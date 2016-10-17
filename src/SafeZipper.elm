@@ -5,27 +5,13 @@ import List.Zipper as Zipper exposing (Zipper)
 
 next : Zipper a -> Zipper a
 next zipper =
-    let
-        next =
-            Zipper.next zipper
-    in
-        case next of
-            Nothing ->
-                zipper
-
-            Just z ->
-                z
+    Zipper.next zipper
+        |> Maybe.map identity
+        |> Maybe.withDefault zipper
 
 
 previous : Zipper a -> Zipper a
 previous zipper =
-    let
-        previous =
-            Zipper.previous zipper
-    in
-        case previous of
-            Nothing ->
-                zipper
-
-            Just z ->
-                z
+    Zipper.previous zipper
+        |> Maybe.map identity
+        |> Maybe.withDefault zipper
