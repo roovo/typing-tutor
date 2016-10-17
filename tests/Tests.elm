@@ -5,6 +5,7 @@ import Expect
 import Script exposing (Script)
 import Test exposing (..)
 import TestChunk
+import TestSafeZipper
 import TestScript
 
 
@@ -13,4 +14,5 @@ all =
     describe "Tests"
         [ TestScript.script
         , TestChunk.chunk
+        , TestSafeZipper.safeZipper
         ]

@@ -1,3 +1,4 @@
+- add a safeZipper that doesn't exceed it's bounds
 - detect if finished
 - calculate statistics
 
