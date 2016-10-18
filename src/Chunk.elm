@@ -1,4 +1,4 @@
-module Chunk exposing (Chunk, Direction(..), Status(..), init, consumeChar)
+module Chunk exposing (Chunk, Direction(..), Status(..), consume, init)
 
 import Char
 import String
@@ -36,8 +36,8 @@ init string =
     }
 
 
-consumeChar : Char -> Chunk -> Chunk
-consumeChar char chunk =
+consume : Char -> Chunk -> Chunk
+consume char chunk =
     let
         matchingChar =
             chunk.content == String.fromChar char

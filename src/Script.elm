@@ -52,7 +52,7 @@ consume char script =
 
 updateCurrentChunk : Char -> Zipper Chunk -> Zipper Chunk
 updateCurrentChunk char workbook =
-    Zipper.update (Chunk.consumeChar char) workbook
+    Zipper.update (Chunk.consume char) workbook
 
 
 nextMove : Zipper Chunk -> Direction
