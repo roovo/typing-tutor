@@ -70,13 +70,12 @@ zipperMover direction =
 
 moveZipper : Zipper Chunk -> Zipper Chunk
 moveZipper chunks =
-    (chunks
-        |> Zipper.current
-        |> .moveTo
-        |> zipperMover
-    )
-    <|
-        chunks
+    chunks
+        |> (chunks
+                |> Zipper.current
+                |> .moveTo
+                |> zipperMover
+            )
 
 
 chunksRemain : Zipper Chunk -> Bool
