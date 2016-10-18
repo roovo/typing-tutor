@@ -46,7 +46,7 @@ viewStep chunk =
 
                 Current ->
                     [ ( "color", "black" )
-                    , ( "background-color", "yellow" )
+                    , ( "background-color", "orange" )
                     ]
 
                 Error _ ->
