@@ -55,13 +55,6 @@ updateCurrentChunk char workbook =
     Zipper.update (Chunk.consume char) workbook
 
 
-nextMove : Zipper Chunk -> Direction
-nextMove chunks =
-    chunks
-        |> Zipper.current
-        |> .moveTo
-
-
 zipperMover : Direction -> (Zipper Chunk -> Zipper Chunk)
 zipperMover direction =
     case direction of
