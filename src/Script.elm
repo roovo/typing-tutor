@@ -56,8 +56,8 @@ updateCurrentChunk char workbook =
 
 
 nextMove : Zipper Chunk -> Direction
-nextMove chunkZipper =
-    chunkZipper
+nextMove chunks =
+    chunks
         |> Zipper.current
         |> .moveTo
 
@@ -76,26 +76,26 @@ zipperMover direction =
 
 
 moveZipper : Zipper Chunk -> Zipper Chunk
-moveZipper chunkZipper =
-    (chunkZipper
+moveZipper chunks =
+    (chunks
         |> Zipper.current
         |> .moveTo
         |> zipperMover
     )
     <|
-        chunkZipper
+        chunks
 
 
 chunksRemain : Zipper Chunk -> Bool
-chunksRemain chunkZipper =
-    chunkZipper
+chunksRemain chunks =
+    chunks
         |> Zipper.after
         |> List.isEmpty
         |> not
 
 
 setCurrentStatus : Zipper Chunk -> Zipper Chunk
-setCurrentStatus chunkZipper =
+setCurrentStatus chunks =
     let
         foo chunk =
             { chunk
@@ -105,7 +105,7 @@ setCurrentStatus chunkZipper =
                             Current
 
                         Completed ->
-                            (if chunksRemain chunkZipper then
+                            (if chunksRemain chunks then
                                 Current
                              else
                                 chunk.status
@@ -115,4 +115,4 @@ setCurrentStatus chunkZipper =
                             chunk.status
             }
     in
-        Zipper.update foo chunkZipper
+        Zipper.update foo chunks
