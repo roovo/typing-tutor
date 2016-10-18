@@ -1,3 +1,4 @@
+- improved readme
 - calculate statistics
   - save the total number of mis-typed characters (excluding backspaces)
   - save tuples of (expected, actual) for mis-types
