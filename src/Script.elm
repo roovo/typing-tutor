@@ -1,4 +1,4 @@
-module Script exposing (Script, consume, init, toList)
+module Script exposing (Script, consume, init, isComplete, toList)
 
 import Char
 import Chunk exposing (Chunk, Direction(..), Status(..))
@@ -7,9 +7,6 @@ import Html.Attributes
 import List.Zipper as Zipper exposing (Zipper)
 import SafeZipper
 import String
-
-
--- MODEL
 
 
 type alias Script =
@@ -45,6 +42,19 @@ consume char script =
                 |> Maybe.map moveZipper
                 |> Maybe.map setCurrentStatus
     }
+
+
+isComplete : Script -> Bool
+isComplete script =
+    script.workBook
+        |> Maybe.map Zipper.current
+        |> Maybe.map .status
+        |> Maybe.map ((==) End)
+        |> Maybe.withDefault False
+
+
+
+-- PRIVATE FUNCTIONS
 
 
 updateCurrentChunk : Char -> Zipper Chunk -> Zipper Chunk

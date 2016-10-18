@@ -79,6 +79,10 @@ makeCurrent chunk =
             chunk
 
 
+
+-- PRIAVTE FUNCTIONS
+
+
 isErrorFree : Chunk -> Bool
 isErrorFree chunk =
     case chunk.status of

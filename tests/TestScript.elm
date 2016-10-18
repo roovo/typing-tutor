@@ -95,4 +95,24 @@ script =
                             , { content = "", status = End, moveTo = None }
                             ]
             ]
+        , describe "isComplete"
+            [ test "returns False for a new script" <|
+                \() ->
+                    Script.init "a"
+                        |> Script.isComplete
+                        |> Expect.equal False
+            , test "returns False with an error" <|
+                \() ->
+                    Script.init "a"
+                        |> Script.consume 'b'
+                        |> Script.isComplete
+                        |> Expect.equal False
+            , test "returns True if at the end" <|
+                \() ->
+                    Script.init "ab"
+                        |> Script.consume 'a'
+                        |> Script.consume 'b'
+                        |> Script.isComplete
+                        |> Expect.equal True
+            ]
         ]

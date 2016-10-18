@@ -8,11 +8,31 @@ import Chunk exposing (Chunk, Status(..))
 
 view : Script -> Html msg
 view script =
-    Html.code
+    Html.div []
+        (List.append
+            (viewChunks script)
+            (viewResults script)
+        )
+
+
+viewResults : Script -> List (Html msg)
+viewResults script =
+    if Script.isComplete script then
+        [ Html.hr [] []
+        , Html.div [] [ Html.text "Finished - yay!!" ]
+        ]
+    else
+        []
+
+
+viewChunks : Script -> List (Html msg)
+viewChunks script =
+    [ Html.code
         []
         (Script.toList script
             |> List.map viewChunk
         )
+    ]
 
 
 viewChunk : Chunk -> Html msg

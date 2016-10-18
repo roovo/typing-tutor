@@ -1,5 +1,16 @@
-- detect if finished
+- should I rename Script -> Exercise
+    && Chunk -> Step
+    && Script.workbook -> Script.steps
+    && Script.toList -> Script.steps
 - calculate statistics
+  - save the total number of mis-typed characters
+  - save tuples of (expected, actual) for mis-types
+      - only do this for the first mistake if there are more
+        than one mistakes in a row
+  - print accuracy
+  - print which characters you got wrong
+- add a timer
+  - print wpm
 
 
 done
@@ -23,3 +34,4 @@ done
 - rename Script.chunks -> Script.toList
 - rename Script.tick -> Script.consume (ditto for Chunk)
 - simplify Script.setCurrentStatus (if I can work out how)
+- detect if finished - print completion message on the screen
