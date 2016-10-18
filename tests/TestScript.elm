@@ -1,7 +1,7 @@
 module TestScript exposing (..)
 
 import Char
-import Chunk exposing (Chunk, Status(..))
+import Chunk exposing (Chunk, Direction(..), Status(..))
 import Expect
 import Script exposing (Script)
 import Test exposing (..)
@@ -24,15 +24,15 @@ script =
                 \() ->
                     Script.init "a"
                         |> Script.chunks
-                        |> Expect.equal [ { content = "a", status = Current, next = 0 } ]
+                        |> Expect.equal [ { content = "a", status = Current, moveTo = None } ]
             , test "returns multiple chunks for a multi-character string" <|
                 \() ->
                     Script.init "abc"
                         |> Script.chunks
                         |> Expect.equal
-                            [ { content = "a", status = Current, next = 0 }
-                            , { content = "b", status = Waiting, next = 0 }
-                            , { content = "c", status = Waiting, next = 0 }
+                            [ { content = "a", status = Current, moveTo = None }
+                            , { content = "b", status = Waiting, moveTo = None }
+                            , { content = "c", status = Waiting, moveTo = None }
                             ]
             ]
         , describe "tick"
@@ -42,9 +42,9 @@ script =
                         |> Script.tick 'a'
                         |> Script.chunks
                         |> Expect.equal
-                            [ { content = "a", status = Completed, next = 1 }
-                            , { content = "b", status = Current, next = 0 }
-                            , { content = "c", status = Waiting, next = 0 }
+                            [ { content = "a", status = Completed, moveTo = Next }
+                            , { content = "b", status = Current, moveTo = None }
+                            , { content = "c", status = Waiting, moveTo = None }
                             ]
             , test "won't advance if the wrong character is given" <|
                 \() ->
@@ -53,9 +53,9 @@ script =
                         |> Script.tick 'c'
                         |> Script.chunks
                         |> Expect.equal
-                            [ { content = "a", status = Completed, next = 1 }
-                            , { content = "b", status = Error 1, next = 0 }
-                            , { content = "c", status = Waiting, next = 0 }
+                            [ { content = "a", status = Completed, moveTo = Next }
+                            , { content = "b", status = Error 1, moveTo = None }
+                            , { content = "c", status = Waiting, moveTo = None }
                             ]
             , test "won't advance past the end of the string" <|
                 \() ->
@@ -64,8 +64,8 @@ script =
                         |> Script.tick 'b'
                         |> Script.chunks
                         |> Expect.equal
-                            [ { content = "a", status = Completed, next = 1 }
-                            , { content = "b", status = Completed, next = 1 }
+                            [ { content = "a", status = Completed, moveTo = Next }
+                            , { content = "b", status = Completed, moveTo = Next }
                             ]
             ]
         , describe "tick with backspace"
@@ -75,9 +75,9 @@ script =
                         |> Script.tick backspaceChar
                         |> Script.chunks
                         |> Expect.equal
-                            [ { content = "a", status = Current, next = -1 }
-                            , { content = "b", status = Waiting, next = 0 }
-                            , { content = "c", status = Waiting, next = 0 }
+                            [ { content = "a", status = Current, moveTo = Previous }
+                            , { content = "b", status = Waiting, moveTo = None }
+                            , { content = "c", status = Waiting, moveTo = None }
                             ]
             , test "goes back a character if beyond the start" <|
                 \() ->
@@ -87,9 +87,9 @@ script =
                         |> Script.tick backspaceChar
                         |> Script.chunks
                         |> Expect.equal
-                            [ { content = "a", status = Completed, next = 1 }
-                            , { content = "b", status = Current, next = 1 }
-                            , { content = "c", status = Waiting, next = -1 }
+                            [ { content = "a", status = Completed, moveTo = Next }
+                            , { content = "b", status = Current, moveTo = Next }
+                            , { content = "c", status = Waiting, moveTo = Previous }
                             ]
             , test "resets a single error" <|
                 \() ->
@@ -99,9 +99,9 @@ script =
                         |> Script.tick backspaceChar
                         |> Script.chunks
                         |> Expect.equal
-                            [ { content = "a", status = Completed, next = 1 }
-                            , { content = "b", status = Current, next = 0 }
-                            , { content = "c", status = Waiting, next = 0 }
+                            [ { content = "a", status = Completed, moveTo = Next }
+                            , { content = "b", status = Current, moveTo = None }
+                            , { content = "c", status = Waiting, moveTo = None }
                             ]
             ]
         ]

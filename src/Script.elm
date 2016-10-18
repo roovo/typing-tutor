@@ -1,7 +1,7 @@
 module Script exposing (Script, chunks, init, tick)
 
 import Char
-import Chunk exposing (Chunk, Status(..))
+import Chunk exposing (Chunk, Direction(..), Status(..))
 import Html exposing (Html)
 import Html.Attributes
 import List.Zipper as Zipper exposing (Zipper)
@@ -61,14 +61,15 @@ moveZipper chunkZipper =
         currentChunk =
             Zipper.current chunkZipper
     in
-        if currentChunk.next > 0 then
-            chunkZipper
-                |> SafeZipper.next
-        else if currentChunk.next < 0 then
-            chunkZipper
-                |> SafeZipper.previous
-        else
-            chunkZipper
+        case currentChunk.moveTo of
+            Next ->
+                chunkZipper
+                    |> SafeZipper.next
+            Previous ->
+                chunkZipper
+                    |> SafeZipper.previous
+            _ ->
+                chunkZipper
 
 
 chunksRemain : Zipper Chunk -> Bool

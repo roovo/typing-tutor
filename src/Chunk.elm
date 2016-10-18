@@ -1,4 +1,4 @@
-module Chunk exposing (Chunk, Status(..), init, consumeChar)
+module Chunk exposing (Chunk, Direction(..), Status(..), init, consumeChar)
 
 import Char
 import String
@@ -11,7 +11,7 @@ backspaceCode =
 type alias Chunk =
     { content : String
     , status : Status
-    , next : Int
+    , moveTo : Direction
     }
 
 
@@ -22,11 +22,17 @@ type Status
     | Completed
 
 
+type Direction
+    = Next
+    | Previous
+    | None
+
+
 init : String -> Chunk
 init string =
     { content = string
     , status = Waiting
-    , next = 0
+    , moveTo = None
     }
 
 
@@ -40,13 +46,13 @@ consumeChar char chunk =
             Char.toCode char == backspaceCode
     in
         if matchingChar && isErrorFree chunk then
-            { chunk | status = Completed, next = 1 }
+            { chunk | status = Completed, moveTo = Next }
         else if backSpace && isErrorFree chunk then
-            { chunk | status = Waiting, next = -1 }
+            { chunk | status = Waiting, moveTo = Previous }
         else if backSpace then
-            { chunk | status = removeError chunk.status, next = 0 }
+            { chunk | status = removeError chunk.status, moveTo = None }
         else
-            { chunk | status = addError chunk.status, next = 0 }
+            { chunk | status = addError chunk.status, moveTo = None }
 
 
 isErrorFree : Chunk -> Bool
