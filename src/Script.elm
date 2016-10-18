@@ -55,21 +55,35 @@ updateCurrentChunk char workbook =
     Zipper.update (Chunk.consumeChar char) workbook
 
 
+nextMove : Zipper Chunk -> Direction
+nextMove chunkZipper =
+    chunkZipper
+        |> Zipper.current
+        |> .moveTo
+
+
+zipperMover : Direction -> (Zipper Chunk -> Zipper Chunk)
+zipperMover direction =
+    case direction of
+        Next ->
+            SafeZipper.next
+
+        Previous ->
+            SafeZipper.previous
+
+        _ ->
+            identity
+
+
 moveZipper : Zipper Chunk -> Zipper Chunk
 moveZipper chunkZipper =
-    let
-        currentChunk =
-            Zipper.current chunkZipper
-    in
-        case currentChunk.moveTo of
-            Next ->
-                chunkZipper
-                    |> SafeZipper.next
-            Previous ->
-                chunkZipper
-                    |> SafeZipper.previous
-            _ ->
-                chunkZipper
+    (chunkZipper
+        |> Zipper.current
+        |> .moveTo
+        |> zipperMover
+    )
+    <|
+        chunkZipper
 
 
 chunksRemain : Zipper Chunk -> Bool
