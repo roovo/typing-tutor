@@ -10,7 +10,7 @@ view : Script -> Html msg
 view script =
     Html.code
         []
-        (Script.chunks script
+        (Script.toList script
             |> List.map viewChunk
         )
 

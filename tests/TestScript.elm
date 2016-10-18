@@ -14,21 +14,21 @@ backspaceChar =
 script : Test
 script =
     describe "Script"
-        [ describe "chunks"
+        [ describe "toList"
             [ test "returns an empty list for an empty string" <|
                 \() ->
                     Script.init ""
-                        |> Script.chunks
+                        |> Script.toList
                         |> Expect.equal []
             , test "returns a single chunk for a single character string" <|
                 \() ->
                     Script.init "a"
-                        |> Script.chunks
+                        |> Script.toList
                         |> Expect.equal [ { content = "a", status = Current, moveTo = None } ]
             , test "returns multiple chunks for a multi-character string" <|
                 \() ->
                     Script.init "abc"
-                        |> Script.chunks
+                        |> Script.toList
                         |> Expect.equal
                             [ { content = "a", status = Current, moveTo = None }
                             , { content = "b", status = Waiting, moveTo = None }
@@ -40,7 +40,7 @@ script =
                 \() ->
                     Script.init "abc"
                         |> Script.tick 'a'
-                        |> Script.chunks
+                        |> Script.toList
                         |> Expect.equal
                             [ { content = "a", status = Completed, moveTo = Next }
                             , { content = "b", status = Current, moveTo = None }
@@ -51,7 +51,7 @@ script =
                     Script.init "abc"
                         |> Script.tick 'a'
                         |> Script.tick 'c'
-                        |> Script.chunks
+                        |> Script.toList
                         |> Expect.equal
                             [ { content = "a", status = Completed, moveTo = Next }
                             , { content = "b", status = Error 1, moveTo = None }
@@ -62,7 +62,7 @@ script =
                     Script.init "ab"
                         |> Script.tick 'a'
                         |> Script.tick 'b'
-                        |> Script.chunks
+                        |> Script.toList
                         |> Expect.equal
                             [ { content = "a", status = Completed, moveTo = Next }
                             , { content = "b", status = Completed, moveTo = Next }
@@ -73,7 +73,7 @@ script =
                 \() ->
                     Script.init "abc"
                         |> Script.tick backspaceChar
-                        |> Script.chunks
+                        |> Script.toList
                         |> Expect.equal
                             [ { content = "a", status = Current, moveTo = Previous }
                             , { content = "b", status = Waiting, moveTo = None }
@@ -85,7 +85,7 @@ script =
                         |> Script.tick 'a'
                         |> Script.tick 'b'
                         |> Script.tick backspaceChar
-                        |> Script.chunks
+                        |> Script.toList
                         |> Expect.equal
                             [ { content = "a", status = Completed, moveTo = Next }
                             , { content = "b", status = Current, moveTo = Next }
@@ -97,7 +97,7 @@ script =
                         |> Script.tick 'a'
                         |> Script.tick 'c'
                         |> Script.tick backspaceChar
-                        |> Script.chunks
+                        |> Script.toList
                         |> Expect.equal
                             [ { content = "a", status = Completed, moveTo = Next }
                             , { content = "b", status = Current, moveTo = None }

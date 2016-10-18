@@ -1,4 +1,4 @@
-module Script exposing (Script, chunks, init, tick)
+module Script exposing (Script, toList, init, tick)
 
 import Char
 import Chunk exposing (Chunk, Direction(..), Status(..))
@@ -32,8 +32,8 @@ init source =
     }
 
 
-chunks : Script -> List Chunk
-chunks script =
+toList : Script -> List Chunk
+toList script =
     script.workBook
         |> Maybe.map Zipper.toList
         |> Maybe.withDefault []
