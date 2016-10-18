@@ -1,11 +1,11 @@
 module Main exposing (..)
 
 import Char
+import Exercise exposing (Exercise)
 import Html exposing (Html)
 import Html.App
 import Keyboard exposing (KeyCode)
-import Script exposing (Script)
-import ScriptView
+import ExerciseView
 
 
 main =
@@ -34,13 +34,13 @@ subscriptions model =
 
 
 type alias Model =
-    { script : Script
+    { exercise : Exercise
     }
 
 
 init : String -> ( Model, Cmd Msg )
-init toType =
-    ( { script = Script.init toType
+init source =
+    ( { exercise = Exercise.init source
       }
     , Cmd.none
     )
@@ -64,7 +64,7 @@ update msg model =
     case Debug.log "msg" msg of
         KeyPress keyCode ->
             ( { model
-                | script = Script.consume (Char.fromCode keyCode) model.script
+                | exercise = Exercise.consume (Char.fromCode keyCode) model.exercise
               }
             , Cmd.none
             )
@@ -72,7 +72,7 @@ update msg model =
         KeyDown keyCode ->
             if keyCode == 8 then
                 ( { model
-                    | script = Script.consume backspaceChar model.script
+                    | exercise = Exercise.consume backspaceChar model.exercise
                   }
                 , Cmd.none
                 )
@@ -90,7 +90,7 @@ view model =
         []
         [ Html.code
             []
-            [ ScriptView.view model.script
+            [ ExerciseView.view model.exercise
             ]
         , Html.hr [] []
         , Html.text <| toString model

@@ -1,4 +1,4 @@
-module Chunk exposing (Chunk, Direction(..), Status(..), consume, end, init, makeCurrent)
+module Step exposing (Step, Direction(..), Status(..), consume, end, init, makeCurrent)
 
 import Char
 import String
@@ -8,7 +8,7 @@ backspaceCode =
     8
 
 
-type alias Chunk =
+type alias Step =
     { content : String
     , status : Status
     , moveTo : Direction
@@ -29,7 +29,7 @@ type Direction
     | None
 
 
-init : String -> Chunk
+init : String -> Step
 init string =
     { content = string
     , status = Waiting
@@ -37,7 +37,7 @@ init string =
     }
 
 
-end : Chunk
+end : Step
 end =
     { content = ""
     , status = End
@@ -45,47 +45,47 @@ end =
     }
 
 
-consume : Char -> Chunk -> Chunk
-consume char chunk =
+consume : Char -> Step -> Step
+consume char step =
     let
         matchingChar =
-            chunk.content == String.fromChar char
+            step.content == String.fromChar char
 
         backSpace =
             Char.toCode char == backspaceCode
     in
-        if matchingChar && isErrorFree chunk then
-            { chunk | status = Completed, moveTo = Next }
-        else if chunk.status == End then
-            { chunk | status = End, moveTo = None }
-        else if backSpace && isErrorFree chunk then
-            { chunk | status = Waiting, moveTo = Previous }
+        if matchingChar && isErrorFree step then
+            { step | status = Completed, moveTo = Next }
+        else if step.status == End then
+            { step | status = End, moveTo = None }
+        else if backSpace && isErrorFree step then
+            { step | status = Waiting, moveTo = Previous }
         else if backSpace then
-            { chunk | status = removeError chunk.status, moveTo = None }
+            { step | status = removeError step.status, moveTo = None }
         else
-            { chunk | status = addError chunk.status, moveTo = None }
+            { step | status = addError step.status, moveTo = None }
 
 
-makeCurrent : Chunk -> Chunk
-makeCurrent chunk =
-    case chunk.status of
+makeCurrent : Step -> Step
+makeCurrent step =
+    case step.status of
         Waiting ->
-            { chunk | status = Current }
+            { step | status = Current }
 
         Completed ->
-            { chunk | status = Current }
+            { step | status = Current }
 
         _ ->
-            chunk
+            step
 
 
 
--- PRIAVTE FUNCTIONS
+-- PRIVATE FUNCTIONS
 
 
-isErrorFree : Chunk -> Bool
-isErrorFree chunk =
-    case chunk.status of
+isErrorFree : Step -> Bool
+isErrorFree step =
+    case step.status of
         Error _ ->
             False
 

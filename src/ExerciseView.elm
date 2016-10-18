@@ -1,23 +1,33 @@
-module ScriptView exposing (view)
+module ExerciseView exposing (view)
 
 import Html exposing (Html)
 import Html.Attributes
-import Script exposing (Script)
-import Chunk exposing (Chunk, Status(..))
+import Exercise exposing (Exercise)
+import Step exposing (Step, Status(..))
 
 
-view : Script -> Html msg
-view script =
+view : Exercise -> Html msg
+view exercise =
     Html.div []
         (List.append
-            (viewChunks script)
-            (viewResults script)
+            (viewSteps exercise)
+            (viewResults exercise)
         )
 
 
-viewResults : Script -> List (Html msg)
-viewResults script =
-    if Script.isComplete script then
+viewSteps : Exercise -> List (Html msg)
+viewSteps exercise =
+    [ Html.code
+        []
+        (Exercise.steps exercise
+            |> List.map viewStep
+        )
+    ]
+
+
+viewResults : Exercise -> List (Html msg)
+viewResults exercise =
+    if Exercise.isComplete exercise then
         [ Html.hr [] []
         , Html.div [] [ Html.text "Finished - yay!!" ]
         ]
@@ -25,18 +35,8 @@ viewResults script =
         []
 
 
-viewChunks : Script -> List (Html msg)
-viewChunks script =
-    [ Html.code
-        []
-        (Script.toList script
-            |> List.map viewChunk
-        )
-    ]
-
-
-viewChunk : Chunk -> Html msg
-viewChunk chunk =
+viewStep : Step -> Html msg
+viewStep chunk =
     Html.span
         [ Html.Attributes.style
             (case chunk.status of

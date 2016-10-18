@@ -1,9 +1,9 @@
-module TestScript exposing (..)
+module TestExercise exposing (..)
 
 import Char
-import Chunk exposing (Chunk, Direction(..), Status(..))
+import Exercise exposing (Exercise)
 import Expect
-import Script exposing (Script)
+import Step exposing (Step, Direction(..), Status(..))
 import Test exposing (..)
 
 
@@ -11,19 +11,19 @@ backspaceChar =
     (Char.fromCode 8)
 
 
-script : Test
-script =
-    describe "Script"
-        [ describe "toList"
+exercise : Test
+exercise =
+    describe "Exercise"
+        [ describe "steps"
             [ test "returns a list with only the end item for an empty string" <|
                 \() ->
-                    Script.init ""
-                        |> Script.toList
+                    Exercise.init ""
+                        |> Exercise.steps
                         |> Expect.equal [ { content = "", status = End, moveTo = None } ]
             , test "returns multiple chunks for a multi-character string" <|
                 \() ->
-                    Script.init "abc"
-                        |> Script.toList
+                    Exercise.init "abc"
+                        |> Exercise.steps
                         |> Expect.equal
                             [ { content = "a", status = Current, moveTo = None }
                             , { content = "b", status = Waiting, moveTo = None }
@@ -34,9 +34,9 @@ script =
         , describe "consume"
             [ test "advances to the next character in the string" <|
                 \() ->
-                    Script.init "abc"
-                        |> Script.consume 'a'
-                        |> Script.toList
+                    Exercise.init "abc"
+                        |> Exercise.consume 'a'
+                        |> Exercise.steps
                         |> Expect.equal
                             [ { content = "a", status = Completed, moveTo = Next }
                             , { content = "b", status = Current, moveTo = None }
@@ -45,10 +45,10 @@ script =
                             ]
             , test "won't advance if the wrong character is given" <|
                 \() ->
-                    Script.init "abc"
-                        |> Script.consume 'a'
-                        |> Script.consume 'c'
-                        |> Script.toList
+                    Exercise.init "abc"
+                        |> Exercise.consume 'a'
+                        |> Exercise.consume 'c'
+                        |> Exercise.steps
                         |> Expect.equal
                             [ { content = "a", status = Completed, moveTo = Next }
                             , { content = "b", status = Error 1, moveTo = None }
@@ -59,9 +59,9 @@ script =
         , describe "consume with backspace"
             [ test "does nothing if at the start of a new string" <|
                 \() ->
-                    Script.init "abc"
-                        |> Script.consume backspaceChar
-                        |> Script.toList
+                    Exercise.init "abc"
+                        |> Exercise.consume backspaceChar
+                        |> Exercise.steps
                         |> Expect.equal
                             [ { content = "a", status = Current, moveTo = Previous }
                             , { content = "b", status = Waiting, moveTo = None }
@@ -70,11 +70,11 @@ script =
                             ]
             , test "goes back a character if beyond the start" <|
                 \() ->
-                    Script.init "abc"
-                        |> Script.consume 'a'
-                        |> Script.consume 'b'
-                        |> Script.consume backspaceChar
-                        |> Script.toList
+                    Exercise.init "abc"
+                        |> Exercise.consume 'a'
+                        |> Exercise.consume 'b'
+                        |> Exercise.consume backspaceChar
+                        |> Exercise.steps
                         |> Expect.equal
                             [ { content = "a", status = Completed, moveTo = Next }
                             , { content = "b", status = Current, moveTo = Next }
@@ -83,11 +83,11 @@ script =
                             ]
             , test "resets a single error" <|
                 \() ->
-                    Script.init "abc"
-                        |> Script.consume 'a'
-                        |> Script.consume 'c'
-                        |> Script.consume backspaceChar
-                        |> Script.toList
+                    Exercise.init "abc"
+                        |> Exercise.consume 'a'
+                        |> Exercise.consume 'c'
+                        |> Exercise.consume backspaceChar
+                        |> Exercise.steps
                         |> Expect.equal
                             [ { content = "a", status = Completed, moveTo = Next }
                             , { content = "b", status = Current, moveTo = None }
@@ -98,21 +98,21 @@ script =
         , describe "isComplete"
             [ test "returns False for a new script" <|
                 \() ->
-                    Script.init "a"
-                        |> Script.isComplete
+                    Exercise.init "a"
+                        |> Exercise.isComplete
                         |> Expect.equal False
             , test "returns False with an error" <|
                 \() ->
-                    Script.init "a"
-                        |> Script.consume 'b'
-                        |> Script.isComplete
+                    Exercise.init "a"
+                        |> Exercise.consume 'b'
+                        |> Exercise.isComplete
                         |> Expect.equal False
             , test "returns True if at the end" <|
                 \() ->
-                    Script.init "ab"
-                        |> Script.consume 'a'
-                        |> Script.consume 'b'
-                        |> Script.isComplete
+                    Exercise.init "ab"
+                        |> Exercise.consume 'a'
+                        |> Exercise.consume 'b'
+                        |> Exercise.isComplete
                         |> Expect.equal True
             ]
         ]

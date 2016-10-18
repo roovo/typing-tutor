@@ -1,18 +1,18 @@
 module Tests exposing (..)
 
-import Chunk exposing (Chunk, Status(..))
+import Step exposing (Step, Status(..))
 import Expect
-import Script exposing (Script)
+import Exercise exposing (Exercise)
 import Test exposing (..)
-import TestChunk
+import TestStep
 import TestSafeZipper
-import TestScript
+import TestExercise
 
 
 all : Test
 all =
     describe "Tests"
-        [ TestScript.script
-        , TestChunk.chunk
+        [ TestExercise.exercise
+        , TestStep.step
         , TestSafeZipper.safeZipper
         ]
