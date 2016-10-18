@@ -1,4 +1,4 @@
-module Chunk exposing (Chunk, Direction(..), Status(..), consume, init)
+module Chunk exposing (Chunk, Direction(..), Status(..), consume, end, init)
 
 import Char
 import String
@@ -20,6 +20,7 @@ type Status
     | Error Int
     | Current
     | Completed
+    | End
 
 
 type Direction
@@ -36,6 +37,14 @@ init string =
     }
 
 
+end : Chunk
+end =
+    { content = ""
+    , status = End
+    , moveTo = None
+    }
+
+
 consume : Char -> Chunk -> Chunk
 consume char chunk =
     let
@@ -47,6 +56,8 @@ consume char chunk =
     in
         if matchingChar && isErrorFree chunk then
             { chunk | status = Completed, moveTo = Next }
+        else if chunk.status == End then
+            { chunk | status = End, moveTo = None }
         else if backSpace && isErrorFree chunk then
             { chunk | status = Waiting, moveTo = Previous }
         else if backSpace then

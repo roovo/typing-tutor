@@ -15,16 +15,11 @@ script : Test
 script =
     describe "Script"
         [ describe "toList"
-            [ test "returns an empty list for an empty string" <|
+            [ test "returns a list with only the end item for an empty string" <|
                 \() ->
                     Script.init ""
                         |> Script.toList
-                        |> Expect.equal []
-            , test "returns a single chunk for a single character string" <|
-                \() ->
-                    Script.init "a"
-                        |> Script.toList
-                        |> Expect.equal [ { content = "a", status = Current, moveTo = None } ]
+                        |> Expect.equal [ { content = "", status = End, moveTo = None } ]
             , test "returns multiple chunks for a multi-character string" <|
                 \() ->
                     Script.init "abc"
@@ -33,6 +28,7 @@ script =
                             [ { content = "a", status = Current, moveTo = None }
                             , { content = "b", status = Waiting, moveTo = None }
                             , { content = "c", status = Waiting, moveTo = None }
+                            , { content = "", status = End, moveTo = None }
                             ]
             ]
         , describe "consume"
@@ -45,6 +41,7 @@ script =
                             [ { content = "a", status = Completed, moveTo = Next }
                             , { content = "b", status = Current, moveTo = None }
                             , { content = "c", status = Waiting, moveTo = None }
+                            , { content = "", status = End, moveTo = None }
                             ]
             , test "won't advance if the wrong character is given" <|
                 \() ->
@@ -56,16 +53,7 @@ script =
                             [ { content = "a", status = Completed, moveTo = Next }
                             , { content = "b", status = Error 1, moveTo = None }
                             , { content = "c", status = Waiting, moveTo = None }
-                            ]
-            , test "won't advance past the end of the string" <|
-                \() ->
-                    Script.init "ab"
-                        |> Script.consume 'a'
-                        |> Script.consume 'b'
-                        |> Script.toList
-                        |> Expect.equal
-                            [ { content = "a", status = Completed, moveTo = Next }
-                            , { content = "b", status = Completed, moveTo = Next }
+                            , { content = "", status = End, moveTo = None }
                             ]
             ]
         , describe "consume with backspace"
@@ -78,6 +66,7 @@ script =
                             [ { content = "a", status = Current, moveTo = Previous }
                             , { content = "b", status = Waiting, moveTo = None }
                             , { content = "c", status = Waiting, moveTo = None }
+                            , { content = "", status = End, moveTo = None }
                             ]
             , test "goes back a character if beyond the start" <|
                 \() ->
@@ -90,6 +79,7 @@ script =
                             [ { content = "a", status = Completed, moveTo = Next }
                             , { content = "b", status = Current, moveTo = Next }
                             , { content = "c", status = Waiting, moveTo = Previous }
+                            , { content = "", status = End, moveTo = None }
                             ]
             , test "resets a single error" <|
                 \() ->
@@ -102,6 +92,7 @@ script =
                             [ { content = "a", status = Completed, moveTo = Next }
                             , { content = "b", status = Current, moveTo = None }
                             , { content = "c", status = Waiting, moveTo = None }
+                            , { content = "", status = End, moveTo = None }
                             ]
             ]
         ]

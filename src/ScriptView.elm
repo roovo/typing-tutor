@@ -37,6 +37,9 @@ viewChunk chunk =
                 Waiting ->
                     [ ( "color", "gray" )
                     ]
+
+                End ->
+                    []
             )
         ]
         [ Html.text chunk.content ]

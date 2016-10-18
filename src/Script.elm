@@ -27,6 +27,7 @@ init source =
         source
             |> String.split ""
             |> List.map Chunk.init
+            |> flip List.append [Chunk.end]
             |> Zipper.fromList
             |> Maybe.map setCurrentStatus
     }
