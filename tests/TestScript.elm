@@ -35,11 +35,11 @@ script =
                             , { content = "c", status = Waiting, moveTo = None }
                             ]
             ]
-        , describe "tick"
+        , describe "consume"
             [ test "advances to the next character in the string" <|
                 \() ->
                     Script.init "abc"
-                        |> Script.tick 'a'
+                        |> Script.consume 'a'
                         |> Script.toList
                         |> Expect.equal
                             [ { content = "a", status = Completed, moveTo = Next }
@@ -49,8 +49,8 @@ script =
             , test "won't advance if the wrong character is given" <|
                 \() ->
                     Script.init "abc"
-                        |> Script.tick 'a'
-                        |> Script.tick 'c'
+                        |> Script.consume 'a'
+                        |> Script.consume 'c'
                         |> Script.toList
                         |> Expect.equal
                             [ { content = "a", status = Completed, moveTo = Next }
@@ -60,19 +60,19 @@ script =
             , test "won't advance past the end of the string" <|
                 \() ->
                     Script.init "ab"
-                        |> Script.tick 'a'
-                        |> Script.tick 'b'
+                        |> Script.consume 'a'
+                        |> Script.consume 'b'
                         |> Script.toList
                         |> Expect.equal
                             [ { content = "a", status = Completed, moveTo = Next }
                             , { content = "b", status = Completed, moveTo = Next }
                             ]
             ]
-        , describe "tick with backspace"
+        , describe "consume with backspace"
             [ test "does nothing if at the start of a new string" <|
                 \() ->
                     Script.init "abc"
-                        |> Script.tick backspaceChar
+                        |> Script.consume backspaceChar
                         |> Script.toList
                         |> Expect.equal
                             [ { content = "a", status = Current, moveTo = Previous }
@@ -82,9 +82,9 @@ script =
             , test "goes back a character if beyond the start" <|
                 \() ->
                     Script.init "abc"
-                        |> Script.tick 'a'
-                        |> Script.tick 'b'
-                        |> Script.tick backspaceChar
+                        |> Script.consume 'a'
+                        |> Script.consume 'b'
+                        |> Script.consume backspaceChar
                         |> Script.toList
                         |> Expect.equal
                             [ { content = "a", status = Completed, moveTo = Next }
@@ -94,9 +94,9 @@ script =
             , test "resets a single error" <|
                 \() ->
                     Script.init "abc"
-                        |> Script.tick 'a'
-                        |> Script.tick 'c'
-                        |> Script.tick backspaceChar
+                        |> Script.consume 'a'
+                        |> Script.consume 'c'
+                        |> Script.consume backspaceChar
                         |> Script.toList
                         |> Expect.equal
                             [ { content = "a", status = Completed, moveTo = Next }

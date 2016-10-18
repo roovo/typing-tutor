@@ -64,7 +64,7 @@ update msg model =
     case Debug.log "msg" msg of
         KeyPress keyCode ->
             ( { model
-                | script = Script.tick (Char.fromCode keyCode) model.script
+                | script = Script.consume (Char.fromCode keyCode) model.script
               }
             , Cmd.none
             )
@@ -72,7 +72,7 @@ update msg model =
         KeyDown keyCode ->
             if keyCode == 8 then
                 ( { model
-                    | script = Script.tick backspaceChar model.script
+                    | script = Script.consume backspaceChar model.script
                   }
                 , Cmd.none
                 )

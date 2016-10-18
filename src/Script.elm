@@ -1,4 +1,4 @@
-module Script exposing (Script, toList, init, tick)
+module Script exposing (Script, consume, init, toList)
 
 import Char
 import Chunk exposing (Chunk, Direction(..), Status(..))
@@ -39,8 +39,8 @@ toList script =
         |> Maybe.withDefault []
 
 
-tick : Char -> Script -> Script
-tick char script =
+consume : Char -> Script -> Script
+consume char script =
     { script
         | workBook =
             script.workBook

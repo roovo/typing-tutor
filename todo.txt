@@ -1,4 +1,3 @@
-- rename Script.tick -> Script.consume (ditto for Chunk)
 - simplify Script.setCurrentStatus (if I can work out how)
 - detect if finished
 - calculate statistics
@@ -23,3 +22,4 @@ done
 - use Forward | Backward | Still for Chunk.next
 - simplify Script.moveZipper (using the above)
 - rename Script.chunks -> Script.toList
+- rename Script.tick -> Script.consume (ditto for Chunk)
