@@ -1,4 +1,4 @@
-module Chunk exposing (Chunk, Direction(..), Status(..), consume, end, init)
+module Chunk exposing (Chunk, Direction(..), Status(..), consume, end, init, makeCurrent)
 
 import Char
 import String
@@ -64,6 +64,19 @@ consume char chunk =
             { chunk | status = removeError chunk.status, moveTo = None }
         else
             { chunk | status = addError chunk.status, moveTo = None }
+
+
+makeCurrent : Chunk -> Chunk
+makeCurrent chunk =
+    case chunk.status of
+        Waiting ->
+            { chunk | status = Current }
+
+        Completed ->
+            { chunk | status = Current }
+
+        _ ->
+            chunk
 
 
 isErrorFree : Chunk -> Bool

@@ -12,10 +12,6 @@ import String
 -- MODEL
 
 
-backspaceChar =
-    Char.fromCode 8
-
-
 type alias Script =
     { workBook : Maybe (Zipper Chunk)
     }
@@ -27,7 +23,7 @@ init source =
         source
             |> String.split ""
             |> List.map Chunk.init
-            |> flip List.append [Chunk.end]
+            |> flip List.append [ Chunk.end ]
             |> Zipper.fromList
             |> Maybe.map setCurrentStatus
     }
@@ -56,6 +52,21 @@ updateCurrentChunk char workbook =
     Zipper.update (Chunk.consume char) workbook
 
 
+moveZipper : Zipper Chunk -> Zipper Chunk
+moveZipper chunks =
+    chunks
+        |> (chunks
+                |> Zipper.current
+                |> .moveTo
+                |> zipperMover
+           )
+
+
+setCurrentStatus : Zipper Chunk -> Zipper Chunk
+setCurrentStatus chunks =
+    Zipper.update Chunk.makeCurrent chunks
+
+
 zipperMover : Direction -> (Zipper Chunk -> Zipper Chunk)
 zipperMover direction =
     case direction of
@@ -67,45 +78,3 @@ zipperMover direction =
 
         _ ->
             identity
-
-
-moveZipper : Zipper Chunk -> Zipper Chunk
-moveZipper chunks =
-    chunks
-        |> (chunks
-                |> Zipper.current
-                |> .moveTo
-                |> zipperMover
-            )
-
-
-chunksRemain : Zipper Chunk -> Bool
-chunksRemain chunks =
-    chunks
-        |> Zipper.after
-        |> List.isEmpty
-        |> not
-
-
-setCurrentStatus : Zipper Chunk -> Zipper Chunk
-setCurrentStatus chunks =
-    let
-        foo chunk =
-            { chunk
-                | status =
-                    case chunk.status of
-                        Waiting ->
-                            Current
-
-                        Completed ->
-                            (if chunksRemain chunks then
-                                Current
-                             else
-                                chunk.status
-                            )
-
-                        _ ->
-                            chunk.status
-            }
-    in
-        Zipper.update foo chunks

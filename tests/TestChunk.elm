@@ -81,4 +81,41 @@ chunk =
                             |> Expect.equal { content = "a", status = Error 3, moveTo = None }
                 ]
             ]
+        , describe "makeCurrent"
+            [ test "sets it to Current if it was Waiting" <|
+                \() ->
+                    Chunk.init "a"
+                        |> Chunk.consume backspaceChar
+                        |> Chunk.makeCurrent
+                        |> .status
+                        |> Expect.equal Current
+            , test "sets it to Current if it was Completed" <|
+                \() ->
+                    Chunk.init "a"
+                        |> Chunk.consume 'a'
+                        |> Chunk.makeCurrent
+                        |> .status
+                        |> Expect.equal Current
+            , test "leaves it as Current if that's what it was" <|
+                \() ->
+                    Chunk.init "a"
+                        |> Chunk.consume 'a'
+                        |> Chunk.makeCurrent
+                        |> Chunk.makeCurrent
+                        |> .status
+                        |> Expect.equal Current
+            , test "leaves it as End if that's what it was" <|
+                \() ->
+                    Chunk.end
+                        |> Chunk.makeCurrent
+                        |> .status
+                        |> Expect.equal End
+            , test "leaves it as Error 1 if that's what it was" <|
+                \() ->
+                    Chunk.init "a"
+                        |> Chunk.consume 'b'
+                        |> Chunk.makeCurrent
+                        |> .status
+                        |> Expect.equal (Error 1)
+            ]
         ]
