@@ -12,6 +12,7 @@
         "elm-lang/core": "4.0.5 <= v < 5.0.0",
         "elm-lang/html": "1.1.0 <= v < 2.0.0",
         "elm-lang/keyboard": "1.0.0 <= v < 2.0.0",
+        "tomjkidd/elm-multiway-tree-zipper": "1.10.0 <= v < 2.0.0",
         "wernerdegroot/listzipper": "2.0.0 <= v < 3.0.0",
         "elm-community/elm-test": "2.0.0 <= v < 3.0.0",
         "rtfeldman/node-test-runner": "2.0.0 <= v < 3.0.0"
