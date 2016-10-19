@@ -6,6 +6,9 @@ http://prismjs.com/
     - Prism.tokenize(text, grammar) #=> An array of strings, tokens (class Prism.Token) and other arrays
 
 
+https://www.speedtypingonline.com/typing-equations
+
+
 project setup
 =============
 

@@ -115,4 +115,56 @@ exercise =
                         |> Exercise.isComplete
                         |> Expect.equal True
             ]
+        , describe "accuracy"
+            [ test "returns 0% for a single character with nothing typed" <|
+                \() ->
+                    Exercise.init "a"
+                        |> Exercise.accuracy
+                        |> Expect.equal 0
+            , test "returns 100% for a single character with only a single bad character typed" <|
+                \() ->
+                    Exercise.init "a"
+                        |> Exercise.consume 'b'
+                        |> Exercise.accuracy
+                        |> Expect.equal 100
+            , test "returns 100% for a single character with a corrected single bad character typed" <|
+                \() ->
+                    Exercise.init "a"
+                        |> Exercise.consume 'b'
+                        |> Exercise.consume backspaceChar
+                        |> Exercise.consume 'a'
+                        |> Exercise.accuracy
+                        |> Expect.equal 50
+            , test "returns 100% for a single character typed correctly" <|
+                \() ->
+                    Exercise.init "a"
+                        |> Exercise.consume 'a'
+                        |> Exercise.accuracy
+                        |> Expect.equal 100
+            , test "returns 100% for a multiple characters typed correctly" <|
+                \() ->
+                    Exercise.init "abc"
+                        |> Exercise.consume 'a'
+                        |> Exercise.consume 'b'
+                        |> Exercise.consume 'c'
+                        |> Exercise.accuracy
+                        |> Expect.equal 100
+            , test "returns 66.66% for a 2 corrected mistakes in a total of 4" <|
+                \() ->
+                    Exercise.init "abcd"
+                        |> Exercise.consume 'a'
+                        |> Exercise.consume 'c'
+                        |> Exercise.consume backspaceChar
+                        |> Exercise.consume 'b'
+                        |> Exercise.consume 'c'
+                        |> Exercise.consume 'c'
+                        |> Exercise.consume backspaceChar
+                        |> Exercise.consume 'd'
+                        |> Exercise.accuracy
+                        |> (*) 100
+                        |> truncate
+                        |> toFloat
+                        |> (flip (/) 100.0)
+                        |> Expect.equal 66.66
+            ]
         ]

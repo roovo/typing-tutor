@@ -1,4 +1,4 @@
-module Exercise exposing (Exercise, consume, init, isComplete, steps)
+module Exercise exposing (Exercise, accuracy, consume, init, isComplete, steps)
 
 import Char
 import Html exposing (Html)
@@ -9,8 +9,13 @@ import Step exposing (Step, Direction(..), Status(..))
 import String
 
 
+backspaceChar =
+    (Char.fromCode 8)
+
+
 type alias Exercise =
     { steps : Maybe (Zipper Step)
+    , typedCharacterCount : Int
     }
 
 
@@ -23,6 +28,7 @@ init source =
             |> flip List.append [ Step.end ]
             |> Zipper.fromList
             |> Maybe.map setCurrentStatus
+    , typedCharacterCount = 0
     }
 
 
@@ -41,6 +47,7 @@ consume char exercise =
                 |> Maybe.map (updateCurrentStep char)
                 |> Maybe.map moveZipper
                 |> Maybe.map setCurrentStatus
+        , typedCharacterCount = addCharacter char exercise.typedCharacterCount
     }
 
 
@@ -53,8 +60,35 @@ isComplete exercise =
         |> Maybe.withDefault False
 
 
+accuracy : Exercise -> Float
+accuracy exercise =
+    if exercise.typedCharacterCount == 0 then
+        0
+    else
+        (toFloat <| exerciseCharacterCount exercise)
+            / (toFloat <| exercise.typedCharacterCount)
+            * 100
+
+
 
 -- PRIVATE FUNCTIONS
+
+
+exerciseCharacterCount : Exercise -> Int
+exerciseCharacterCount exercise =
+    exercise.steps
+        |> Maybe.map Zipper.toList
+        |> Maybe.map List.length
+        |> Maybe.map (flip (-) 1)
+        |> Maybe.withDefault 0
+
+
+addCharacter : Char -> Int -> Int
+addCharacter char currentCount =
+    if char == backspaceChar then
+        currentCount
+    else
+        currentCount + 1
 
 
 updateCurrentStep : Char -> Zipper Step -> Zipper Step
