@@ -1,10 +1,8 @@
 - improved readme
 - calculate statistics
-  - save the total number of mis-typed characters (excluding backspaces)
   - save tuples of (expected, actual) for mis-types
       - only do this for the first mistake if there are more
         than one mistakes in a row
-  - print accuracy
   - print which characters you got wrong
 - add a timer
   - print wpm
@@ -36,3 +34,6 @@ done
     && Chunk -> Step
     && Script.workbook -> Script.steps
     && Script.toList -> Script.steps
+- calculate statistics
+  - save the total number of mis-typed characters (excluding backspaces)
+  - print accuracy

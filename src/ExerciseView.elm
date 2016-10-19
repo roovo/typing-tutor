@@ -25,11 +25,29 @@ viewSteps exercise =
     ]
 
 
+percentage : Float -> String
+percentage float =
+    float
+        |> (*) 100
+        |> truncate
+        |> toFloat
+        |> (flip (/) 100.0)
+        |> toString
+        |> (flip (++) "%")
+
+
 viewResults : Exercise -> List (Html msg)
 viewResults exercise =
     if Exercise.isComplete exercise then
         [ Html.hr [] []
-        , Html.div [] [ Html.text "Finished - yay!!" ]
+        , Html.div []
+            [ Html.p [] [ Html.text "Finished" ]
+            , Html.p []
+                [ Html.text <|
+                    "Accuracy: "
+                        ++ (percentage <| Exercise.accuracy exercise)
+                ]
+            ]
         ]
     else
         []
