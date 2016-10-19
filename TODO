@@ -1,11 +1,32 @@
-- improved readme
+- would the (in particular) Step.consume logic be simplified
+  if I inserted a character into the zipper on error and then
+  deleted them with backspaces?  Exercise.moveZipper would prob
+  have to become updateZipper which in turn would insert or
+  remove items as well as move the zipper - prob
+      |> addIfError
+      |> moveZipper
+      |> removeIfCorrected
+- add a timer
+  - print wpm
+  - show the time mins : secs on screen whilst exercise is
+    in progress
+- does it work with multi-line strings?
+  - how to show <CR> (and don't count them
+    in character count)
+  - ignore whitespace at start of a line
+  - use code as the source
+- API & back end
+  - serve exercise from a back end
+  - save stats to a back end
+- navigation - meaningful urls
+- pretty-fication
+- show stats summaries
+  - graph over time of accuracy and wpm
 - calculate statistics
   - save tuples of (expected, actual) for mis-types
       - only do this for the first mistake if there are more
         than one mistakes in a row
   - print which characters you got wrong
-- add a timer
-  - print wpm
 
 
 done
@@ -37,3 +58,4 @@ done
 - calculate statistics
   - save the total number of mis-typed characters (excluding backspaces)
   - print accuracy
+- improved readme
