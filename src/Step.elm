@@ -1,4 +1,4 @@
-module Step exposing (Step, Direction(..), Status(..), consume, end, init, makeCurrent)
+module Step exposing (Step, Direction(..), Status(..), consume, end, error, init, makeCurrent)
 
 import Char
 import String
@@ -6,6 +6,10 @@ import String
 
 backspaceCode =
     8
+
+
+backspaceChar =
+    (Char.fromCode 8)
 
 
 type alias Step =
@@ -17,16 +21,17 @@ type alias Step =
 
 type Status
     = Waiting
-    | Error Int
+    | Error Char
     | Current
     | Completed
     | End
 
 
 type Direction
-    = Next
+    = None
+    | Next
     | Previous
-    | None
+    | NewBranch
 
 
 init : String -> Step
@@ -45,25 +50,23 @@ end =
     }
 
 
+error : Char -> Step
+error char =
+    { content = String.fromChar backspaceChar
+    , status = Error char
+    , moveTo = None
+    }
+
+
 consume : Char -> Step -> Step
 consume char step =
-    let
-        matchingChar =
-            step.content == String.fromChar char
+    if isBackspace char then
+        { step | status = Waiting, moveTo = Previous }
+    else if isMatching char step then
+        { step | status = Completed, moveTo = Next }
+    else
+        { step | status = Waiting, moveTo = NewBranch }
 
-        backSpace =
-            Char.toCode char == backspaceCode
-    in
-        if matchingChar && isErrorFree step then
-            { step | status = Completed, moveTo = Next }
-        else if step.status == End then
-            { step | status = End, moveTo = None }
-        else if backSpace && isErrorFree step then
-            { step | status = Waiting, moveTo = Previous }
-        else if backSpace then
-            { step | status = removeError step.status, moveTo = None }
-        else
-            { step | status = addError step.status, moveTo = None }
 
 
 makeCurrent : Step -> Step
@@ -76,6 +79,7 @@ makeCurrent step =
             { step | status = Current }
 
         _ ->
+            -- { step | status = Current }
             step
 
 
@@ -83,34 +87,11 @@ makeCurrent step =
 -- PRIVATE FUNCTIONS
 
 
-isErrorFree : Step -> Bool
-isErrorFree step =
-    case step.status of
-        Error _ ->
-            False
-
-        _ ->
-            True
+isMatching : Char -> Step -> Bool
+isMatching char step =
+    step.content == String.fromChar char
 
 
-addError : Status -> Status
-addError status =
-    case status of
-        Error count ->
-            Error (count + 1)
-
-        _ ->
-            Error 1
-
-
-removeError : Status -> Status
-removeError status =
-    case status of
-        Error 1 ->
-            Waiting
-
-        Error count ->
-            Error (count - 1)
-
-        _ ->
-            status
+isBackspace : Char -> Bool
+isBackspace char =
+    Char.toCode char == backspaceCode

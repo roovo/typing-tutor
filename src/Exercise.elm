@@ -34,13 +34,13 @@ init source =
 
 
 
-steps : Exercise -> List Step
+-- steps : Exercise -> List Step
 steps exercise =
     exercise.steps
         |> Zipper.goToRoot
         |> (Maybe.withDefault exercise.steps)
         |> fst
-        |> MultiwayTree.flatten
+        |> MultiwayTree.tuplesOfDatumAndFlatChildren
 
 
 consume : Char -> Exercise -> Exercise
@@ -49,7 +49,7 @@ consume char exercise =
         | steps =
             exercise.steps
                 |> updateCurrentStep char
-                |> moveZipper
+                |> moveZipper char
                 |> setCurrentStatus
         , typedCharacterCount = addCharacter char exercise.typedCharacterCount
     }
@@ -97,28 +97,62 @@ updateCurrentStep char steps =
         |> Maybe.withDefault steps
 
 
-moveZipper : Zipper Step -> Zipper Step
-moveZipper steps =
+branchNeedsAdding : Zipper Step -> Bool
+branchNeedsAdding steps =
+    steps
+        |> Zipper.datum
+        |> .moveTo
+        |> (==) NewBranch
+
+moveToLastChild : Zipper Step -> Zipper Step
+moveToLastChild steps =
+    let
+        childCount =
+            steps
+                |> fst
+                |> MultiwayTree.children
+                |> List.length
+    in
+        Zipper.goToChild (childCount - 1) steps
+            |> Maybe.withDefault steps
+
+
+addBranchIfError : Char -> Zipper Step -> Zipper Step
+addBranchIfError char steps =
+    if branchNeedsAdding steps then
+        Zipper.appendChild (Tree (Step.error char) []) steps
+            |> Maybe.map moveToLastChild
+            |> Maybe.withDefault steps
+    else
+        steps
+
+
+moveZipper : Char -> Zipper Step -> Zipper Step
+moveZipper char steps =
     let
         mover =
             steps
                 |> Zipper.datum
                 |> .moveTo
-                |> zipperMover
+                |> zipperMover char
     in
         steps
             |> mover
             |> Maybe.withDefault steps
+            |> addBranchIfError char
 
 
-zipperMover : Direction -> (Zipper Step -> Maybe (Zipper Step))
-zipperMover direction =
+zipperMover : Char -> Direction -> (Zipper Step -> Maybe (Zipper Step))
+zipperMover char direction =
     case direction of
         Next ->
             Zipper.goToChild 0
 
         Previous ->
             Zipper.goUp
+
+        -- NewBranch ->
+        --     Zipper.appendChild (Tree Step.error char [])
 
         _ ->
             Just
