@@ -4,9 +4,10 @@ import Step exposing (Step, Status(..))
 import Expect
 import Exercise exposing (Exercise)
 import Test exposing (..)
-import TestStep
-import TestSafeZipper
 import TestExercise
+import TestSafeZipper
+import TestStep
+import TestStopwatch
 
 
 all : Test
@@ -15,4 +16,5 @@ all =
         [ TestExercise.exercise
         , TestStep.step
         , TestSafeZipper.safeZipper
+        , TestStopwatch.stopwatch
         ]
