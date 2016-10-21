@@ -1,4 +1,14 @@
 - add a timer
+  - perhaps keep track of elapsed time in the outer application
+    and pass in the time since the last key press to Exercise.consume
+    The exercise can add these intervals up as the exercise
+    progresses and use the total in a wpm calcualtion.
+    Side advantages of doing it this way are the potential to
+    save this along with the character to track timing information for
+    different keys as well as feeding the time into a separate thing
+    which will display a stopwatch on the screen, plus the handling of
+    effectivly pausing the stopwatch if nothing is typed for a while
+    (the last 2 of which can be handled outside the exercise module).
   - print wpm
   - show the time mins : secs on screen whilst exercise is
     in progress
