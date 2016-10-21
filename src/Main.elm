@@ -65,7 +65,7 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case Debug.log "msg" msg of
+    case logWithoutTick msg of
         KeyPress keyCode ->
             ( { model
                 | exercise = Exercise.consume (Char.fromCode keyCode) model.exercise
@@ -85,6 +85,16 @@ update msg model =
 
         Tick elapsed ->
             ( model, Cmd.none )
+
+
+logWithoutTick : Msg -> Msg
+logWithoutTick msg =
+    case msg of
+        Tick time ->
+            msg
+
+        _ ->
+            Debug.log "msg" msg
 
 
 
