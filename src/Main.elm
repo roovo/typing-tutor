@@ -1,11 +1,13 @@
 module Main exposing (..)
 
+import AnimationFrame
 import Char
 import Exercise exposing (Exercise)
+import ExerciseView
 import Html exposing (Html)
 import Html.App
 import Keyboard exposing (KeyCode)
-import ExerciseView
+import Time exposing (Time)
 
 
 main =
@@ -26,6 +28,7 @@ subscriptions model =
     Sub.batch
         [ Keyboard.presses KeyPress
         , Keyboard.downs KeyDown
+        , AnimationFrame.diffs Tick
         ]
 
 
@@ -57,6 +60,7 @@ backspaceChar =
 type Msg
     = KeyPress KeyCode
     | KeyDown KeyCode
+    | Tick Time
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -78,6 +82,9 @@ update msg model =
                 )
             else
                 ( model, Cmd.none )
+
+        Tick elapsed ->
+            ( model, Cmd.none )
 
 
 
