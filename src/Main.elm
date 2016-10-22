@@ -7,6 +7,7 @@ import ExerciseView
 import Html exposing (Html)
 import Html.App
 import Keyboard exposing (KeyCode)
+import Stopwatch exposing (Stopwatch)
 import Time exposing (Time)
 
 
@@ -38,12 +39,14 @@ subscriptions model =
 
 type alias Model =
     { exercise : Exercise
+    , stopwatch : Stopwatch
     }
 
 
 init : String -> ( Model, Cmd Msg )
 init source =
     ( { exercise = Exercise.init source
+      , stopwatch = Stopwatch.init
       }
     , Cmd.none
     )
