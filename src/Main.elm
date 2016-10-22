@@ -86,12 +86,16 @@ update msg model =
 
 consumeChar : Int -> Model -> ( Model, Cmd Msg )
 consumeChar keyCode model =
-    ( { model
-        | exercise = Exercise.consume (Char.fromCode keyCode) model.exercise
-        , stopwatch = Stopwatch.start model.stopwatch
-      }
-    , Cmd.none
-    )
+    let
+        lappedWatch =
+            Stopwatch.lap model.stopwatch
+    in
+        ( { model
+            | exercise = Exercise.consume (Char.fromCode keyCode) model.exercise
+            , stopwatch = lappedWatch
+          }
+        , Cmd.none
+        )
 
 
 logWithoutTick : Msg -> Msg
