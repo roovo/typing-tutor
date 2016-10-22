@@ -46,7 +46,7 @@ type alias Model =
 
 init : String -> ( Model, Cmd Msg )
 init source =
-    ( { exercise = Exercise.init source
+    ( { exercise = (Debug.log "init.exercise" (Exercise.init source))
       , stopwatch = Stopwatch.init
       }
     , Cmd.none
