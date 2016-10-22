@@ -4,6 +4,8 @@ import Html exposing (Html)
 import Html.Attributes
 import Exercise exposing (Exercise)
 import Step exposing (Step, Status(..))
+import Stopwatch
+import Time exposing (Time)
 
 
 view : Exercise -> Html msg
@@ -25,17 +27,6 @@ viewSteps exercise =
     ]
 
 
-percentage : Float -> String
-percentage float =
-    float
-        |> (*) 100
-        |> truncate
-        |> toFloat
-        |> (flip (/) 100.0)
-        |> toString
-        |> (flip (++) "%")
-
-
 viewResults : Exercise -> List (Html msg)
 viewResults exercise =
     if Exercise.isComplete exercise then
@@ -46,11 +37,32 @@ viewResults exercise =
                 [ Html.text <|
                     "Accuracy: "
                         ++ (percentage <| Exercise.accuracy exercise)
+                , Html.br [] []
+                , Html.text <|
+                    "Speed: "
+                        ++ toString (round <| Exercise.wpm exercise)
+                        ++ " WPM"
+                , Html.br [] []
+                , Html.br [] []
+                , Html.text <|
+                    "Time taken: "
+                        ++ Stopwatch.view exercise.timeTaken
                 ]
             ]
         ]
     else
         []
+
+
+percentage : Float -> String
+percentage float =
+    float
+        |> (*) 100
+        |> truncate
+        |> toFloat
+        |> (flip (/) 100.0)
+        |> toString
+        |> (flip (++) "%")
 
 
 viewStep : Step -> Html msg

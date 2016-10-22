@@ -1,12 +1,12 @@
-- add a timer
-  - print wpm
-  - show the time mins : secs on screen whilst exercise is
-    in progress
 - does it work with multi-line strings?
   - how to show <CR> (and don't count them
     in character count)
   - ignore whitespace at start of a line
   - use code as the source
+  - have an example in a file
+- show characters wot are mis-typed as they are entered
+- auto-pause the timer if nothing typed for a while
+- track slow characters (as in slow to type)
 - API & back end
   - serve exercise from a back end
   - save stats to a back end
@@ -51,3 +51,7 @@ done
   - save the total number of mis-typed characters (excluding backspaces)
   - print accuracy
 - improved readme
+- add a timer
+  - show time taken
+  - print wpm
+  - show the time mins : secs on screen whilst exercise is in progress

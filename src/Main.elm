@@ -1,11 +1,14 @@
 module Main exposing (..)
 
+import AnimationFrame
 import Char
 import Exercise exposing (Exercise)
+import ExerciseView
 import Html exposing (Html)
 import Html.App
 import Keyboard exposing (KeyCode)
-import ExerciseView
+import Stopwatch exposing (Stopwatch)
+import Time exposing (Time)
 
 
 main =
@@ -26,6 +29,7 @@ subscriptions model =
     Sub.batch
         [ Keyboard.presses KeyPress
         , Keyboard.downs KeyDown
+        , AnimationFrame.diffs Tick
         ]
 
 
@@ -35,12 +39,14 @@ subscriptions model =
 
 type alias Model =
     { exercise : Exercise
+    , stopwatch : Stopwatch
     }
 
 
 init : String -> ( Model, Cmd Msg )
 init source =
     ( { exercise = Exercise.init source
+      , stopwatch = Stopwatch.init
       }
     , Cmd.none
     )
@@ -50,34 +56,60 @@ init source =
 -- UPDATE
 
 
-backspaceChar =
-    (Char.fromCode 8)
+backspaceCode =
+    8
 
 
 type Msg
     = KeyPress KeyCode
     | KeyDown KeyCode
+    | Tick Time
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case Debug.log "msg" msg of
+    case logWithoutTick msg of
         KeyPress keyCode ->
-            ( { model
-                | exercise = Exercise.consume (Char.fromCode keyCode) model.exercise
-              }
+            consumeChar keyCode model
+
+        KeyDown keyCode ->
+            if keyCode == backspaceCode then
+                consumeChar backspaceCode model
+            else
+                ( model, Cmd.none )
+
+        Tick elapsed ->
+            ( { model | stopwatch = Stopwatch.tick elapsed model.stopwatch }
             , Cmd.none
             )
 
-        KeyDown keyCode ->
-            if keyCode == 8 then
-                ( { model
-                    | exercise = Exercise.consume backspaceChar model.exercise
-                  }
-                , Cmd.none
-                )
-            else
-                ( model, Cmd.none )
+
+consumeChar : Int -> Model -> ( Model, Cmd Msg )
+consumeChar keyCode model =
+    let
+        lappedWatch =
+            Stopwatch.lap model.stopwatch
+    in
+        ( { model
+            | exercise =
+                Exercise.consume
+                    (Char.fromCode keyCode)
+                    (Stopwatch.lastLap lappedWatch)
+                    model.exercise
+            , stopwatch = lappedWatch
+          }
+        , Cmd.none
+        )
+
+
+logWithoutTick : Msg -> Msg
+logWithoutTick msg =
+    case msg of
+        Tick time ->
+            msg
+
+        _ ->
+            Debug.log "msg" msg
 
 
 
@@ -91,7 +123,20 @@ view model =
         [ Html.code
             []
             [ ExerciseView.view model.exercise
+            , Html.hr [] []
+            , stopwatchView model
             ]
-        , Html.hr [] []
-        , Html.text <| toString model
         ]
+
+
+stopwatchView : Model -> Html Msg
+stopwatchView model =
+    case Exercise.isComplete model.exercise of
+        True ->
+            Html.text ""
+
+        False ->
+            Html.p []
+                [ Html.text <|
+                    Stopwatch.view model.stopwatch.time
+                ]

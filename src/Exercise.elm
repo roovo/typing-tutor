@@ -1,4 +1,14 @@
-module Exercise exposing (Exercise, accuracy, consume, init, isComplete, steps)
+module Exercise
+    exposing
+        ( Exercise
+        , accuracy
+        , consume
+        , init
+        , isComplete
+        , steps
+        , timeTaken
+        , wpm
+        )
 
 import Char
 import Html exposing (Html)
@@ -7,6 +17,7 @@ import List.Zipper as Zipper exposing (Zipper)
 import SafeZipper
 import Step exposing (Step, Direction(..), Status(..))
 import String
+import Time exposing (Time)
 
 
 backspaceChar =
@@ -16,6 +27,7 @@ backspaceChar =
 type alias Exercise =
     { steps : Maybe (Zipper Step)
     , typedCharacterCount : Int
+    , timeTaken : Float
     }
 
 
@@ -29,6 +41,7 @@ init source =
             |> Zipper.fromList
             |> Maybe.map setCurrentStatus
     , typedCharacterCount = 0
+    , timeTaken = 0
     }
 
 
@@ -39,16 +52,22 @@ steps exercise =
         |> Maybe.withDefault []
 
 
-consume : Char -> Exercise -> Exercise
-consume char exercise =
-    { exercise
-        | steps =
-            exercise.steps
-                |> Maybe.map (updateCurrentStep char)
-                |> Maybe.map moveZipper
-                |> Maybe.map setCurrentStatus
-        , typedCharacterCount = addCharacter char exercise.typedCharacterCount
-    }
+consume : Char -> Time -> Exercise -> Exercise
+consume char timeTaken exercise =
+    case isComplete exercise of
+        True ->
+            exercise
+
+        False ->
+            { exercise
+                | steps =
+                    exercise.steps
+                        |> Maybe.map (updateCurrentStep char)
+                        |> Maybe.map moveZipper
+                        |> Maybe.map setCurrentStatus
+                , typedCharacterCount = addCharacter char exercise.typedCharacterCount
+                , timeTaken = exercise.timeTaken + timeTaken
+            }
 
 
 isComplete : Exercise -> Bool
@@ -60,6 +79,11 @@ isComplete exercise =
         |> Maybe.withDefault False
 
 
+timeTaken : Exercise -> Time
+timeTaken exercise =
+    exercise.timeTaken
+
+
 accuracy : Exercise -> Float
 accuracy exercise =
     if exercise.typedCharacterCount == 0 then
@@ -68,6 +92,18 @@ accuracy exercise =
         (toFloat <| exerciseCharacterCount exercise)
             / (toFloat <| exercise.typedCharacterCount)
             * 100
+
+
+wpm : Exercise -> Float
+wpm exercise =
+    let
+        timeMins =
+            timeTaken exercise / 60000
+    in
+        if timeMins == 0 then
+            0
+        else
+            (toFloat (exerciseCharacterCount exercise) / 5) / timeMins
 
 
 
