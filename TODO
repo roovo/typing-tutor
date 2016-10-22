@@ -1,6 +1,3 @@
-- add a timer
-  - show the time mins : secs on screen whilst exercise is
-    in progress
 - does it work with multi-line strings?
   - how to show <CR> (and don't count them
     in character count)
@@ -55,3 +52,4 @@ done
 - add a timer
   - show time taken
   - print wpm
+  - show the time mins : secs on screen whilst exercise is in progress

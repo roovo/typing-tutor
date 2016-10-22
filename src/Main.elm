@@ -123,5 +123,20 @@ view model =
         [ Html.code
             []
             [ ExerciseView.view model.exercise
+            , Html.hr [] []
+            , stopwatchView model
             ]
         ]
+
+
+stopwatchView : Model -> Html Msg
+stopwatchView model =
+    case Exercise.isComplete model.exercise of
+        True ->
+            Html.text ""
+
+        False ->
+            Html.p []
+                [ Html.text <|
+                    Stopwatch.view model.stopwatch.time
+                ]
