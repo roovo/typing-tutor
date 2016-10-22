@@ -91,7 +91,11 @@ consumeChar keyCode model =
             Stopwatch.lap model.stopwatch
     in
         ( { model
-            | exercise = Exercise.consume (Char.fromCode keyCode) model.exercise
+            | exercise =
+                Exercise.consume
+                    (Char.fromCode keyCode)
+                    (Stopwatch.lastLap lappedWatch)
+                    model.exercise
             , stopwatch = lappedWatch
           }
         , Cmd.none

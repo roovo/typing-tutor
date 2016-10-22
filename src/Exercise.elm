@@ -7,6 +7,7 @@ import List.Zipper as Zipper exposing (Zipper)
 import SafeZipper
 import Step exposing (Step, Direction(..), Status(..))
 import String
+import Time exposing (Time)
 
 
 backspaceChar =
@@ -39,8 +40,8 @@ steps exercise =
         |> Maybe.withDefault []
 
 
-consume : Char -> Exercise -> Exercise
-consume char exercise =
+consume : Char -> Time -> Exercise -> Exercise
+consume char timeTaken exercise =
     { exercise
         | steps =
             exercise.steps

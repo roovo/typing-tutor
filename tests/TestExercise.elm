@@ -35,7 +35,7 @@ exercise =
             [ test "advances to the next character in the string" <|
                 \() ->
                     Exercise.init "abc"
-                        |> Exercise.consume 'a'
+                        |> Exercise.consume 'a' 0
                         |> Exercise.steps
                         |> Expect.equal
                             [ { content = "a", status = Completed, moveTo = Next }
@@ -46,8 +46,8 @@ exercise =
             , test "won't advance if the wrong character is given" <|
                 \() ->
                     Exercise.init "abc"
-                        |> Exercise.consume 'a'
-                        |> Exercise.consume 'c'
+                        |> Exercise.consume 'a' 0
+                        |> Exercise.consume 'c' 0
                         |> Exercise.steps
                         |> Expect.equal
                             [ { content = "a", status = Completed, moveTo = Next }
@@ -60,7 +60,7 @@ exercise =
             [ test "does nothing if at the start of a new string" <|
                 \() ->
                     Exercise.init "abc"
-                        |> Exercise.consume backspaceChar
+                        |> Exercise.consume backspaceChar 0
                         |> Exercise.steps
                         |> Expect.equal
                             [ { content = "a", status = Current, moveTo = Previous }
@@ -71,9 +71,9 @@ exercise =
             , test "goes back a character if beyond the start" <|
                 \() ->
                     Exercise.init "abc"
-                        |> Exercise.consume 'a'
-                        |> Exercise.consume 'b'
-                        |> Exercise.consume backspaceChar
+                        |> Exercise.consume 'a' 0
+                        |> Exercise.consume 'b' 0
+                        |> Exercise.consume backspaceChar 0
                         |> Exercise.steps
                         |> Expect.equal
                             [ { content = "a", status = Completed, moveTo = Next }
@@ -84,9 +84,9 @@ exercise =
             , test "resets a single error" <|
                 \() ->
                     Exercise.init "abc"
-                        |> Exercise.consume 'a'
-                        |> Exercise.consume 'c'
-                        |> Exercise.consume backspaceChar
+                        |> Exercise.consume 'a' 0
+                        |> Exercise.consume 'c' 0
+                        |> Exercise.consume backspaceChar 0
                         |> Exercise.steps
                         |> Expect.equal
                             [ { content = "a", status = Completed, moveTo = Next }
@@ -104,14 +104,14 @@ exercise =
             , test "returns False with an error" <|
                 \() ->
                     Exercise.init "a"
-                        |> Exercise.consume 'b'
+                        |> Exercise.consume 'b' 0
                         |> Exercise.isComplete
                         |> Expect.equal False
             , test "returns True if at the end" <|
                 \() ->
                     Exercise.init "ab"
-                        |> Exercise.consume 'a'
-                        |> Exercise.consume 'b'
+                        |> Exercise.consume 'a' 0
+                        |> Exercise.consume 'b' 0
                         |> Exercise.isComplete
                         |> Expect.equal True
             ]
@@ -124,42 +124,42 @@ exercise =
             , test "returns 100% for a single character with only a single bad character typed" <|
                 \() ->
                     Exercise.init "a"
-                        |> Exercise.consume 'b'
+                        |> Exercise.consume 'b' 0
                         |> Exercise.accuracy
                         |> Expect.equal 100
             , test "returns 100% for a single character with a corrected single bad character typed" <|
                 \() ->
                     Exercise.init "a"
-                        |> Exercise.consume 'b'
-                        |> Exercise.consume backspaceChar
-                        |> Exercise.consume 'a'
+                        |> Exercise.consume 'b' 0
+                        |> Exercise.consume backspaceChar 0
+                        |> Exercise.consume 'a' 0
                         |> Exercise.accuracy
                         |> Expect.equal 50
             , test "returns 100% for a single character typed correctly" <|
                 \() ->
                     Exercise.init "a"
-                        |> Exercise.consume 'a'
+                        |> Exercise.consume 'a' 0
                         |> Exercise.accuracy
                         |> Expect.equal 100
             , test "returns 100% for a multiple characters typed correctly" <|
                 \() ->
                     Exercise.init "abc"
-                        |> Exercise.consume 'a'
-                        |> Exercise.consume 'b'
-                        |> Exercise.consume 'c'
+                        |> Exercise.consume 'a' 0
+                        |> Exercise.consume 'b' 0
+                        |> Exercise.consume 'c' 0
                         |> Exercise.accuracy
                         |> Expect.equal 100
             , test "returns 66.66% for a 2 corrected mistakes in a total of 4" <|
                 \() ->
                     Exercise.init "abcd"
-                        |> Exercise.consume 'a'
-                        |> Exercise.consume 'c'
-                        |> Exercise.consume backspaceChar
-                        |> Exercise.consume 'b'
-                        |> Exercise.consume 'c'
-                        |> Exercise.consume 'c'
-                        |> Exercise.consume backspaceChar
-                        |> Exercise.consume 'd'
+                        |> Exercise.consume 'a' 0
+                        |> Exercise.consume 'c' 0
+                        |> Exercise.consume backspaceChar 0
+                        |> Exercise.consume 'b' 0
+                        |> Exercise.consume 'c' 0
+                        |> Exercise.consume 'c' 0
+                        |> Exercise.consume backspaceChar 0
+                        |> Exercise.consume 'd' 0
                         |> Exercise.accuracy
                         |> (*) 100
                         |> truncate
