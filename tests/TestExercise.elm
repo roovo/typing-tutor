@@ -115,6 +115,22 @@ exercise =
                         |> Exercise.isComplete
                         |> Expect.equal True
             ]
+        , describe "timeTaken"
+            [ test "returns 0 with nothing typed" <|
+                \() ->
+                    Exercise.init "a"
+                        |> Exercise.timeTaken
+                        |> Expect.equal 0
+            , test "returns the sum of the times taken for each consumed character" <|
+                \() ->
+                    Exercise.init "abc"
+                        |> Exercise.consume 'a' 10
+                        |> Exercise.consume 'c' 22
+                        |> Exercise.consume backspaceChar 3
+                        |> Exercise.consume 'b' 15
+                        |> Exercise.timeTaken
+                        |> Expect.equal 50
+            ]
         , describe "accuracy"
             [ test "returns 0% for a single character with nothing typed" <|
                 \() ->

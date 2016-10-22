@@ -1,4 +1,4 @@
-module Exercise exposing (Exercise, accuracy, consume, init, isComplete, steps)
+module Exercise exposing (Exercise, accuracy, consume, init, isComplete, steps, timeTaken)
 
 import Char
 import Html exposing (Html)
@@ -17,6 +17,7 @@ backspaceChar =
 type alias Exercise =
     { steps : Maybe (Zipper Step)
     , typedCharacterCount : Int
+    , timeTaken : Float
     }
 
 
@@ -30,6 +31,7 @@ init source =
             |> Zipper.fromList
             |> Maybe.map setCurrentStatus
     , typedCharacterCount = 0
+    , timeTaken = 0
     }
 
 
@@ -49,6 +51,7 @@ consume char timeTaken exercise =
                 |> Maybe.map moveZipper
                 |> Maybe.map setCurrentStatus
         , typedCharacterCount = addCharacter char exercise.typedCharacterCount
+        , timeTaken = exercise.timeTaken + timeTaken
     }
 
 
@@ -59,6 +62,11 @@ isComplete exercise =
         |> Maybe.map .status
         |> Maybe.map ((==) End)
         |> Maybe.withDefault False
+
+
+timeTaken : Exercise -> Time
+timeTaken exercise =
+    exercise.timeTaken
 
 
 accuracy : Exercise -> Float
