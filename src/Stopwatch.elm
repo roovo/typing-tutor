@@ -1,4 +1,4 @@
-module Stopwatch exposing (Stopwatch, init, lap, laps, reset, start, stop, tick, time)
+module Stopwatch exposing (Stopwatch, init, lap, laps, lastLap, reset, start, stop, tick, time)
 
 import Time exposing (Time)
 
@@ -74,6 +74,13 @@ lap stopwatch =
 laps : Stopwatch -> List Time
 laps stopwatch =
     List.reverse stopwatch.laps
+
+
+lastLap : Stopwatch -> Time
+lastLap stopwatch =
+    stopwatch.laps
+        |> List.head
+        |> Maybe.withDefault 0
 
 
 

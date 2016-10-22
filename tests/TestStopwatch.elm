@@ -119,5 +119,24 @@ stopwatch =
                         |> Stopwatch.lap
                         |> Stopwatch.laps
                         |> Expect.equal [ 10, 42 ]
+            , test "returns 0 as lastLap if there are no laps" <|
+                \() ->
+                    Stopwatch.init
+                        |> Stopwatch.tick 1000
+                        |> Stopwatch.start
+                        |> Stopwatch.tick 53
+                        |> Stopwatch.lastLap
+                        |> Expect.equal 0
+            , test "returns the lastLap if there are laps" <|
+                \() ->
+                    Stopwatch.init
+                        |> Stopwatch.tick 1000
+                        |> Stopwatch.start
+                        |> Stopwatch.tick 53
+                        |> Stopwatch.lap
+                        |> Stopwatch.tick 10
+                        |> Stopwatch.lap
+                        |> Stopwatch.lastLap
+                        |> Expect.equal 10
             ]
         ]
