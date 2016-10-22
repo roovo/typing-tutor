@@ -56,8 +56,8 @@ init source =
 -- UPDATE
 
 
-backspaceChar =
-    (Char.fromCode 8)
+backspaceCode =
+    8
 
 
 type Msg
@@ -70,19 +70,11 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case logWithoutTick msg of
         KeyPress keyCode ->
-            ( { model
-                | exercise = Exercise.consume (Char.fromCode keyCode) model.exercise
-              }
-            , Cmd.none
-            )
+            consumeChar keyCode model
 
         KeyDown keyCode ->
-            if keyCode == 8 then
-                ( { model
-                    | exercise = Exercise.consume backspaceChar model.exercise
-                  }
-                , Cmd.none
-                )
+            if keyCode == backspaceCode then
+                consumeChar backspaceCode model
             else
                 ( model, Cmd.none )
 
@@ -90,6 +82,16 @@ update msg model =
             ( { model | stopwatch = Stopwatch.tick elapsed model.stopwatch }
             , Cmd.none
             )
+
+
+consumeChar : Int -> Model -> ( Model, Cmd Msg )
+consumeChar keyCode model =
+    ( { model
+        | exercise = Exercise.consume (Char.fromCode keyCode) model.exercise
+        , stopwatch = Stopwatch.start model.stopwatch
+      }
+    , Cmd.none
+    )
 
 
 logWithoutTick : Msg -> Msg
