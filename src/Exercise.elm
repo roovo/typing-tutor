@@ -1,4 +1,14 @@
-module Exercise exposing (Exercise, accuracy, consume, init, isComplete, steps, timeTaken)
+module Exercise
+    exposing
+        ( Exercise
+        , accuracy
+        , consume
+        , init
+        , isComplete
+        , steps
+        , timeTaken
+        , wpm
+        )
 
 import Char
 import Html exposing (Html)
@@ -82,6 +92,18 @@ accuracy exercise =
         (toFloat <| exerciseCharacterCount exercise)
             / (toFloat <| exercise.typedCharacterCount)
             * 100
+
+
+wpm : Exercise -> Float
+wpm exercise =
+    let
+        timeMins =
+            timeTaken exercise / 60000
+    in
+        if timeMins == 0 then
+            0
+        else
+            (toFloat (exerciseCharacterCount exercise) / 5) / timeMins
 
 
 

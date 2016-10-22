@@ -139,6 +139,30 @@ exercise =
                         |> Exercise.timeTaken
                         |> Expect.equal 32
             ]
+        , describe "wpm"
+            [ test "returns 0 with nothing typed" <|
+                \() ->
+                    Exercise.init "a"
+                        |> Exercise.wpm
+                        |> Expect.equal 0
+            , test "a word is defined as 5 characters (incl spaces) in the target string" <|
+                \() ->
+                    Exercise.init "abc def gh"
+                        |> Exercise.consume 'a' 10000
+                        |> Exercise.consume 'b' 10000
+                        |> Exercise.consume 'c' 10000
+                        |> Exercise.consume ' ' 10000
+                        |> Exercise.consume 'd' 10000
+                        |> Exercise.consume 'd' 10000
+                        |> Exercise.consume backspaceChar 10000
+                        |> Exercise.consume 'e' 10000
+                        |> Exercise.consume 'f' 10000
+                        |> Exercise.consume ' ' 10000
+                        |> Exercise.consume 'g' 10000
+                        |> Exercise.consume 'h' 10000
+                        |> Exercise.wpm
+                        |> Expect.equal 1
+            ]
         , describe "accuracy"
             [ test "returns 0% for a single character with nothing typed" <|
                 \() ->
