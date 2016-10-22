@@ -14,10 +14,22 @@ step : Test
 step =
     describe "Step"
         [ describe "init"
-            [ test "returns a chunk with a status of Waiting and no cursorDelta" <|
+            [ test "returns a step with a status of Waiting and moveTo None" <|
                 \() ->
                     Step.init "foo"
                         |> Expect.equal { content = "foo", status = Waiting, moveTo = None }
+            ]
+        , describe "end"
+            [ test "returns an empty step with a status of End and moveTo None" <|
+                \() ->
+                    Step.end
+                        |> Expect.equal { content = "", status = End, moveTo = None }
+            ]
+        , describe "skip"
+            [ test "returns a step with a status of Skip and moveTo None" <|
+                \() ->
+                    Step.skip "foo"
+                        |> Expect.equal { content = "foo", status = Skip, moveTo = None }
             ]
         , describe "consume"
             [ describe "no Errors"

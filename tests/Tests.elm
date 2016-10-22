@@ -5,6 +5,7 @@ import Expect
 import Exercise exposing (Exercise)
 import Test exposing (..)
 import TestExercise
+import TestExerciseParser
 import TestSafeZipper
 import TestStep
 import TestStopwatch
@@ -17,4 +18,5 @@ all =
         , TestStep.step
         , TestSafeZipper.safeZipper
         , TestStopwatch.stopwatch
+        , TestExerciseParser.exerciseParser
         ]

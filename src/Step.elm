@@ -1,4 +1,4 @@
-module Step exposing (Step, Direction(..), Status(..), consume, end, init, makeCurrent)
+module Step exposing (Step, Direction(..), Status(..), consume, end, init, makeCurrent, skip)
 
 import Char
 import String
@@ -20,6 +20,7 @@ type Status
     | Error Int
     | Current
     | Completed
+    | Skip
     | End
 
 
@@ -33,6 +34,14 @@ init : String -> Step
 init string =
     { content = string
     , status = Waiting
+    , moveTo = None
+    }
+
+
+skip : String -> Step
+skip string =
+    { content = string
+    , status = Skip
     , moveTo = None
     }
 
