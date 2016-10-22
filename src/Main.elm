@@ -87,7 +87,9 @@ update msg model =
                 ( model, Cmd.none )
 
         Tick elapsed ->
-            ( model, Cmd.none )
+            ( { model | stopwatch = Stopwatch.tick elapsed model.stopwatch }
+            , Cmd.none
+            )
 
 
 logWithoutTick : Msg -> Msg
