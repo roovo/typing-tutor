@@ -9,20 +9,20 @@ stopwatch : Test
 stopwatch =
     describe "Stopwatch"
         [ describe "basic operation"
-            [ test "has an elapsed time of zero if not started" <|
+            [ test "has a time of zero if not started" <|
                 \() ->
                     Stopwatch.init
                         |> Stopwatch.tick 1000
-                        |> Stopwatch.elapsed
+                        |> Stopwatch.time
                         |> Expect.equal 0
-            , test "has an elapsed time of total ticks since started" <|
+            , test "has a time of total ticks since started" <|
                 \() ->
                     Stopwatch.init
                         |> Stopwatch.tick 1000
                         |> Stopwatch.start
                         |> Stopwatch.tick 53
                         |> Stopwatch.tick 10
-                        |> Stopwatch.elapsed
+                        |> Stopwatch.time
                         |> Expect.equal 63
             , test "starting when already started has no effect" <|
                 \() ->
@@ -33,7 +33,7 @@ stopwatch =
                         |> Stopwatch.start
                         |> Stopwatch.tick 10
                         |> Stopwatch.start
-                        |> Stopwatch.elapsed
+                        |> Stopwatch.time
                         |> Expect.equal 63
             , test "can be stopped" <|
                 \() ->
@@ -43,7 +43,7 @@ stopwatch =
                         |> Stopwatch.tick 53
                         |> Stopwatch.stop
                         |> Stopwatch.tick 10
-                        |> Stopwatch.elapsed
+                        |> Stopwatch.time
                         |> Expect.equal 53
             , test "can be restarted" <|
                 \() ->
@@ -54,7 +54,7 @@ stopwatch =
                         |> Stopwatch.stop
                         |> Stopwatch.start
                         |> Stopwatch.tick 10
-                        |> Stopwatch.elapsed
+                        |> Stopwatch.time
                         |> Expect.equal 63
             , test "can be reset" <|
                 \() ->
@@ -66,7 +66,7 @@ stopwatch =
                         |> Stopwatch.reset
                         |> Stopwatch.start
                         |> Stopwatch.tick 10
-                        |> Stopwatch.elapsed
+                        |> Stopwatch.time
                         |> Expect.equal 10
             ]
         , describe "lap timer"

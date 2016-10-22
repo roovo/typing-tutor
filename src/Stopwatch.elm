@@ -1,11 +1,11 @@
-module Stopwatch exposing (Stopwatch, elapsed, init, lap, laps, reset, start, stop, tick)
+module Stopwatch exposing (Stopwatch, init, lap, laps, reset, start, stop, tick, time)
 
 import Time exposing (Time)
 
 
 type alias Stopwatch =
     { laps : List Time
-    , elapsed : Time
+    , time : Time
     , status : Status
     }
 
@@ -18,7 +18,7 @@ type Status
 init : Stopwatch
 init =
     { laps = []
-    , elapsed = 0
+    , time = 0
     , status = Stopped
     }
 
@@ -36,7 +36,7 @@ stop stopwatch =
 reset : Stopwatch -> Stopwatch
 reset stopwatch =
     { stopwatch
-      | elapsed = 0
+      | time = 0
       , laps = []
     }
 
@@ -47,17 +47,17 @@ tick elapsedTime stopwatch =
         elapseIfRuning =
             case stopwatch.status of
                 Stopped ->
-                    stopwatch.elapsed
+                    stopwatch.time
 
                 Running ->
-                    stopwatch.elapsed + elapsedTime
+                    stopwatch.time + elapsedTime
     in
-        { stopwatch | elapsed = elapseIfRuning }
+        { stopwatch | time = elapseIfRuning }
 
 
-elapsed : Stopwatch -> Time
-elapsed stopwatch =
-    stopwatch.elapsed
+time : Stopwatch -> Time
+time stopwatch =
+    stopwatch.time
 
 
 lap : Stopwatch -> Stopwatch
@@ -69,7 +69,7 @@ lap stopwatch =
                     stopwatch.laps
 
                 Running ->
-                    stopwatch.elapsed
+                    stopwatch.time
                         |> (flip (-) (lappedTime stopwatch))
                         |> (flip (::) stopwatch.laps)
 
