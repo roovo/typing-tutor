@@ -130,6 +130,14 @@ exercise =
                         |> Exercise.consume 'b' 15
                         |> Exercise.timeTaken
                         |> Expect.equal 50
+            , test "stops summing when the exercise is complete" <|
+                \() ->
+                    Exercise.init "ab"
+                        |> Exercise.consume 'a' 10
+                        |> Exercise.consume 'b' 22
+                        |> Exercise.consume 'b' 15
+                        |> Exercise.timeTaken
+                        |> Expect.equal 32
             ]
         , describe "accuracy"
             [ test "returns 0% for a single character with nothing typed" <|

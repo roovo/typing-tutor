@@ -44,15 +44,20 @@ steps exercise =
 
 consume : Char -> Time -> Exercise -> Exercise
 consume char timeTaken exercise =
-    { exercise
-        | steps =
-            exercise.steps
-                |> Maybe.map (updateCurrentStep char)
-                |> Maybe.map moveZipper
-                |> Maybe.map setCurrentStatus
-        , typedCharacterCount = addCharacter char exercise.typedCharacterCount
-        , timeTaken = exercise.timeTaken + timeTaken
-    }
+    case isComplete exercise of
+        True ->
+            exercise
+
+        False ->
+            { exercise
+                | steps =
+                    exercise.steps
+                        |> Maybe.map (updateCurrentStep char)
+                        |> Maybe.map moveZipper
+                        |> Maybe.map setCurrentStatus
+                , typedCharacterCount = addCharacter char exercise.typedCharacterCount
+                , timeTaken = exercise.timeTaken + timeTaken
+            }
 
 
 isComplete : Exercise -> Bool
