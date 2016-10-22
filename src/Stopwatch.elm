@@ -1,70 +1,88 @@
-module Stopwatch exposing (Stopwatch, elapsed, init, reset, start, stop, tick)
+module Stopwatch exposing (Stopwatch, elapsed, init, lap, laps, reset, start, stop, tick)
 
 import Time exposing (Time)
 
 
 type alias Stopwatch =
     { laps : List Time
-    , elapsed : Clock
+    , elapsed : Time
+    , status : Status
     }
 
 
-type Clock
-    = Stopped Time
-    | Running Time
+type Status
+    = Stopped
+    | Running
 
 
 init : Stopwatch
 init =
     { laps = []
-    , elapsed = Stopped 0
+    , elapsed = 0
+    , status = Stopped
     }
 
 
 start : Stopwatch -> Stopwatch
 start stopwatch =
-    { stopwatch | elapsed = Running (elapsedTime stopwatch) }
+    { stopwatch | status = Running }
 
 
 stop : Stopwatch -> Stopwatch
 stop stopwatch =
-    { stopwatch | elapsed = Stopped (elapsedTime stopwatch) }
+    { stopwatch | status = Stopped }
 
 
 reset : Stopwatch -> Stopwatch
 reset stopwatch =
-    { stopwatch | elapsed = Stopped 0 }
+    { stopwatch
+      | elapsed = 0
+      , laps = []
+    }
 
 
 tick : Time -> Stopwatch -> Stopwatch
-tick time stopwatch =
-    { stopwatch | elapsed = elapsedTick time stopwatch }
+tick elapsedTime stopwatch =
+    let
+        elapseIfRuning =
+            case stopwatch.status of
+                Stopped ->
+                    stopwatch.elapsed
+
+                Running ->
+                    stopwatch.elapsed + elapsedTime
+    in
+        { stopwatch | elapsed = elapseIfRuning }
 
 
 elapsed : Stopwatch -> Time
 elapsed stopwatch =
-    elapsedTime stopwatch
+    stopwatch.elapsed
 
 
+lap : Stopwatch -> Stopwatch
+lap stopwatch =
+    let
+        addLapIfRunning =
+            case stopwatch.status of
+                Stopped ->
+                    stopwatch.laps
 
--- PRIVATE FUNCTIONS
+                Running ->
+                    stopwatch.elapsed
+                        |> (flip (-) (lappedTime stopwatch))
+                        |> (flip (::) stopwatch.laps)
+
+    in
+        { stopwatch | laps = addLapIfRunning }
 
 
-elapsedTick : Time -> Stopwatch -> Clock
-elapsedTick elapsedTime stopwatch =
-    case stopwatch.elapsed of
-        Stopped time ->
-            stopwatch.elapsed
-
-        Running time ->
-            Running (time + elapsedTime)
+laps : Stopwatch -> List Time
+laps stopwatch =
+    List.reverse stopwatch.laps
 
 
-elapsedTime : Stopwatch -> Time
-elapsedTime stopwatch =
-    case stopwatch.elapsed of
-        Stopped time ->
-            time
-
-        Running time ->
-            time
+lappedTime : Stopwatch -> Time
+lappedTime stopwatch =
+    stopwatch.laps
+        |> List.sum

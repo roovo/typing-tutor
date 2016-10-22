@@ -69,4 +69,44 @@ stopwatch =
                         |> Stopwatch.elapsed
                         |> Expect.equal 10
             ]
+        , describe "lap timer"
+            [ test "no laps if lap timer not used" <|
+                \() ->
+                    Stopwatch.init
+                        |> Stopwatch.tick 1000
+                        |> Stopwatch.start
+                        |> Stopwatch.tick 53
+                        |> Stopwatch.tick 10
+                        |> Stopwatch.laps
+                        |> Expect.equal []
+            , test "saves lap times when used" <|
+                \() ->
+                    Stopwatch.init
+                        |> Stopwatch.tick 1000
+                        |> Stopwatch.start
+                        |> Stopwatch.tick 53
+                        |> Stopwatch.lap
+                        |> Stopwatch.tick 10
+                        |> Stopwatch.tick 10
+                        |> Stopwatch.lap
+                        |> Stopwatch.tick 42
+                        |> Stopwatch.lap
+                        |> Stopwatch.laps
+                        |> Expect.equal [ 53, 20, 42 ]
+            , test "reset clears lap times" <|
+                \() ->
+                    Stopwatch.init
+                        |> Stopwatch.tick 1000
+                        |> Stopwatch.start
+                        |> Stopwatch.tick 53
+                        |> Stopwatch.lap
+                        |> Stopwatch.tick 10
+                        |> Stopwatch.reset
+                        |> Stopwatch.tick 10
+                        |> Stopwatch.lap
+                        |> Stopwatch.tick 42
+                        |> Stopwatch.lap
+                        |> Stopwatch.laps
+                        |> Expect.equal [ 10, 42 ]
+            ]
         ]
