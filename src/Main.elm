@@ -109,6 +109,4 @@ view model =
             []
             [ ExerciseView.view model.exercise
             ]
-        , Html.hr [] []
-        , Html.text <| toString model
         ]
