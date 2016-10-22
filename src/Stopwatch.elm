@@ -107,7 +107,7 @@ view : Time -> String
 view time =
     let
         secs =
-            round <| (time / 1000) `fmod` 60
+            ((round <| time) // 1000) % 60
 
         mins =
             floor <| time / 60000
@@ -123,15 +123,6 @@ lappedTime : Stopwatch -> Time
 lappedTime stopwatch =
     stopwatch.laps
         |> List.sum
-
-
-fmod : Float -> Int -> Float
-fmod f n =
-    let
-        integer =
-            floor f
-    in
-        toFloat (integer % n) + f - toFloat integer
 
 
 addLeadingZero : Int -> String

@@ -144,14 +144,22 @@ stopwatch =
                 \() ->
                     Stopwatch.view 0
                         |> Expect.equal "00:00"
-            , test "is 00:05 if the time is 4748.97312" <|
+            , test "is 00:04 if the time is 4748.97312" <|
                 \() ->
                     Stopwatch.view 4748.97312
-                        |> Expect.equal "00:05"
-            , test "is 02:05 if the time is 124748.97312" <|
+                        |> Expect.equal "00:04"
+            , test "is 00:59 if the time is 59999" <|
+                \() ->
+                    Stopwatch.view 59999
+                        |> Expect.equal "00:59"
+            , test "is 01:00 if the time is 60000" <|
+                \() ->
+                    Stopwatch.view 60000
+                        |> Expect.equal "01:00"
+            , test "is 02:04 if the time is 124748.97312" <|
                 \() ->
                     Stopwatch.view 124748.97312
-                        |> Expect.equal "02:05"
+                        |> Expect.equal "02:04"
             , test "is 126:59 if the time is 7619023" <|
                 \() ->
                     Stopwatch.view 7619023
