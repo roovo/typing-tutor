@@ -36,8 +36,8 @@ stop stopwatch =
 reset : Stopwatch -> Stopwatch
 reset stopwatch =
     { stopwatch
-      | time = 0
-      , laps = []
+        | time = 0
+        , laps = []
     }
 
 
@@ -62,24 +62,22 @@ time stopwatch =
 
 lap : Stopwatch -> Stopwatch
 lap stopwatch =
-    let
-        addLapIfRunning =
-            case stopwatch.status of
-                Stopped ->
-                    stopwatch.laps
-
-                Running ->
-                    stopwatch.time
-                        |> (flip (-) (lappedTime stopwatch))
-                        |> (flip (::) stopwatch.laps)
-
-    in
-        { stopwatch | laps = addLapIfRunning }
+    { stopwatch
+        | laps =
+            stopwatch.time
+                |> (flip (-) (lappedTime stopwatch))
+                |> (flip (::) stopwatch.laps)
+        , status = Running
+    }
 
 
 laps : Stopwatch -> List Time
 laps stopwatch =
     List.reverse stopwatch.laps
+
+
+
+-- PRIVATE FUNCTIONS
 
 
 lappedTime : Stopwatch -> Time

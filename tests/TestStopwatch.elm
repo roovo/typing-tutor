@@ -93,6 +93,17 @@ stopwatch =
                         |> Stopwatch.lap
                         |> Stopwatch.laps
                         |> Expect.equal [ 53, 20, 42 ]
+            , test "auto-starts if not running" <|
+                \() ->
+                    Stopwatch.init
+                        |> Stopwatch.tick 1000
+                        |> Stopwatch.lap
+                        |> Stopwatch.tick 53
+                        |> Stopwatch.lap
+                        |> Stopwatch.tick 10
+                        |> Stopwatch.lap
+                        |> Stopwatch.laps
+                        |> Expect.equal [ 0, 53, 10 ]
             , test "reset clears lap times" <|
                 \() ->
                     Stopwatch.init
