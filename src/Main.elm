@@ -13,7 +13,9 @@ import Time exposing (Time)
 
 main =
     Html.App.program
-        { init = init "Something to type"
+        { init = init """Something to type
+        that spans multiple lines
+        in fact there are 3 of them!"""
         , subscriptions = subscriptions
         , update = update
         , view = view
