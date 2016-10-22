@@ -1,6 +1,22 @@
-module Stopwatch exposing (Stopwatch, init, lap, laps, lastLap, reset, start, stop, tick, time)
+module Stopwatch
+    exposing
+        ( Stopwatch
+        , init
+        , lap
+        , laps
+        , lastLap
+        , reset
+        , start
+        , stop
+        , tick
+        , time
+        , view
+        )
 
 import Time exposing (Time)
+
+
+-- MODEL
 
 
 type alias Stopwatch =
@@ -84,6 +100,22 @@ lastLap stopwatch =
 
 
 
+-- VIEW
+
+
+view : Time -> String
+view time =
+    let
+        secs =
+            round <| (time / 1000) `fmod` 60
+
+        mins =
+            floor <| time / 60000
+    in
+        addLeadingZero mins ++ ":" ++ addLeadingZero secs
+
+
+
 -- PRIVATE FUNCTIONS
 
 
@@ -91,3 +123,20 @@ lappedTime : Stopwatch -> Time
 lappedTime stopwatch =
     stopwatch.laps
         |> List.sum
+
+
+fmod : Float -> Int -> Float
+fmod f n =
+    let
+        integer =
+            floor f
+    in
+        toFloat (integer % n) + f - toFloat integer
+
+
+addLeadingZero : Int -> String
+addLeadingZero num =
+    if num < 10 then
+        "0" ++ (toString num)
+    else
+        toString num

@@ -4,6 +4,7 @@ import Html exposing (Html)
 import Html.Attributes
 import Exercise exposing (Exercise)
 import Step exposing (Step, Status(..))
+import Stopwatch
 import Time exposing (Time)
 
 
@@ -26,46 +27,6 @@ viewSteps exercise =
     ]
 
 
-percentage : Float -> String
-percentage float =
-    float
-        |> (*) 100
-        |> truncate
-        |> toFloat
-        |> (flip (/) 100.0)
-        |> toString
-        |> (flip (++) "%")
-
-
-fmod : Float -> Int -> Float
-fmod f n =
-    let
-        integer =
-            floor f
-    in
-        toFloat (integer % n) + f - toFloat integer
-
-
-addLeadingZero : Int -> String
-addLeadingZero num =
-    if num < 10 then
-        "0" ++ (toString num)
-    else
-        toString num
-
-
-timer : Time -> String
-timer time =
-    let
-        secs =
-            round <| (time / 1000) `fmod` 60
-
-        mins =
-            round <| time / 60000
-    in
-        addLeadingZero mins ++ ":" ++ addLeadingZero secs
-
-
 viewResults : Exercise -> List (Html msg)
 viewResults exercise =
     if Exercise.isComplete exercise then
@@ -79,12 +40,23 @@ viewResults exercise =
                 , Html.br [] []
                 , Html.text <|
                     "Time taken: "
-                        ++ (timer <| exercise.timeTaken)
+                        ++ Stopwatch.view exercise.timeTaken
                 ]
             ]
         ]
     else
         []
+
+
+percentage : Float -> String
+percentage float =
+    float
+        |> (*) 100
+        |> truncate
+        |> toFloat
+        |> (flip (/) 100.0)
+        |> toString
+        |> (flip (++) "%")
 
 
 viewStep : Step -> Html msg

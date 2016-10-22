@@ -139,4 +139,22 @@ stopwatch =
                         |> Stopwatch.lastLap
                         |> Expect.equal 10
             ]
+        , describe "view"
+            [ test "is 00:00 if there is no time" <|
+                \() ->
+                    Stopwatch.view 0
+                        |> Expect.equal "00:00"
+            , test "is 00:05 if the time is 4748.97312" <|
+                \() ->
+                    Stopwatch.view 4748.97312
+                        |> Expect.equal "00:05"
+            , test "is 02:05 if the time is 124748.97312" <|
+                \() ->
+                    Stopwatch.view 124748.97312
+                        |> Expect.equal "02:05"
+            , test "is 126:59 if the time is 7619023" <|
+                \() ->
+                    Stopwatch.view 7619023
+                        |> Expect.equal "126:59"
+            ]
         ]
