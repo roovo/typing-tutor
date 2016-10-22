@@ -3,6 +3,8 @@
     in character count)
   - ignore whitespace at start of a line
   - use code as the source
+  - have an example in a file
+- show characters wot are mis-typed as they are entered
 - auto-pause the timer if nothing typed for a while
 - track slow characters (as in slow to type)
 - API & back end
