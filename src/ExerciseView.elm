@@ -39,6 +39,12 @@ viewResults exercise =
                         ++ (percentage <| Exercise.accuracy exercise)
                 , Html.br [] []
                 , Html.text <|
+                    "Speed: "
+                        ++ toString (round <| Exercise.wpm exercise)
+                        ++ " WPM"
+                , Html.br [] []
+                , Html.br [] []
+                , Html.text <|
                     "Time taken: "
                         ++ Stopwatch.view exercise.timeTaken
                 ]

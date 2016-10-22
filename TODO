@@ -1,5 +1,4 @@
 - add a timer
-  - print wpm
   - show the time mins : secs on screen whilst exercise is
     in progress
 - does it work with multi-line strings?
@@ -54,3 +53,5 @@ done
   - print accuracy
 - improved readme
 - add a timer
+  - show time taken
+  - print wpm
