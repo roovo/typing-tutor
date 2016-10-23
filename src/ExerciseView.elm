@@ -66,10 +66,10 @@ percentage float =
 
 
 viewStep : Step -> Html msg
-viewStep chunk =
+viewStep step =
     Html.span
         [ Html.Attributes.style
-            (case chunk.status of
+            (case step.status of
                 Completed ->
                     [ ( "color", "black" )
                     ]
@@ -96,4 +96,15 @@ viewStep chunk =
                     []
             )
         ]
-        [ Html.text chunk.content ]
+        [ viewStepContent step.content ]
+
+
+viewStepContent : String -> Html msg
+viewStepContent content =
+    if content == "\n" then
+        Html.span []
+            [ Html.text content
+            , Html.br [] []
+            ]
+    else
+        Html.text content
