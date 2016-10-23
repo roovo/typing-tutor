@@ -41,16 +41,13 @@ and run the tests from the command line with:
 
 see [TODO](../master/TODO)
 
+
 ## License
 
 MIT Licensed, see [LICENSE](../master/LICENSE) for more details.
 
 
-## Reading
+## Credit
 
-Some links for reference whilst developing
-  * https://www.speedtypingonline.com/typing-equations
-  * http://prismjs.com/
-    - `Prism.tokenize(text, grammar)` #=> An array of strings, tokens (class Prism.Token) and other arrays
-
-
+Inspired by the (most excellent and fully featured) online
+typing site for progammers: [typing.io](https://typing.io)
