@@ -52,6 +52,17 @@ exerciseParser =
                             , Step.init "b"
                             , Step.end
                             ]
+            , test "returns steps for an crlf terminated string" <|
+                \() ->
+                    ExerciseParser.toSteps "ab\x0D\ncd\x0D\n"
+                        |> Expect.equal
+                            [ Step.init "a"
+                            , Step.init "b"
+                            , Step.init "\x0D"
+                            , Step.init "c"
+                            , Step.init "d"
+                            , Step.end
+                            ]
             , test "returns steps for an unterminated string" <|
                 \() ->
                     ExerciseParser.toSteps "ab"

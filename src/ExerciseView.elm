@@ -101,9 +101,9 @@ viewStep step =
 
 viewStepContent : String -> Html msg
 viewStepContent content =
-    if content == "\n" then
+    if content == "\x0D" then
         Html.span []
-            [ Html.text content
+            [ Html.text " "
             , Html.br [] []
             ]
     else

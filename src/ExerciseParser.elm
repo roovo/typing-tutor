@@ -42,7 +42,7 @@ toSteps string =
 removeTrailingWhitespace : List Step -> List Step
 removeTrailingWhitespace steps =
     steps
-        |> dropWhileRight (\s -> s.content == "\n")
+        |> dropWhileRight (\s -> s.content == "\x0D")
 
 
 addEnd : List Step -> List Step
@@ -64,7 +64,7 @@ line =
             , manyTill character Char.eol
             ]
         )
-        (\r -> succeed (List.append r [ Step.init "\n" ]))
+        (\r -> succeed (List.append r [ Step.init "\x0D" ]))
 
 
 whitespaceAndCharacters : Parser (List Step)

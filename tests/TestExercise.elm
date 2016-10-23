@@ -11,6 +11,10 @@ backspaceChar =
     (Char.fromCode 8)
 
 
+enterChar =
+    (Char.fromCode 13)
+
+
 exercise : Test
 exercise =
     describe "Exercise"
@@ -41,6 +45,20 @@ exercise =
                             [ { content = "a", status = Completed, moveTo = Next }
                             , { content = "b", status = Current, moveTo = None }
                             , { content = "c", status = Waiting, moveTo = None }
+                            , { content = "", status = End, moveTo = None }
+                            ]
+            , test "handles newlines in the string" <|
+                \() ->
+                    Exercise.init "ab\nc"
+                        |> Exercise.consume 'a' 0
+                        |> Exercise.consume 'b' 0
+                        |> Exercise.consume enterChar 0
+                        |> Exercise.steps
+                        |> Expect.equal
+                            [ { content = "a", status = Completed, moveTo = Next }
+                            , { content = "b", status = Completed, moveTo = Next }
+                            , { content = "\x0D", status = Completed, moveTo = Next }
+                            , { content = "c", status = Current, moveTo = None }
                             , { content = "", status = End, moveTo = None }
                             ]
             , test "won't advance if the wrong character is given" <|
