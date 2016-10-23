@@ -1,6 +1,5 @@
-- does it work with multi-line strings?
-  - use code as the source
-  - have an example in a file
+- use some elm code as the source
+- have an example in a file
 - show characters wot are mis-typed as they are entered
 - auto-pause the timer if nothing typed for a while
 - track slow characters (as in slow to type)
@@ -52,4 +51,5 @@ done
   - show time taken
   - print wpm
   - show the time mins : secs on screen whilst exercise is in progress
+- does it work with multi-line strings?
   - ignore whitespace at start of a line
