@@ -10,11 +10,13 @@ import Combine
         , many
         , manyTill
         , map
+        , parse
         , regex
         , sequence
         , succeed
         )
 import Combine.Char as Char
+import List.Extra exposing (dropWhileRight)
 import Step exposing (Step)
 import String
 
@@ -27,12 +29,25 @@ toSteps string =
         string
             |> String.trimRight
             |> flip String.append "\n"
-            |> Combine.parse lines
+            |> parse lines
             |> extractResult
+            |> removeTrailingWhitespace
+            |> addEnd
 
 
 
 -- PRIVATE FUNCTIONS
+
+
+removeTrailingWhitespace : List Step -> List Step
+removeTrailingWhitespace steps =
+    steps
+        |> dropWhileRight (\s -> s.content == "\n")
+
+
+addEnd : List Step -> List Step
+addEnd steps =
+    List.append steps [ Step.end ]
 
 
 lines : Parser (List Step)

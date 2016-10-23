@@ -22,11 +22,11 @@ exerciseParser =
                         |> Expect.equal ( Ok [ "a", "b", "c" ], { input = "de", position = 5 } )
             ]
         , describe "toSteps"
-            [ test "returns no steps for an empty string" <|
+            [ test "returns just an end Step for an empty string" <|
                 \() ->
                     ExerciseParser.toSteps ""
                         |> Expect.equal
-                            [ Step.init "\n"
+                            [ Step.end
                             ]
             , test "returns steps for an newline terminated string" <|
                 \() ->
@@ -34,7 +34,15 @@ exerciseParser =
                         |> Expect.equal
                             [ Step.init "a"
                             , Step.init "b"
-                            , Step.init "\n"
+                            , Step.end
+                            ]
+            , test "returns steps for a double newline terminated string" <|
+                \() ->
+                    ExerciseParser.toSteps "ab\n\n"
+                        |> Expect.equal
+                            [ Step.init "a"
+                            , Step.init "b"
+                            , Step.end
                             ]
             , test "returns steps for an crlf terminated string" <|
                 \() ->
@@ -42,7 +50,7 @@ exerciseParser =
                         |> Expect.equal
                             [ Step.init "a"
                             , Step.init "b"
-                            , Step.init "\n"
+                            , Step.end
                             ]
             , test "returns steps for an unterminated string" <|
                 \() ->
@@ -50,7 +58,7 @@ exerciseParser =
                         |> Expect.equal
                             [ Step.init "a"
                             , Step.init "b"
-                            , Step.init "\n"
+                            , Step.end
                             ]
             ]
         ]
