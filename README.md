@@ -22,6 +22,24 @@ then to run the project:
 > ./node_modules/.bin/elm-live src/Main.elm
 ```
 
+The back end api is currently using [JSON Server](https://github.com/typicode/json-server).
+On first use, copy across the database file:
+
+```
+> cp api/db.example.json api/db.json
+```
+
+Then run the API server using:
+
+```
+> node api/api.js
+```
+
+And to seed the database, run:
+
+```
+> ./api/seedTutor.sh
+```
 
 ## Tests
 

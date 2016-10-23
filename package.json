@@ -1,0 +1,27 @@
+{
+  "name": "typing-tutor",
+  "version": "1.0.0",
+  "description": "An example app in [elm](http://elm-lang.org/) - tracks your typing.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "elm-live": "^2.6.0",
+    "json-server": "^0.8.22"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roovo/typing-tutor.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/roovo/typing-tutor/issues"
+  },
+  "homepage": "https://github.com/roovo/typing-tutor#readme"
+}
