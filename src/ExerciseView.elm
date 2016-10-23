@@ -88,6 +88,10 @@ viewStep chunk =
                     [ ( "color", "gray" )
                     ]
 
+                Skip ->
+                    [ ( "color", "gray" )
+                    ]
+
                 End ->
                     []
             )
