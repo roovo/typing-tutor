@@ -60,4 +60,71 @@ exerciseParser =
                             , { input = "", position = 8 }
                             )
             ]
+        , describe "lines"
+            [ test "parses string with newline" <|
+                \() ->
+                    parse ExerciseParser.lines " ab\n  cd\n"
+                        |> Expect.equal
+                            ( Ok
+                                [ Step.skip " "
+                                , Step.init "a"
+                                , Step.init "b"
+                                , Step.init "\n"
+                                , Step.skip "  "
+                                , Step.init "c"
+                                , Step.init "d"
+                                , Step.init "\n"
+                                ]
+                            , { input = "", position = 9 }
+                            )
+            , test "parses string with newline" <|
+                \() ->
+                    parse ExerciseParser.lines " ab\n  cd\n\n"
+                        |> Expect.equal
+                            ( Ok
+                                [ Step.skip " "
+                                , Step.init "a"
+                                , Step.init "b"
+                                , Step.init "\n"
+                                , Step.skip "  "
+                                , Step.init "c"
+                                , Step.init "d"
+                                , Step.init "\n"
+                                , Step.init "\n"
+                                ]
+                            , { input = "", position = 10 }
+                            )
+            ]
+        , describe "toSteps"
+            [ test "returns no steps for an empty string" <|
+                \() ->
+                    ExerciseParser.toSteps ""
+                        |> Expect.equal
+                            [ Step.init "\n"
+                            ]
+            , test "returns steps for an newline terminated string" <|
+                \() ->
+                    ExerciseParser.toSteps "ab\n"
+                        |> Expect.equal
+                            [ Step.init "a"
+                            , Step.init "b"
+                            , Step.init "\n"
+                            ]
+            , test "returns steps for an crlf terminated string" <|
+                \() ->
+                    ExerciseParser.toSteps "ab\x0D\n"
+                        |> Expect.equal
+                            [ Step.init "a"
+                            , Step.init "b"
+                            , Step.init "\n"
+                            ]
+            , test "returns steps for an unterminated string" <|
+                \() ->
+                    ExerciseParser.toSteps "ab"
+                        |> Expect.equal
+                            [ Step.init "a"
+                            , Step.init "b"
+                            , Step.init "\n"
+                            ]
+            ]
         ]

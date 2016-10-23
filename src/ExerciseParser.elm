@@ -1,4 +1,4 @@
-module ExerciseParser exposing (character, leadingWhitepace, line)
+module ExerciseParser exposing (character, leadingWhitepace, line, lines, toSteps)
 
 import Char
 import Combine
@@ -16,10 +16,25 @@ import Combine
         )
 import Combine.Char as Char
 import Step exposing (Step)
+import String
 
 
--- prob make sense to add a \n to the end of the string
--- and use manyTill the end of line to parse each line
+toSteps string =
+    let
+        extractResult ( result, _ ) =
+            Result.withDefault [] result
+    in
+        string
+            |> String.trimRight
+            |> flip String.append "\n"
+            |> Combine.parse lines
+            |> extractResult
+
+
+lines : Parser (List Step)
+lines =
+    many line
+        |> map (\l -> List.concatMap identity l)
 
 
 line : Parser (List Step)
