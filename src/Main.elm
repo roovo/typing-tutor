@@ -2,6 +2,7 @@ module Main exposing (..)
 
 import AnimationFrame
 import Char
+import ExampleExercise
 import Exercise exposing (Exercise)
 import ExerciseView
 import Html exposing (Html)
@@ -13,9 +14,7 @@ import Time exposing (Time)
 
 main =
     Html.App.program
-        { init = init """Something to type
-        that spans multiple lines
-        in fact there are 3 of them!"""
+        { init = init ExampleExercise.elm
         , subscriptions = subscriptions
         , update = update
         , view = view
