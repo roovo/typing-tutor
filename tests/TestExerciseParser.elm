@@ -31,22 +31,23 @@ exerciseParser =
                     parse ExerciseParser.character "ab"
                         |> Expect.equal ( Ok (Step.init "a"), { input = "b", position = 1 } )
             ]
-        , describe "toSteps"
+        , describe "line"
             [ test "parses string without leading whitespace" <|
                 \() ->
-                    parse ExerciseParser.toSteps "ab c"
+                    parse ExerciseParser.line "ab c\n"
                         |> Expect.equal
                             ( Ok
                                 [ Step.init "a"
                                 , Step.init "b"
                                 , Step.init " "
                                 , Step.init "c"
+                                , Step.init "\n"
                                 ]
-                            , { input = "", position = 4 }
+                            , { input = "", position = 5 }
                             )
             , test "parses string with leading whitespace" <|
                 \() ->
-                    parse ExerciseParser.toSteps "   ab c"
+                    parse ExerciseParser.line "   ab c\n"
                         |> Expect.equal
                             ( Ok
                                 [ Step.skip "   "
@@ -54,8 +55,9 @@ exerciseParser =
                                 , Step.init "b"
                                 , Step.init " "
                                 , Step.init "c"
+                                , Step.init "\n"
                                 ]
-                            , { input = "", position = 7 }
+                            , { input = "", position = 8 }
                             )
             ]
         ]

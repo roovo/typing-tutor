@@ -1,6 +1,20 @@
-module ExerciseParser exposing (character, leadingWhitepace, toSteps)
+module ExerciseParser exposing (character, leadingWhitepace, line)
 
-import Combine exposing (Parser, choice, count, many, map, regex, sequence)
+import Char
+import Combine
+    exposing
+        ( Parser
+        , andThen
+        , choice
+        , count
+        , many
+        , manyTill
+        , map
+        , regex
+        , sequence
+        , succeed
+        )
+import Combine.Char as Char
 import Step exposing (Step)
 
 
@@ -8,19 +22,22 @@ import Step exposing (Step)
 -- and use manyTill the end of line to parse each line
 
 
-toSteps : Parser (List Step)
-toSteps =
-    choice
-        [ whitespaceAndCharacters
-        , many character
-        ]
+line : Parser (List Step)
+line =
+    andThen
+        (choice
+            [ whitespaceAndCharacters
+            , manyTill character Char.eol
+            ]
+        )
+        (\r -> succeed (List.append r [ Step.init "\n" ]))
 
 
 whitespaceAndCharacters : Parser (List Step)
 whitespaceAndCharacters =
     sequence
         [ count 1 leadingWhitepace
-        , many character
+        , manyTill character Char.eol
         ]
         |> map (\l -> List.concatMap identity l)
 
