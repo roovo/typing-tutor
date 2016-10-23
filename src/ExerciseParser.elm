@@ -1,4 +1,4 @@
-module ExerciseParser exposing (character, leadingWhitepace, line, lines, toSteps)
+module ExerciseParser exposing (toSteps)
 
 import Char
 import Combine
@@ -29,6 +29,10 @@ toSteps string =
             |> flip String.append "\n"
             |> Combine.parse lines
             |> extractResult
+
+
+
+-- PRIVATE FUNCTIONS
 
 
 lines : Parser (List Step)
