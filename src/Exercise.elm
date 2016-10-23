@@ -132,12 +132,30 @@ updateCurrentStep char steps =
 
 moveZipper : Zipper Step -> Zipper Step
 moveZipper steps =
-    steps
-        |> (steps
+    let
+        direction =
+            steps
                 |> Zipper.current
                 |> .moveTo
-                |> zipperMover
-           )
+    in
+        skipOver direction steps
+
+
+skipOver : Direction -> Zipper Step -> Zipper Step
+skipOver direction steps =
+    case direction of
+        None ->
+            steps
+
+        _ ->
+            let
+                newSteps =
+                    zipperMover direction steps
+            in
+                if (Zipper.current newSteps).status == Skip then
+                    skipOver direction newSteps
+                else
+                    newSteps
 
 
 setCurrentStatus : Zipper Step -> Zipper Step

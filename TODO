@@ -1,7 +1,4 @@
 - does it work with multi-line strings?
-  - how to show <CR> (and don't count them
-    in character count)
-  - ignore whitespace at start of a line
   - use code as the source
   - have an example in a file
 - show characters wot are mis-typed as they are entered
@@ -55,3 +52,4 @@ done
   - show time taken
   - print wpm
   - show the time mins : secs on screen whilst exercise is in progress
+  - ignore whitespace at start of a line

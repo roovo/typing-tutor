@@ -73,6 +73,22 @@ exercise =
                             , { content = "c", status = Waiting, moveTo = None }
                             , { content = "", status = End, moveTo = None }
                             ]
+            , test "handles leading whitespace" <|
+                \() ->
+                    Exercise.init "ab\n  cd"
+                        |> Exercise.consume 'a' 0
+                        |> Exercise.consume 'b' 0
+                        |> Exercise.consume enterChar 0
+                        |> Exercise.steps
+                        |> Expect.equal
+                            [ { content = "a", status = Completed, moveTo = Next }
+                            , { content = "b", status = Completed, moveTo = Next }
+                            , { content = "\x0D", status = Completed, moveTo = Next }
+                            , { content = "  ", status = Skip, moveTo = None }
+                            , { content = "c", status = Current, moveTo = None }
+                            , { content = "d", status = Waiting, moveTo = None }
+                            , { content = "", status = End, moveTo = None }
+                            ]
             ]
         , describe "consume with backspace"
             [ test "does nothing if at the start of a new string" <|

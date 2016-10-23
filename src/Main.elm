@@ -73,11 +73,10 @@ update msg model =
     case logWithoutTick msg of
         KeyPress keyCode ->
             if keyCode /= backspaceCode then
-                consumeChar keyCode model
+                Debug.log "pressed" (consumeChar keyCode model)
             else
                 ( model, Cmd.none )
 
-        -- consumeChar keyCode model
         KeyDown keyCode ->
             if keyCode == backspaceCode then
                 consumeChar keyCode model
