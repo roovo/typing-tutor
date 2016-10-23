@@ -19,7 +19,7 @@ view exercise =
 
 viewSteps : Exercise -> List (Html msg)
 viewSteps exercise =
-    [ Html.code
+    [ Html.pre
         []
         (Exercise.steps exercise
             |> List.map viewStep
