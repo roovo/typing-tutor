@@ -1,6 +1,7 @@
 module TestExerciseParser exposing (..)
 
-import Combine exposing (many, parse, regex)
+import Combine exposing (many, manyTill, parse, regex)
+import Combine.Char as Char
 import ExerciseParser
 import Expect
 import Step
@@ -10,7 +11,17 @@ import Test exposing (..)
 exerciseParser : Test
 exerciseParser =
     describe "ExerciseParser"
-        [ describe "basic parsers"
+        [ describe "experimentation"
+            [ test "eol - \n" <|
+                \() ->
+                    parse (manyTill (regex ".") (Char.eol)) "abc\nde"
+                        |> Expect.equal ( Ok [ "a", "b", "c" ], { input = "de", position = 4 } )
+            , test "eol - \x0D \n" <|
+                \() ->
+                    parse (manyTill (regex ".") (Char.eol)) "abc\x0D\nde"
+                        |> Expect.equal ( Ok [ "a", "b", "c" ], { input = "de", position = 5 } )
+            ]
+        , describe "basic parsers"
             [ test "whitespace" <|
                 \() ->
                     parse ExerciseParser.leadingWhitepace "   "
