@@ -30,6 +30,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ Keyboard.presses KeyPress
+        , Keyboard.downs KeyDown
         , AnimationFrame.diffs Tick
         ]
 
@@ -63,6 +64,7 @@ backspaceCode =
 
 type Msg
     = KeyPress KeyCode
+    | KeyDown KeyCode
     | Tick Time
 
 
@@ -70,7 +72,17 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case logWithoutTick msg of
         KeyPress keyCode ->
-            consumeChar keyCode model
+            if keyCode /= backspaceCode then
+                consumeChar keyCode model
+            else
+                ( model, Cmd.none )
+
+        -- consumeChar keyCode model
+        KeyDown keyCode ->
+            if keyCode == backspaceCode then
+                consumeChar keyCode model
+            else
+                ( model, Cmd.none )
 
         Tick elapsed ->
             ( { model | stopwatch = Stopwatch.tick elapsed model.stopwatch }
