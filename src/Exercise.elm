@@ -11,6 +11,7 @@ module Exercise
         )
 
 import Char
+import ExerciseParser
 import Html exposing (Html)
 import Html.Attributes
 import List.Zipper as Zipper exposing (Zipper)
@@ -34,10 +35,7 @@ type alias Exercise =
 init : String -> Exercise
 init source =
     { steps =
-        source
-            |> String.split ""
-            |> List.map Step.init
-            |> flip List.append [ Step.end ]
+        ExerciseParser.toSteps source
             |> Zipper.fromList
             |> Maybe.map setCurrentStatus
     , typedCharacterCount = 0
