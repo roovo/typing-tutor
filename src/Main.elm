@@ -5,18 +5,23 @@ import Char
 import ExampleExercise
 import Exercise exposing (Exercise)
 import ExerciseView
+import Hop
+import Hop.Types as Hop
 import Html exposing (Html)
 import Html.App
+import Navigation
+import Routes exposing (Route, urlParser)
 import Keyboard exposing (KeyCode)
 import Stopwatch exposing (Stopwatch)
 import Time exposing (Time)
 
 
 main =
-    Html.App.program
-        { init = init ExampleExercise.elm
+    Navigation.program urlParser
+        { init = init
         , subscriptions = subscriptions
         , update = update
+        , urlUpdate = urlUpdate
         , view = view
         }
 
@@ -41,13 +46,17 @@ subscriptions model =
 type alias Model =
     { exercise : Exercise
     , stopwatch : Stopwatch
+    , route : Route
+    , address : Hop.Address
     }
 
 
-init : String -> ( Model, Cmd Msg )
-init source =
-    ( { exercise = (Debug.log "init.exercise" (Exercise.init source))
+init : ( Route, Hop.Address ) -> ( Model, Cmd Msg )
+init ( route, address ) =
+    ( { exercise = (Debug.log "init.exercise" (Exercise.init ExampleExercise.elm))
       , stopwatch = Stopwatch.init
+      , route = route
+      , address = address
       }
     , Cmd.none
     )
@@ -114,6 +123,16 @@ logWithoutTick msg =
 
         _ ->
             Debug.log "msg" msg
+
+
+urlUpdate : ( Route, Hop.Address ) -> Model -> ( Model, Cmd Msg )
+urlUpdate ( route, address ) model =
+    ( { model
+        | route = route
+        , address = address
+      }
+    , Cmd.none
+    )
 
 
 
