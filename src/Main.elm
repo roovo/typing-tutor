@@ -53,13 +53,17 @@ type alias Model =
 
 init : ( Route, Hop.Address ) -> ( Model, Cmd Msg )
 init ( route, address ) =
-    ( { exercise = (Debug.log "init.exercise" (Exercise.init ExampleExercise.elm))
-      , stopwatch = Stopwatch.init
-      , route = route
-      , address = address
-      }
-    , Cmd.none
-    )
+    let
+        _ =
+            Debug.log "init" ( route, address )
+    in
+        ( { exercise = (Debug.log "init.exercise" (Exercise.init ExampleExercise.elm))
+          , stopwatch = Stopwatch.init
+          , route = route
+          , address = address
+          }
+        , Cmd.none
+        )
 
 
 
@@ -127,12 +131,16 @@ logWithoutTick msg =
 
 urlUpdate : ( Route, Hop.Address ) -> Model -> ( Model, Cmd Msg )
 urlUpdate ( route, address ) model =
-    ( { model
-        | route = route
-        , address = address
-      }
-    , Cmd.none
-    )
+    let
+        _ =
+            Debug.log "urlUpdate" ( route, address )
+    in
+        ( { model
+            | route = route
+            , address = address
+          }
+        , Cmd.none
+        )
 
 
 
