@@ -2,23 +2,21 @@ module Main exposing (..)
 
 import AnimationFrame
 import Char
-import ExampleExercise
 import Exercise exposing (Exercise)
-import ExerciseView
 import Hop
 import Hop.Types as Hop
-import Html exposing (Html)
-import Html.App
+import Model exposing (Model)
+import Msg exposing (Msg(..))
 import Navigation
 import Routes exposing (Route, urlParser)
 import Keyboard exposing (KeyCode)
 import Stopwatch exposing (Stopwatch)
-import Time exposing (Time)
+import View exposing (view)
 
 
 main =
     Navigation.program urlParser
-        { init = init
+        { init = Model.init
         , subscriptions = subscriptions
         , update = update
         , urlUpdate = urlUpdate
@@ -40,44 +38,11 @@ subscriptions model =
 
 
 
--- MODEL
-
-
-type alias Model =
-    { exercise : Exercise
-    , stopwatch : Stopwatch
-    , route : Route
-    , address : Hop.Address
-    }
-
-
-init : ( Route, Hop.Address ) -> ( Model, Cmd Msg )
-init ( route, address ) =
-    let
-        _ =
-            Debug.log "init" ( route, address )
-    in
-        ( { exercise = (Debug.log "init.exercise" (Exercise.init ExampleExercise.elm))
-          , stopwatch = Stopwatch.init
-          , route = route
-          , address = address
-          }
-        , Cmd.none
-        )
-
-
-
 -- UPDATE
 
 
 backspaceCode =
     8
-
-
-type Msg
-    = KeyPress KeyCode
-    | KeyDown KeyCode
-    | Tick Time
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -141,33 +106,3 @@ urlUpdate ( route, address ) model =
           }
         , Cmd.none
         )
-
-
-
--- VIEW
-
-
-view : Model -> Html Msg
-view model =
-    Html.div
-        []
-        [ Html.code
-            []
-            [ ExerciseView.view model.exercise
-            , Html.hr [] []
-            , stopwatchView model
-            ]
-        ]
-
-
-stopwatchView : Model -> Html Msg
-stopwatchView model =
-    case Exercise.isComplete model.exercise of
-        True ->
-            Html.text ""
-
-        False ->
-            Html.p []
-                [ Html.text <|
-                    Stopwatch.view model.stopwatch.time
-                ]
