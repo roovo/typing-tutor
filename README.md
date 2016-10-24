@@ -19,7 +19,7 @@ developing.  To install this locally:
 then to run the project:
 
 ```
-> ./node_modules/.bin/elm-live src/Main.elm
+> ./node_modules/.bin/elm-live src/Main.elm --pushstate
 ```
 
 The back end api is currently using [JSON Server](https://github.com/typicode/json-server).
