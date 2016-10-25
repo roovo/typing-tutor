@@ -32,13 +32,13 @@ urlFor : Route -> String
 urlFor route =
     case route of
         ExerciseListRoute ->
-            "exercises"
+            "/exercises"
 
         ExerciseRoute id ->
-            "exercises/" ++ toString id
+            "/exercises/" ++ toString id
 
         NotFoundRoute ->
-            "404"
+            "/404"
 
 
 urlParser : Navigation.Parser ( Route, Hop.Address )
