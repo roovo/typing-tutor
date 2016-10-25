@@ -1,4 +1,4 @@
-module Api exposing (fetchExercises)
+module Api exposing (fetchExercise, fetchExercises)
 
 import Decoders
 import Exercise exposing (Exercise)
@@ -7,6 +7,11 @@ import Json.Decode as JD exposing ((:=))
 import Model exposing (Model)
 import Msg exposing (Msg)
 import Task
+
+
+fetchExercise : Model -> Int -> (Http.Error -> Msg) -> (Exercise -> Msg) -> Cmd Msg
+fetchExercise model id errorMsg msg =
+    get model ("/exercises/" ++ toString id) Decoders.exerciseDecoder errorMsg msg
 
 
 fetchExercises : Model -> (Http.Error -> Msg) -> (List Exercise -> Msg) -> Cmd Msg

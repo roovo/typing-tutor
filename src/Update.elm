@@ -34,6 +34,9 @@ update msg model =
         GotExercises exercises ->
             ( { model | exercises = exercises }, Cmd.none )
 
+        GotExercise exercise ->
+            ( { model | exercise = exercise }, Cmd.none )
+
         NoOp ->
             ( model, Cmd.none )
 

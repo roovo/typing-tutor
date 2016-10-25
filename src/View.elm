@@ -24,8 +24,5 @@ body model =
         ExerciseRoute id ->
             View.Exercises.Run.view model
 
-        RunExerciseRoute ->
-            View.Exercises.Run.view model
-
         NotFoundRoute ->
             Html.text "Sorry - not round these parts - 404"

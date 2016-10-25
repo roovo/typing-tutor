@@ -10,4 +10,5 @@ type Msg
     | KeyDown KeyCode
     | Tick Time
     | GotExercises (List Exercise)
+    | GotExercise Exercise
     | NoOp

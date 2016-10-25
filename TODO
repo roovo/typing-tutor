@@ -1,12 +1,9 @@
 - API & back end
-  - serve list of exercises from the back end
-  - serve exercise from a back end
   - save stats to a back end
-- how to show a loading state when the page is drawn bu we're waiting for
-  data from the backend (have been some discussions/posts on this recently)
-- navigation - meaningful urls
 - show stats summaries
   - graph over time of accuracy and wpm
+- how to show a loading state when the page is drawn bu we're waiting for
+  data from the backend (have been some discussions/posts on this recently)
 - don't get the exercise contents when getting the list of exercies
   just get it when you start the exercise
 - [Rob, Joe] show characters wot are mis-typed as they are entered
@@ -60,3 +57,7 @@ done
   - ignore whitespace at start of a line
 - use some elm code as the source
 - have an example in a file
+- navigation - meaningful urls
+- API & back end
+  - serve list of exercises from the back end
+  - serve exercise from a back end

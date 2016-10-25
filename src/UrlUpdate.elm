@@ -30,5 +30,8 @@ cmdForModelRoute model =
         ExerciseListRoute ->
             Api.fetchExercises model (always NoOp) <| GotExercises
 
+        ExerciseRoute id ->
+            Api.fetchExercise model id (always NoOp) <| GotExercise
+
         _ ->
             Cmd.none

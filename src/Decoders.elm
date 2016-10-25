@@ -1,4 +1,4 @@
-module Decoders exposing (exercisesDecoder)
+module Decoders exposing (exerciseDecoder, exercisesDecoder)
 
 import Exercise exposing (Exercise)
 import Json.Decode as JD exposing ((:=))
