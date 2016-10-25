@@ -4,7 +4,8 @@ import Html exposing (Html)
 import Model exposing (Model)
 import Msg exposing (Msg)
 import Routes exposing (Route(..))
-import View.RunExerciseView
+import View.Exercises.List
+import View.Exercises.Run
 
 
 view : Model -> Html Msg
@@ -18,10 +19,10 @@ body : Model -> Html Msg
 body model =
     case model.route of
         ExerciseListRoute ->
-            View.RunExerciseView.view model
+            View.Exercises.List.view model
 
         RunExerciseRoute ->
-            View.RunExerciseView.view model
+            View.Exercises.Run.view model
 
         NotFoundRoute ->
             Html.text "Sorry - not round these parts - 404"

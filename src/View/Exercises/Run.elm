@@ -1,4 +1,4 @@
-module View.RunExerciseView exposing (view)
+module View.Exercises.Run exposing (view)
 
 import Html exposing (Html)
 import Html.Attributes
