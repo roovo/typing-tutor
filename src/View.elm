@@ -1,34 +1,27 @@
 module View exposing (view)
 
-import Exercise
-import ExerciseView
 import Html exposing (Html)
 import Model exposing (Model)
 import Msg exposing (Msg)
-import Stopwatch
+import Routes exposing (Route(..))
+import View.RunExerciseView
 
 
 view : Model -> Html Msg
 view model =
     Html.div
         []
-        [ Html.code
-            []
-            [ ExerciseView.view model.exercise
-            , Html.hr [] []
-            , stopwatchView model
-            ]
-        ]
+        [ body model ]
 
 
-stopwatchView : Model -> Html Msg
-stopwatchView model =
-    case Exercise.isComplete model.exercise of
-        True ->
-            Html.text ""
+body : Model -> Html Msg
+body model =
+    case model.route of
+        ExerciseListRoute ->
+            View.RunExerciseView.view model
 
-        False ->
-            Html.p []
-                [ Html.text <|
-                    Stopwatch.view model.stopwatch.time
-                ]
+        RunExerciseRoute ->
+            View.RunExerciseView.view model
+
+        NotFoundRoute ->
+            Html.text "Sorry - not round these parts - 404"

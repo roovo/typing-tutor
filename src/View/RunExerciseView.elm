@@ -1,20 +1,45 @@
-module ExerciseView exposing (view)
+module View.RunExerciseView exposing (view)
 
 import Html exposing (Html)
 import Html.Attributes
 import Exercise exposing (Exercise)
+import Model exposing (Model)
+import Msg exposing (Msg)
 import Step exposing (Step, Status(..))
 import Stopwatch
 import Time exposing (Time)
 
 
-view : Exercise -> Html msg
-view exercise =
+view : Model -> Html Msg
+view model =
+    Html.code
+        []
+        [ exerciseView model.exercise
+        , Html.hr [] []
+        , stopwatchView model
+        ]
+
+
+exerciseView : Exercise -> Html msg
+exerciseView exercise =
     Html.div []
         (List.append
             (viewSteps exercise)
             (viewResults exercise)
         )
+
+
+stopwatchView : Model -> Html Msg
+stopwatchView model =
+    case Exercise.isComplete model.exercise of
+        True ->
+            Html.text ""
+
+        False ->
+            Html.p []
+                [ Html.text <|
+                    Stopwatch.view model.stopwatch.time
+                ]
 
 
 viewSteps : Exercise -> List (Html msg)

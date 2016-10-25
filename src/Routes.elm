@@ -1,4 +1,4 @@
-module Routes exposing (Route, urlParser)
+module Routes exposing (Route(..), urlParser)
 
 import Navigation
 import UrlParser
