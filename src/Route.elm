@@ -1,7 +1,7 @@
-module Routes exposing (Route(..), urlParser)
+module Route exposing (Route(..), urlFor, urlParser)
 
 import Navigation
-import UrlParser
+import UrlParser exposing ((</>))
 import Hop
 import Hop.Types as Hop
 
@@ -15,6 +15,7 @@ hopConfig =
 
 type Route
     = ExerciseListRoute
+    | ExerciseRoute Int
     | RunExerciseRoute
     | NotFoundRoute
 
@@ -23,8 +24,26 @@ routes : UrlParser.Parser (Route -> a) a
 routes =
     UrlParser.oneOf
         [ UrlParser.format ExerciseListRoute (UrlParser.s "")
+        , UrlParser.format ExerciseRoute (UrlParser.s "exercises" </> UrlParser.int)
+        , UrlParser.format ExerciseListRoute (UrlParser.s "exercises")
         , UrlParser.format RunExerciseRoute (UrlParser.s "run")
         ]
+
+
+urlFor : Route -> String
+urlFor route =
+    case route of
+        ExerciseListRoute ->
+            "exercises"
+
+        ExerciseRoute id ->
+            "exercises/" ++ toString id
+
+        RunExerciseRoute ->
+            "exercises/1"
+
+        NotFoundRoute ->
+            "404"
 
 
 urlParser : Navigation.Parser ( Route, Hop.Address )

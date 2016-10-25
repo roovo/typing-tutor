@@ -3,7 +3,7 @@ module View exposing (view)
 import Html exposing (Html)
 import Model exposing (Model)
 import Msg exposing (Msg)
-import Routes exposing (Route(..))
+import Route exposing (Route(..))
 import View.Exercises.List
 import View.Exercises.Run
 
@@ -20,6 +20,9 @@ body model =
     case model.route of
         ExerciseListRoute ->
             View.Exercises.List.view model
+
+        ExerciseRoute id ->
+            View.Exercises.Run.view model
 
         RunExerciseRoute ->
             View.Exercises.Run.view model

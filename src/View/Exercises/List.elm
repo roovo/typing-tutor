@@ -5,6 +5,7 @@ import Html exposing (Html)
 import Html.Attributes
 import Model exposing (Model)
 import Msg exposing (Msg)
+import Route exposing (Route(..))
 
 
 view : Model -> Html Msg
@@ -33,5 +34,9 @@ exercisesTable model =
 exerciseRow : Exercise -> Html Msg
 exerciseRow exercise =
     Html.tr []
-        [ Html.td [] [ Html.text exercise.title ]
+        [ Html.td []
+            [ Html.a
+                [ Html.Attributes.href (Route.urlFor (ExerciseRoute exercise.id)) ]
+                [ Html.text exercise.title ]
+            ]
         ]

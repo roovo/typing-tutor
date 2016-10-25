@@ -4,7 +4,7 @@ import Exercise exposing (Exercise)
 import ExampleExercise
 import Hop.Types as Hop
 import Msg exposing (Msg)
-import Routes exposing (Route)
+import Route exposing (Route)
 import Stopwatch exposing (Stopwatch)
 
 

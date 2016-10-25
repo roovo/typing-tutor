@@ -7,7 +7,7 @@ import Hop.Types as Hop
 import Model exposing (Model)
 import Msg exposing (Msg(..))
 import Navigation
-import Routes exposing (Route(..), urlParser)
+import Route exposing (Route(..), urlParser)
 import Keyboard exposing (KeyCode)
 import Update
 import UrlUpdate

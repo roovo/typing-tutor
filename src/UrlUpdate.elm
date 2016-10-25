@@ -4,7 +4,7 @@ import Api
 import Hop.Types as Hop
 import Model exposing (Model)
 import Msg exposing (Msg(..))
-import Routes exposing (Route(..))
+import Route exposing (Route(..))
 
 
 urlUpdate : ( Route, Hop.Address ) -> Model -> ( Model, Cmd Msg )
