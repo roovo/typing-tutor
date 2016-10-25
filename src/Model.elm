@@ -1,4 +1,4 @@
-module Model exposing (Model, init)
+module Model exposing (Model, initialModel)
 
 import Exercise exposing (Exercise)
 import ExampleExercise
@@ -9,23 +9,21 @@ import Stopwatch exposing (Stopwatch)
 
 
 type alias Model =
-    { exercise : Exercise
+    { baseUrl : String
+    , exercise : Exercise
     , stopwatch : Stopwatch
     , route : Route
     , address : Hop.Address
     }
 
 
-init : ( Route, Hop.Address ) -> ( Model, Cmd Msg )
-init ( route, address ) =
-    let
-        _ =
-            Debug.log "init" ( route, address )
-    in
-        ( { exercise = (Debug.log "init.exercise" (Exercise.init ExampleExercise.elm))
-          , stopwatch = Stopwatch.init
-          , route = route
-          , address = address
-          }
-        , Cmd.none
-        )
+initialModel : ( Route, Hop.Address ) -> Model
+initialModel ( route, address ) =
+    { baseUrl =
+        "http://localhost:5000"
+        -- , exercise = (Debug.log "init.exercise" (Exercise.init 1 "elm" ExampleExercise.elm))
+    , exercise = Exercise.init 1 "elm" ExampleExercise.elm
+    , stopwatch = Stopwatch.init
+    , route = route
+    , address = address
+    }

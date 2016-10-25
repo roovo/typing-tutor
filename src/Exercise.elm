@@ -26,16 +26,20 @@ backspaceChar =
 
 
 type alias Exercise =
-    { steps : Maybe (Zipper Step)
+    { id : Int
+    , title : String
+    , steps : Maybe (Zipper Step)
     , typedCharacterCount : Int
     , timeTaken : Float
     }
 
 
-init : String -> Exercise
-init source =
-    { steps =
-        ExerciseParser.toSteps source
+init : Int -> String -> String -> Exercise
+init id title text =
+    { id = id
+    , title = title
+    , steps =
+        ExerciseParser.toSteps text
             |> Zipper.fromList
             |> Maybe.map setCurrentStatus
     , typedCharacterCount = 0

@@ -3,25 +3,34 @@ module Main exposing (..)
 import AnimationFrame
 import Char
 import Exercise exposing (Exercise)
-import Hop
 import Hop.Types as Hop
 import Model exposing (Model)
 import Msg exposing (Msg(..))
 import Navigation
-import Routes exposing (Route, urlParser)
+import Routes exposing (Route(..), urlParser)
 import Keyboard exposing (KeyCode)
-import Stopwatch exposing (Stopwatch)
-import View exposing (view)
+import Update
+import UrlUpdate
+import View
 
 
 main =
     Navigation.program urlParser
-        { init = Model.init
+        { init = init
         , subscriptions = subscriptions
-        , update = update
-        , urlUpdate = urlUpdate
-        , view = view
+        , update = Update.update
+        , urlUpdate = UrlUpdate.urlUpdate
+        , view = View.view
         }
+
+
+init : ( Route, Hop.Address ) -> ( Model, Cmd Msg )
+init ( route, address ) =
+    UrlUpdate.urlUpdate
+        ( route, address )
+    <|
+        Model.initialModel <|
+            ( route, address )
 
 
 
@@ -35,74 +44,3 @@ subscriptions model =
         , Keyboard.downs KeyDown
         , AnimationFrame.diffs Tick
         ]
-
-
-
--- UPDATE
-
-
-backspaceCode =
-    8
-
-
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-    case logWithoutTick msg of
-        KeyPress keyCode ->
-            if keyCode /= backspaceCode then
-                consumeChar keyCode model
-            else
-                ( model, Cmd.none )
-
-        KeyDown keyCode ->
-            if keyCode == backspaceCode then
-                consumeChar keyCode model
-            else
-                ( model, Cmd.none )
-
-        Tick elapsed ->
-            ( { model | stopwatch = Stopwatch.tick elapsed model.stopwatch }
-            , Cmd.none
-            )
-
-
-consumeChar : Int -> Model -> ( Model, Cmd Msg )
-consumeChar keyCode model =
-    let
-        lappedWatch =
-            Stopwatch.lap model.stopwatch
-    in
-        ( { model
-            | exercise =
-                Exercise.consume
-                    (Char.fromCode keyCode)
-                    (Stopwatch.lastLap lappedWatch)
-                    model.exercise
-            , stopwatch = lappedWatch
-          }
-        , Cmd.none
-        )
-
-
-logWithoutTick : Msg -> Msg
-logWithoutTick msg =
-    case msg of
-        Tick time ->
-            msg
-
-        _ ->
-            Debug.log "msg" msg
-
-
-urlUpdate : ( Route, Hop.Address ) -> Model -> ( Model, Cmd Msg )
-urlUpdate ( route, address ) model =
-    let
-        _ =
-            Debug.log "urlUpdate" ( route, address )
-    in
-        ( { model
-            | route = route
-            , address = address
-          }
-        , Cmd.none
-        )

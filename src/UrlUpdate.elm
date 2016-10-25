@@ -1,0 +1,34 @@
+module UrlUpdate exposing (urlUpdate)
+
+import Api
+import Hop.Types as Hop
+import Model exposing (Model)
+import Msg exposing (Msg(..))
+import Routes exposing (Route(..))
+
+
+urlUpdate : ( Route, Hop.Address ) -> Model -> ( Model, Cmd Msg )
+urlUpdate ( route, address ) model =
+    let
+        _ =
+            Debug.log "urlUpdate" ( route, address )
+
+        newModel =
+            { model
+                | route = route
+                , address = address
+            }
+    in
+        ( newModel
+        , cmdForModelRoute newModel
+        )
+
+
+cmdForModelRoute : Model -> Cmd Msg
+cmdForModelRoute model =
+    case model.route of
+        ExerciseListRoute ->
+            Api.fetchExercises model (always NoOp) <| GotExercises
+
+        _ ->
+            Cmd.none
