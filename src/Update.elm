@@ -32,7 +32,7 @@ update msg model =
             )
 
         GotExercises exercises ->
-            ( model, Cmd.none )
+            ( { model | exercises = exercises }, Cmd.none )
 
         NoOp ->
             ( model, Cmd.none )
