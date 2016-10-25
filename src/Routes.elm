@@ -8,7 +8,7 @@ import Hop.Types as Hop
 
 hopConfig : Hop.Config
 hopConfig =
-    { hash = True
+    { hash = False
     , basePath = ""
     }
 
