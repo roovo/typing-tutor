@@ -1,5 +1,10 @@
+- BUG - the api is serving up lines with trailling whitespace
+  should make it so that if it does it is removed...
+- fix the culr command so it ain't adding whitespace...
 - API & back end
   - save stats to a back end
+- BUG -> can get accuaracy of over 100% - perhaps it's cause I'm
+  counting leading whitespace as a character??
 - show stats summaries
   - graph over time of accuracy and wpm
 - how to show a loading state when the page is drawn bu we're waiting for
