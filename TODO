@@ -1,4 +1,3 @@
-- Exercise tests need updating
 - API & back end
   - save stats to a back end
 - BUG -> can get accuaracy of over 100% - perhaps it's cause I'm
@@ -68,3 +67,4 @@ done
   - serve exercise from a back end
 - BUG - the api is serving up lines with trailling whitespace
   should make it so that if it does it is removed...
+- Exercise tests need updating
