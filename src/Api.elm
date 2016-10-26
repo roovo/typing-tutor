@@ -30,6 +30,7 @@ encodeAttempt : Attempt -> JE.Value
 encodeAttempt attempt =
     JE.object
         [ ( "exerciseId", JE.int attempt.exerciseId )
+        , ( "completedAt", JE.float attempt.completedAt )
         , ( "accuracy", JE.float attempt.accuracy )
         , ( "wpm", JE.float attempt.wpm )
         ]

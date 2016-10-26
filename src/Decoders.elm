@@ -20,8 +20,9 @@ exerciseDecoder =
 
 attemptDecoder : JD.Decoder Attempt
 attemptDecoder =
-    JD.object4 Attempt
+    JD.object5 Attempt
         (JD.maybe ("id" := JD.int))
+        ("completedAt" := JD.float)
         ("exerciseId" := JD.int)
         ("accuracy" := JD.float)
         ("wpm" := JD.float)

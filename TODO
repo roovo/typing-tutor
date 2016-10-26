@@ -1,6 +1,3 @@
-- API & back end
-  - save current time when creating an attempt
-    - http://stackoverflow.com/questions/38021777/how-do-i-get-the-current-time-in-elm-0-17
 - BUG -> can get accuaracy of over 100% - perhaps it's cause I'm
   counting leading whitespace as a character??
 - show stats summaries
@@ -70,3 +67,5 @@ done
   should make it so that if it does it is removed...
 - Exercise tests need updating
 - save attempts to a back end
+- save current time when creating an attempt
+  - http://stackoverflow.com/questions/38021777/how-do-i-get-the-current-time-in-elm-0-17

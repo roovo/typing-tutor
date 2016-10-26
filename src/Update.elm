@@ -7,6 +7,8 @@ import Exercise
 import Msg exposing (Msg(..))
 import Model exposing (Model)
 import Stopwatch
+import Task
+import Time exposing (Time)
 
 
 backspaceCode =
@@ -31,6 +33,11 @@ update msg model =
         Tick elapsed ->
             ( { model | stopwatch = Stopwatch.tick elapsed model.stopwatch }
             , Cmd.none
+            )
+
+        GotTime timeNow ->
+            ( model
+            , Api.createAttempt model (Attempt.init timeNow model) (always NoOp) (always NoOp)
             )
 
         GotExercises exercises ->
@@ -60,14 +67,14 @@ consumeChar keyCode model =
             }
     in
         ( newModel
-        , cmdForNewChar newModel
+        , consumeCharCmd newModel
         )
 
 
-cmdForNewChar : Model -> Cmd Msg
-cmdForNewChar model =
+consumeCharCmd : Model -> Cmd Msg
+consumeCharCmd model =
     if Exercise.isComplete model.exercise then
-        Api.createAttempt model (Attempt.init model) (always NoOp) (always NoOp)
+        Task.perform (always NoOp) (GotTime) Time.now
     else
         Cmd.none
 
