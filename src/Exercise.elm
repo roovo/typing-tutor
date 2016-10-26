@@ -116,6 +116,7 @@ exerciseCharacterCount : Exercise -> Int
 exerciseCharacterCount exercise =
     exercise.steps
         |> Maybe.map Zipper.toList
+        |> Maybe.map (List.filter Step.isNotSkipped)
         |> Maybe.map List.length
         |> Maybe.map (flip (-) 1)
         |> Maybe.withDefault 0

@@ -1,5 +1,4 @@
-- BUG -> can get accuaracy of over 100% - perhaps it's cause I'm
-  counting leading whitespace as a character??
+- BUG -> doesn't like whitespace at the start of the first line
 - show stats summaries
   - graph over time of accuracy and wpm
 - better combining of parsers perhaps using andMap instead of
@@ -69,3 +68,5 @@ done
 - save attempts to a back end
 - save current time when creating an attempt
   - http://stackoverflow.com/questions/38021777/how-do-i-get-the-current-time-in-elm-0-17
+- BUG -> can get accuaracy of over 100% - perhaps it's cause I'm
+  counting leading whitespace as a character??

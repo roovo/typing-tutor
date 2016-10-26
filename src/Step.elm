@@ -1,4 +1,15 @@
-module Step exposing (Step, Direction(..), Status(..), consume, end, init, makeCurrent, skip)
+module Step
+    exposing
+        ( Step
+        , Direction(..)
+        , Status(..)
+        , consume
+        , end
+        , init
+        , isNotSkipped
+        , makeCurrent
+        , skip
+        )
 
 import Char
 import String
@@ -86,6 +97,11 @@ makeCurrent step =
 
         _ ->
             step
+
+
+isNotSkipped : Step -> Bool
+isNotSkipped step =
+    step.status /= Skip
 
 
 

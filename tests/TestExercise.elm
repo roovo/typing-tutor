@@ -214,7 +214,7 @@ exercise =
                         |> Exercise.consume 'b' 0
                         |> Exercise.accuracy
                         |> Expect.equal 100
-            , test "returns 100% for a single character with a corrected single bad character typed" <|
+            , test "returns 50% for a single character with a corrected single bad character typed" <|
                 \() ->
                     exerciseWithText "a"
                         |> Exercise.consume 'b' 0
@@ -234,6 +234,14 @@ exercise =
                         |> Exercise.consume 'a' 0
                         |> Exercise.consume 'b' 0
                         |> Exercise.consume 'c' 0
+                        |> Exercise.accuracy
+                        |> Expect.equal 100
+            , test "returns 100% for a multiple characters typed correctly with a line containing whitespace" <|
+                \() ->
+                    exerciseWithText "a\n b"
+                        |> Exercise.consume 'a' 0
+                        |> Exercise.consume enterChar 0
+                        |> Exercise.consume 'b' 0
                         |> Exercise.accuracy
                         |> Expect.equal 100
             , test "returns 66.66% for a 2 corrected mistakes in a total of 4" <|
