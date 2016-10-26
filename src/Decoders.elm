@@ -1,5 +1,6 @@
-module Decoders exposing (exerciseDecoder, exercisesDecoder)
+module Decoders exposing (attemptDecoder, exerciseDecoder, exercisesDecoder)
 
+import Attempt exposing (Attempt)
 import Exercise exposing (Exercise)
 import Json.Decode as JD exposing ((:=))
 
@@ -15,3 +16,12 @@ exerciseDecoder =
         ("id" := JD.int)
         ("title" := JD.string)
         ("text" := JD.string)
+
+
+attemptDecoder : JD.Decoder Attempt
+attemptDecoder =
+    JD.object4 Attempt
+        (JD.maybe ("id" := JD.int))
+        ("exerciseId" := JD.int)
+        ("accuracy" := JD.float)
+        ("wpm" := JD.float)

@@ -5,7 +5,8 @@ import Exercise
 
 
 type alias Attempt =
-    { exerciseId : Int
+    { id : Maybe Int
+    , exerciseId : Int
     , accuracy : Float
     , wpm : Float
     }
@@ -13,7 +14,8 @@ type alias Attempt =
 
 init : Model -> Attempt
 init model =
-    { exerciseId = model.exercise.id
+    { id = Nothing
+    , exerciseId = model.exercise.id
     , accuracy = Exercise.accuracy model.exercise
     , wpm = Exercise.wpm model.exercise
     }

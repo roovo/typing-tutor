@@ -21,10 +21,18 @@ fetchExercises model errorMsg msg =
     get model "/exercises" Decoders.exercisesDecoder errorMsg msg
 
 
-createAttempt : Model -> Attempt -> (Http.Error -> Msg) -> (Exercise -> Msg) -> Cmd Msg
+createAttempt : Model -> Attempt -> (Http.Error -> Msg) -> (Attempt -> Msg) -> Cmd Msg
 createAttempt model attempt errorMsg msg =
-    -- post model "/attempts" (encodeAttempt attempt) Decoders.attemptDecoder errorMsg msg
-    get model "/exercises" Decoders.exerciseDecoder errorMsg msg
+    post model "/attempts" (encodeAttempt attempt) Decoders.attemptDecoder errorMsg msg
+
+
+encodeAttempt : Attempt -> JE.Value
+encodeAttempt attempt =
+    JE.object
+        [ ( "exerciseId", JE.int attempt.exerciseId )
+        , ( "accuracy", JE.float attempt.accuracy )
+        , ( "wpm", JE.float attempt.wpm )
+        ]
 
 
 defaultRequest : Model -> String -> Http.Request
