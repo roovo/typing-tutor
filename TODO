@@ -1,4 +1,11 @@
 - BUG -> doesn't like whitespace at the start of the first line
+         - needs to set current to the first real character
+           and the zipper too
+- BUG (probably) it should start in the right place if ther are
+  blank lines at the start of the exercise
+- BUG -> if empty lines contain whitespace it is not removed when
+         showing the exercise (try the elm exercise to see this)
+- remove ExampleExercise
 - show stats summaries
   - graph over time of accuracy and wpm
 - better combining of parsers perhaps using andMap instead of
@@ -7,14 +14,14 @@
   data from the backend (have been some discussions/posts on this recently)
 - don't get the exercise contents when getting the list of exercies
   just get it when you start the exercise
-- [Rob, Joe] show characters wot are mis-typed as they are entered
-- [Rob] advance the cursor whilst mis-typing so you can
+- [Rob, Joe, Tom] show characters wot are mis-typed as they are entered
+- [Rob, Tom] advance the cursor whilst mis-typing so you can
   see how many backspaces you need to type
 - auto-pause the timer if nothing typed for a while
 - track slow characters (as in slow to type)
 - pretty-fication
 - calculate statistics
-  - save tuples of (expected, actual) for mis-types
+  - perhaps save tuples of (expected, actual) for mis-types
       - only do this for the first mistake if there are more
         than one mistakes in a row
   - print which characters you got wrong
