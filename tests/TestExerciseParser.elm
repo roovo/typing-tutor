@@ -26,7 +26,7 @@ exerciseParser =
                 \() ->
                     ExerciseParser.toSteps ""
                         |> Expect.equal
-                            [ Step.end
+                            [ Step.initEnd
                             ]
             , test "returns steps for an newline terminated string" <|
                 \() ->
@@ -34,7 +34,7 @@ exerciseParser =
                         |> Expect.equal
                             [ Step.init "a"
                             , Step.init "b"
-                            , Step.end
+                            , Step.initEnd
                             ]
             , test "returns steps for a double newline terminated string" <|
                 \() ->
@@ -42,7 +42,7 @@ exerciseParser =
                         |> Expect.equal
                             [ Step.init "a"
                             , Step.init "b"
-                            , Step.end
+                            , Step.initEnd
                             ]
             , test "returns steps for an crlf terminated string" <|
                 \() ->
@@ -50,7 +50,7 @@ exerciseParser =
                         |> Expect.equal
                             [ Step.init "a"
                             , Step.init "b"
-                            , Step.end
+                            , Step.initEnd
                             ]
             , test "returns steps for an crlf terminated string" <|
                 \() ->
@@ -61,7 +61,7 @@ exerciseParser =
                             , Step.init "\x0D"
                             , Step.init "c"
                             , Step.init "d"
-                            , Step.end
+                            , Step.initEnd
                             ]
             , test "removes trailing whitespace from lines" <|
                 \() ->
@@ -72,7 +72,7 @@ exerciseParser =
                             , Step.init "b"
                             , Step.init "\x0D"
                             , Step.init "c"
-                            , Step.end
+                            , Step.initEnd
                             ]
             , test "returns steps for an unterminated string" <|
                 \() ->
@@ -80,7 +80,7 @@ exerciseParser =
                         |> Expect.equal
                             [ Step.init "a"
                             , Step.init "b"
-                            , Step.end
+                            , Step.initEnd
                             ]
             ]
         ]

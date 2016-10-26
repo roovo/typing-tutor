@@ -4,11 +4,11 @@ module Step
         , Direction(..)
         , Status(..)
         , consume
-        , end
         , init
+        , initEnd
+        , initSkip
         , isNotSkipped
         , makeCurrent
-        , skip
         )
 
 import Char
@@ -49,16 +49,16 @@ init string =
     }
 
 
-skip : String -> Step
-skip string =
+initSkip : String -> Step
+initSkip string =
     { content = string
     , status = Skip
     , moveTo = None
     }
 
 
-end : Step
-end =
+initEnd : Step
+initEnd =
     { content = ""
     , status = End
     , moveTo = None

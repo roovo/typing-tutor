@@ -47,7 +47,7 @@ removeTrailingReturns steps =
 
 addEnd : List Step -> List Step
 addEnd steps =
-    List.append steps [ Step.end ]
+    List.append steps [ Step.initEnd ]
 
 
 lines : Parser (List Step)
@@ -94,4 +94,4 @@ character =
 
 spaces : Parser Step
 spaces =
-    map Step.skip (regex " +")
+    map Step.initSkip (regex " +")

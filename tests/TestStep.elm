@@ -19,16 +19,16 @@ step =
                     Step.init "foo"
                         |> Expect.equal { content = "foo", status = Waiting, moveTo = None }
             ]
-        , describe "end"
+        , describe "initEnd"
             [ test "returns an empty step with a status of End and moveTo None" <|
                 \() ->
-                    Step.end
+                    Step.initEnd
                         |> Expect.equal { content = "", status = End, moveTo = None }
             ]
-        , describe "skip"
+        , describe "initSkip"
             [ test "returns a step with a status of Skip and moveTo None" <|
                 \() ->
-                    Step.skip "foo"
+                    Step.initSkip "foo"
                         |> Expect.equal { content = "foo", status = Skip, moveTo = None }
             ]
         , describe "consume"
@@ -118,7 +118,7 @@ step =
                         |> Expect.equal Current
             , test "leaves it as End if that's what it was" <|
                 \() ->
-                    Step.end
+                    Step.initEnd
                         |> Step.makeCurrent
                         |> .status
                         |> Expect.equal End
