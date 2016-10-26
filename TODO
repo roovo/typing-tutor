@@ -1,6 +1,4 @@
-- BUG - the api is serving up lines with trailling whitespace
-  should make it so that if it does it is removed...
-- fix the culr command so it ain't adding whitespace...
+- Exercise tests need updating
 - API & back end
   - save stats to a back end
 - BUG -> can get accuaracy of over 100% - perhaps it's cause I'm
@@ -66,3 +64,5 @@ done
 - API & back end
   - serve list of exercises from the back end
   - serve exercise from a back end
+- BUG - the api is serving up lines with trailling whitespace
+  should make it so that if it does it is removed...

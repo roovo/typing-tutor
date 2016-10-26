@@ -61,7 +61,7 @@ line =
     andThen
         (choice
             [ whitespaceAndCharacters
-            , manyTill character Char.eol
+            , manyTill character eol
             ]
         )
         (\r -> succeed (List.append r [ Step.init "\x0D" ]))
@@ -71,9 +71,15 @@ whitespaceAndCharacters : Parser (List Step)
 whitespaceAndCharacters =
     sequence
         [ count 1 leadingWhitepace
-        , manyTill character Char.eol
+        , manyTill character eol
         ]
         |> map (\l -> List.concatMap identity l)
+
+
+eol : Parser Char
+eol =
+    regex " *"
+        `andThen` \x -> Char.eol
 
 
 character : Parser Step

@@ -63,6 +63,17 @@ exerciseParser =
                             , Step.init "d"
                             , Step.end
                             ]
+            , test "removes trailing whitespace from lines" <|
+                \() ->
+                    ExerciseParser.toSteps "a \nb \nc"
+                        |> Expect.equal
+                            [ Step.init "a"
+                            , Step.init "\x0D"
+                            , Step.init "b"
+                            , Step.init "\x0D"
+                            , Step.init "c"
+                            , Step.end
+                            ]
             , test "returns steps for an unterminated string" <|
                 \() ->
                     ExerciseParser.toSteps "ab"
