@@ -5,6 +5,8 @@
   counting leading whitespace as a character??
 - show stats summaries
   - graph over time of accuracy and wpm
+- better combining of parsers perhaps using andMap instead of
+  map & List.concatMap
 - how to show a loading state when the page is drawn bu we're waiting for
   data from the backend (have been some discussions/posts on this recently)
 - don't get the exercise contents when getting the list of exercies

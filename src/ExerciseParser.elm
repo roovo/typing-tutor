@@ -31,7 +31,7 @@ toSteps string =
             |> flip String.append "\n"
             |> parse lines
             |> extractResult
-            |> removeTrailingWhitespace
+            |> removeTrailingReturns
             |> addEnd
 
 
@@ -39,8 +39,8 @@ toSteps string =
 -- PRIVATE FUNCTIONS
 
 
-removeTrailingWhitespace : List Step -> List Step
-removeTrailingWhitespace steps =
+removeTrailingReturns : List Step -> List Step
+removeTrailingReturns steps =
     steps
         |> dropWhileRight (\s -> s.content == "\x0D")
 
@@ -61,7 +61,7 @@ line =
     andThen
         (choice
             [ whitespaceAndCharacters
-            , manyTill character eol
+            , characters
             ]
         )
         (\r -> succeed (List.append r [ Step.init "\x0D" ]))
@@ -70,10 +70,15 @@ line =
 whitespaceAndCharacters : Parser (List Step)
 whitespaceAndCharacters =
     sequence
-        [ count 1 leadingWhitepace
-        , manyTill character eol
+        [ count 1 spaces
+        , characters
         ]
         |> map (\l -> List.concatMap identity l)
+
+
+characters : Parser (List Step)
+characters =
+    manyTill character eol
 
 
 eol : Parser Char
@@ -87,6 +92,6 @@ character =
     map Step.init (regex ".")
 
 
-leadingWhitepace : Parser Step
-leadingWhitepace =
+spaces : Parser Step
+spaces =
     map Step.skip (regex " +")
