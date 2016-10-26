@@ -1,9 +1,11 @@
-module Api exposing (createResult, fetchExercise, fetchExercises)
+module Api exposing (createAttempt, fetchExercise, fetchExercises)
 
+import Attempt exposing (Attempt)
 import Decoders
 import Exercise exposing (Exercise)
 import Http
 import Json.Decode as JD exposing ((:=))
+import Json.Encode as JE
 import Model exposing (Model)
 import Msg exposing (Msg)
 import Task
@@ -19,8 +21,9 @@ fetchExercises model errorMsg msg =
     get model "/exercises" Decoders.exercisesDecoder errorMsg msg
 
 
-createResult : Model -> (Http.Error -> Msg) -> (Exercise -> Msg) -> Cmd Msg
-createResult model errorMsg msg =
+createAttempt : Model -> Attempt -> (Http.Error -> Msg) -> (Exercise -> Msg) -> Cmd Msg
+createAttempt model attempt errorMsg msg =
+    -- post model "/attempts" (encodeAttempt attempt) Decoders.attemptDecoder errorMsg msg
     get model "/exercises" Decoders.exerciseDecoder errorMsg msg
 
 
@@ -39,3 +42,18 @@ get model path decoder errorMsg msg =
         (defaultRequest model path)
         |> Http.fromJson decoder
         |> Task.perform errorMsg msg
+
+
+post : Model -> String -> JE.Value -> JD.Decoder a -> (Http.Error -> Msg) -> (a -> Msg) -> Cmd Msg
+post model path encoded decoder errorMsg msg =
+    let
+        request =
+            defaultRequest model path
+    in
+        Http.send Http.defaultSettings
+            { request
+                | verb = "POST"
+                , body = Http.string (encoded |> JE.encode 0)
+            }
+            |> Http.fromJson decoder
+            |> Task.perform errorMsg msg

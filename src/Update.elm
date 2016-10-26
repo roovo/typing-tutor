@@ -1,6 +1,7 @@
 module Update exposing (update)
 
 import Api
+import Attempt
 import Char
 import Exercise
 import Msg exposing (Msg(..))
@@ -66,7 +67,7 @@ consumeChar keyCode model =
 cmdForNewChar : Model -> Cmd Msg
 cmdForNewChar model =
     if Exercise.isComplete model.exercise then
-        Api.createResult model (always NoOp) (always NoOp)
+        Api.createAttempt model (Attempt.init model) (always NoOp) (always NoOp)
     else
         Cmd.none
 
