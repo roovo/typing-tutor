@@ -1,4 +1,4 @@
-module Api exposing (fetchExercise, fetchExercises)
+module Api exposing (createResult, fetchExercise, fetchExercises)
 
 import Decoders
 import Exercise exposing (Exercise)
@@ -17,6 +17,11 @@ fetchExercise model id errorMsg msg =
 fetchExercises : Model -> (Http.Error -> Msg) -> (List Exercise -> Msg) -> Cmd Msg
 fetchExercises model errorMsg msg =
     get model "/exercises" Decoders.exercisesDecoder errorMsg msg
+
+
+createResult : Model -> (Http.Error -> Msg) -> (Exercise -> Msg) -> Cmd Msg
+createResult model errorMsg msg =
+    get model "/exercises" Decoders.exerciseDecoder errorMsg msg
 
 
 defaultRequest : Model -> String -> Http.Request

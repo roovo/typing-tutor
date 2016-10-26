@@ -1,5 +1,6 @@
 module Update exposing (update)
 
+import Api
 import Char
 import Exercise
 import Msg exposing (Msg(..))
@@ -46,17 +47,28 @@ consumeChar keyCode model =
     let
         lappedWatch =
             Stopwatch.lap model.stopwatch
+
+        newModel =
+            { model
+                | exercise =
+                    Exercise.consume
+                        (Char.fromCode keyCode)
+                        (Stopwatch.lastLap lappedWatch)
+                        model.exercise
+                , stopwatch = lappedWatch
+            }
     in
-        ( { model
-            | exercise =
-                Exercise.consume
-                    (Char.fromCode keyCode)
-                    (Stopwatch.lastLap lappedWatch)
-                    model.exercise
-            , stopwatch = lappedWatch
-          }
-        , Cmd.none
+        ( newModel
+        , cmdForNewChar newModel
         )
+
+
+cmdForNewChar : Model -> Cmd Msg
+cmdForNewChar model =
+    if Exercise.isComplete model.exercise then
+        Api.createResult model (always NoOp) (always NoOp)
+    else
+        Cmd.none
 
 
 logWithoutTick : Msg -> Msg
