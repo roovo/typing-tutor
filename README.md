@@ -8,9 +8,8 @@ keep working on it whilst it's fun tho.
 
 ## Running
 
-It's all in the front end at the moment and I'm using (the excellent)
-[elm-live](https://github.com/tomekwi/elm-live) to run things whilst
-developing.  To install this locally:
+I'm using (the excellent) [elm-live](https://github.com/tomekwi/elm-live)
+to run things whilst developing.  To install this locally:
 
 ```
 > npm install elm-live
@@ -21,6 +20,9 @@ then to run the project:
 ```
 > ./node_modules/.bin/elm-live src/Main.elm --pushstate
 ```
+
+
+## Back end API
 
 The back end api is currently using [JSON Server](https://github.com/typicode/json-server).
 On first use, copy across the database file:
