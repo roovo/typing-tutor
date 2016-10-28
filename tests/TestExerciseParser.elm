@@ -6,6 +6,7 @@ import ExerciseParser
 import Expect
 import Step
 import Test exposing (..)
+import String
 
 
 exerciseParser : Test
@@ -72,6 +73,28 @@ exerciseParser =
                             , Step.init "b"
                             , Step.init "\x0D"
                             , Step.init "c"
+                            , Step.initEnd
+                            ]
+            , test "returns skipped whitespace for leading whitespace" <|
+                \() ->
+                    ExerciseParser.toSteps "a\n  b\n"
+                        |> Expect.equal
+                            [ Step.init "a"
+                            , Step.init "\x0D"
+                            , Step.initSkip "  "
+                            , Step.init "b"
+                            , Step.initEnd
+                            ]
+            , test "skips the whole line if it only contains skipped characters" <|
+                \() ->
+                    ExerciseParser.toSteps "a\n  \n b\n"
+                        |> Expect.equal
+                            [ Step.init "a"
+                            , Step.init "\x0D"
+                            , Step.initSkip "  "
+                            , Step.initSkip "\x0D"
+                            , Step.initSkip " "
+                            , Step.init "b"
                             , Step.initEnd
                             ]
             , test "returns steps for an unterminated string" <|

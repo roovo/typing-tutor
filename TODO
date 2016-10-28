@@ -3,8 +3,6 @@
            and the zipper too
 - BUG (probably) it should start in the right place if ther are
   blank lines at the start of the exercise
-- BUG -> if empty lines contain whitespace it is not removed when
-         showing the exercise (try the elm exercise to see this)
 - remove ExampleExercise
 - show stats summaries
   - graph over time of accuracy and wpm
@@ -77,3 +75,5 @@ done
   - http://stackoverflow.com/questions/38021777/how-do-i-get-the-current-time-in-elm-0-17
 - BUG -> can get accuaracy of over 100% - perhaps it's cause I'm
   counting leading whitespace as a character??
+- BUG -> if empty lines contain whitespace it is not removed when
+         showing the exercise (try the elm exercise to see this)
