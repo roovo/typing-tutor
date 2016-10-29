@@ -1,3 +1,7 @@
+- thought.... would it make things simpler if the parser
+  returned a (List (List Step)) which would represent a List of Lines..
+  would have to think about the implications for end of lines that
+  need to be typed and those that don't
 - BUG -> doesn't like whitespace at the start of the first line
          - needs to set current to the first real character
            and the zipper too

@@ -1,67 +1,64 @@
 module ExerciseParser exposing (toSteps)
 
 import Char
-import Combine
-    exposing
-        ( Parser
-        , andThen
-        , choice
-        , count
-        , many
-        , manyTill
-        , map
-        , parse
-        , regex
-        , sequence
-        , succeed
-        )
+import Combine as P exposing (Parser)
 import Combine.Char as Char
+import Combine.Infix exposing ((<$>), (<*>), (*>), (<|>))
 import List.Extra exposing (dropWhileRight)
 import Step exposing (Step)
 import String
 
 
-toSteps string =
-    let
-        extractResult ( result, _ ) =
-            Result.withDefault [] result
-    in
-        string
-            |> String.trimRight
-            |> flip String.append "\n"
-            |> parse lines
-            |> extractResult
-            |> removeTrailingReturns
-            |> addEnd
+toSteps : String -> List Step
+toSteps =
+    preProcess
+        >> P.parse lines
+        >> postProcess
 
 
 
--- PRIVATE FUNCTIONS
+-- PRE/POST PROCESSING
+
+
+preProcess : String -> String
+preProcess =
+    flip String.append "\n" << String.trimRight
+
+
+postProcess : ( Result a (List Step), context ) -> List Step
+postProcess =
+    extractResult
+        >> removeTrailingReturns
+        >> addEnd
+
+
+extractResult : ( Result a (List Step), context ) -> List Step
+extractResult ( result, _ ) =
+    Result.withDefault [] result
 
 
 removeTrailingReturns : List Step -> List Step
-removeTrailingReturns steps =
-    steps
-        |> dropWhileRight (\s -> s.content == "\x0D")
+removeTrailingReturns =
+    dropWhileRight <| \s -> s.content == "\x0D"
 
 
 addEnd : List Step -> List Step
-addEnd steps =
-    List.append steps [ Step.initEnd ]
+addEnd =
+    flip List.append [ Step.initEnd ]
+
+
+
+-- PARSERS
 
 
 lines : Parser (List Step)
 lines =
-    many line
-        |> map (\l -> List.concatMap identity l)
+    liftA (List.concatMap identity) (P.many line)
 
 
 line : Parser (List Step)
 line =
-    choice
-        [ whitespaceLine
-        , lineWithContent
-        ]
+    whitespaceLine <|> lineWithContent
 
 
 whitespaceLine : Parser (List Step)
@@ -74,47 +71,52 @@ whitespaceLine =
                 |> Maybe.withDefault []
                 |> (flip (++) [ Step.initSkip "\x0D" ])
     in
-        map
+        P.map
             skipCompleteLine
-            (manyTill (regex " +") Char.eol)
+            (P.manyTill (P.regex " +") Char.eol)
 
 
 lineWithContent : Parser (List Step)
 lineWithContent =
-    andThen
-        (choice
-            [ whitespaceAndCharacters
-            , characters
-            ]
-        )
-        (\r -> succeed (List.append r [ Step.init "\x0D" ]))
+    P.andThen
+        (spacesThenCharacters <|> characters)
+        (\r -> P.succeed (List.append r [ Step.init "\x0D" ]))
 
 
-whitespaceAndCharacters : Parser (List Step)
-whitespaceAndCharacters =
-    sequence
-        [ count 1 spaces
-        , characters
-        ]
-        |> map (\l -> List.concatMap identity l)
+spacesThenCharacters : Parser (List Step)
+spacesThenCharacters =
+    liftA2 (++) (P.count 1 spaces) characters
 
 
 characters : Parser (List Step)
 characters =
-    manyTill character eol
+    P.manyTill character eol
 
 
 eol : Parser Char
 eol =
-    regex " *"
-        `andThen` \x -> Char.eol
+    P.regex " *" *> Char.eol
 
 
 character : Parser Step
 character =
-    map Step.init (regex ".")
+    liftA Step.init (P.regex ".")
 
 
 spaces : Parser Step
 spaces =
-    map Step.initSkip (regex " +")
+    liftA Step.initSkip (P.regex " +")
+
+
+
+-- HELPERS
+
+
+liftA : (a -> b) -> Parser a -> Parser b
+liftA f a =
+    f <$> a
+
+
+liftA2 : (a -> b -> c) -> Parser a -> Parser b -> Parser c
+liftA2 f a b =
+    f <$> a <*> b
