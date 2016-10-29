@@ -13,10 +13,10 @@ import TestStopwatch
 
 all : Test
 all =
-    describe "Tests"
-        [ TestExercise.exercise
-        , TestStep.step
-        , TestSafeZipper.safeZipper
-        , TestStopwatch.stopwatch
-        , TestExerciseParser.exerciseParser
+    describe "All Tests"
+        [ TestExercise.tests
+        , TestStep.tests
+        , TestSafeZipper.tests
+        , TestStopwatch.tests
+        , TestExerciseParser.tests
         ]
