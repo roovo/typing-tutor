@@ -1,4 +1,4 @@
-module TestStep exposing (..)
+module TestStep exposing (tests)
 
 import Char
 import Expect
