@@ -1,4 +1,4 @@
-module TestExercise exposing (..)
+module ExerciseTests exposing (all)
 
 import Char
 import Exercise exposing (Exercise)
@@ -7,8 +7,8 @@ import Step exposing (Step, Direction(..), Status(..))
 import Test exposing (..)
 
 
-tests : Test
-tests =
+all : Test
+all =
     describe "Exercise Tests"
         [ stepsTests
         , consumeTests

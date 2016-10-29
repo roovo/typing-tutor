@@ -1,4 +1,4 @@
-module TestExerciseParser exposing (..)
+module ExerciseParserTests exposing (all)
 
 import Combine exposing (many, manyTill, parse, regex)
 import Combine.Char as Char
@@ -9,8 +9,8 @@ import Test exposing (..)
 import String
 
 
-tests : Test
-tests =
+all : Test
+all =
     describe "ExerciseParser"
         [ experimentationTests
         , toStepsTests

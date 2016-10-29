@@ -1,4 +1,4 @@
-module TestDecoders exposing (tests)
+module DecoderTests exposing (all)
 
 import Decoders
 import ExerciseParser
@@ -9,8 +9,8 @@ import Test exposing (..)
 import List.Zipper as Zipper exposing (Zipper)
 
 
-tests : Test
-tests =
+all : Test
+all =
     describe "Decoders"
         [ attemptDecoderTests
         , exerciseDecoderTests

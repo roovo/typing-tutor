@@ -1,4 +1,4 @@
-module TestSafeZipper exposing (..)
+module SafeZipperTests exposing (all)
 
 import Char
 import SafeZipper
@@ -7,8 +7,8 @@ import Test exposing (..)
 import List.Zipper as Zipper
 
 
-tests : Test
-tests =
+all : Test
+all =
     describe "SafeZipper"
         [ nextTests
         , previousTests

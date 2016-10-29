@@ -1,4 +1,4 @@
-module TestStep exposing (tests)
+module StepTests exposing (all)
 
 import Char
 import Expect
@@ -10,8 +10,8 @@ backspaceChar =
     (Char.fromCode 8)
 
 
-tests : Test
-tests =
+all : Test
+all =
     describe "Step Tests"
         [ initTests
         , consumeTests

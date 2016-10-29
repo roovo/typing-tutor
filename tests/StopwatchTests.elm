@@ -1,12 +1,12 @@
-module TestStopwatch exposing (..)
+module StopwatchTests exposing (all)
 
 import Stopwatch exposing (Stopwatch)
 import Expect
 import Test exposing (..)
 
 
-tests : Test
-tests =
+all : Test
+all =
     describe "Stopwatch"
         [ basicOperationTests
         , lapTimerTests
