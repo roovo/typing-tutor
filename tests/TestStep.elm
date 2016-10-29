@@ -16,6 +16,7 @@ tests =
         [ initTests
         , consumeTests
         , makeCurrentTests
+        , isTypableTests
         ]
 
 
@@ -147,4 +148,37 @@ makeCurrentTests =
                     |> Step.makeCurrent
                     |> .status
                     |> Expect.equal (Error 1)
+        ]
+
+
+isTypableTests : Test
+isTypableTests =
+    describe "isTypable"
+        [ test "returns True for a normal step" <|
+            \() ->
+                Step.init "a"
+                    |> Step.isTypable
+                    |> Expect.equal True
+        , test "returns True for a consumed step" <|
+            \() ->
+                Step.init "a"
+                    |> Step.consume 'a'
+                    |> Step.isTypable
+                    |> Expect.equal True
+        , test "returns True for an errored step" <|
+            \() ->
+                Step.init "a"
+                    |> Step.consume 'b'
+                    |> Step.isTypable
+                    |> Expect.equal True
+        , test "returns False for a Skip step" <|
+            \() ->
+                Step.initSkip "a"
+                    |> Step.isTypable
+                    |> Expect.equal False
+        , test "returns False for an End step" <|
+            \() ->
+                Step.initEnd
+                    |> Step.isTypable
+                    |> Expect.equal False
         ]

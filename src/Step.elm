@@ -7,7 +7,7 @@ module Step
         , init
         , initEnd
         , initSkip
-        , isNotSkipped
+        , isTypable
         , makeCurrent
         )
 
@@ -99,9 +99,9 @@ makeCurrent step =
             step
 
 
-isNotSkipped : Step -> Bool
-isNotSkipped step =
-    step.status /= Skip
+isTypable : Step -> Bool
+isTypable step =
+    not <| List.member step.status [ Skip, End ]
 
 
 

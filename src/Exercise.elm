@@ -119,9 +119,8 @@ exerciseCharacterCount exercise =
     let
         nonSkippedStepCount =
             Zipper.toList
-                >> List.filter Step.isNotSkipped
+                >> List.filter Step.isTypable
                 >> List.length
-                >> flip (-) 1
     in
         exercise.steps
             |> Maybe.map nonSkippedStepCount
