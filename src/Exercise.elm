@@ -74,11 +74,13 @@ consume char timeTaken exercise =
 
 isComplete : Exercise -> Bool
 isComplete exercise =
-    exercise.steps
-        |> Maybe.map Zipper.current
-        |> Maybe.map .status
-        |> Maybe.map ((==) End)
-        |> Maybe.withDefault False
+    let
+        isCurrentStatusEnd =
+            Zipper.current >> .status >> (==) End
+    in
+        exercise.steps
+            |> Maybe.map isCurrentStatusEnd
+            |> Maybe.withDefault False
 
 
 timeTaken : Exercise -> Time
@@ -114,12 +116,16 @@ wpm exercise =
 
 exerciseCharacterCount : Exercise -> Int
 exerciseCharacterCount exercise =
-    exercise.steps
-        |> Maybe.map Zipper.toList
-        |> Maybe.map (List.filter Step.isNotSkipped)
-        |> Maybe.map List.length
-        |> Maybe.map (flip (-) 1)
-        |> Maybe.withDefault 0
+    let
+        nonSkippedStepCount =
+            Zipper.toList
+                >> List.filter Step.isNotSkipped
+                >> List.length
+                >> flip (-) 1
+    in
+        exercise.steps
+            |> Maybe.map nonSkippedStepCount
+            |> Maybe.withDefault 0
 
 
 addCharacter : Char -> Int -> Int
