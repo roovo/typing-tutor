@@ -1,7 +1,7 @@
+- move event stream into Attempt
+- move wpm and accuracy calcs into Attempt
 - show stats summaries
   - graph over time of accuracy and wpm
-- better combining of parsers perhaps using andMap instead of
-  map & List.concatMap
 - how to show a loading state when the page is drawn bu we're waiting for
   data from the backend (have been some discussions/posts on this recently)
 - don't get the exercise contents when getting the list of exercies
@@ -76,4 +76,6 @@ done
            and the zipper too
 - BUG (probably) it should start in the right place if ther are
   blank lines at the start of the exercise
+- better combining of parsers perhaps using andMap instead of
+  map & List.concatMap
 - remove ExampleExercise
