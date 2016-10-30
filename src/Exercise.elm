@@ -28,7 +28,7 @@ backspaceChar =
 type alias Exercise =
     { id : Int
     , title : String
-    , steps : Maybe (Zipper Step)
+    , steps : Zipper Step
     , typedCharacterCount : Int
     , timeTaken : Float
     }
@@ -41,7 +41,8 @@ init id title text =
     , steps =
         ExerciseParser.toSteps text
             |> Zipper.fromList
-            |> Maybe.map toInitialStep
+            |> Maybe.withDefault (Zipper.singleton Step.initEnd)
+            |> toInitialStep
     , typedCharacterCount = 0
     , timeTaken = 0
     }
@@ -49,9 +50,7 @@ init id title text =
 
 steps : Exercise -> List Step
 steps exercise =
-    exercise.steps
-        |> Maybe.map Zipper.toList
-        |> Maybe.withDefault []
+    Zipper.toList exercise.steps
 
 
 consume : Char -> Time -> Exercise -> Exercise
@@ -64,9 +63,9 @@ consume char timeTaken exercise =
             { exercise
                 | steps =
                     exercise.steps
-                        |> Maybe.map (updateCurrentStep char)
-                        |> Maybe.map moveZipper
-                        |> Maybe.map setCurrentStatus
+                        |> (updateCurrentStep char)
+                        |> moveZipper
+                        |> setCurrentStatus
                 , typedCharacterCount = addCharacter char exercise.typedCharacterCount
                 , timeTaken = exercise.timeTaken + timeTaken
             }
@@ -78,9 +77,7 @@ isComplete exercise =
         isCurrentStatusEnd =
             Zipper.current >> .status >> (==) End
     in
-        exercise.steps
-            |> Maybe.map isCurrentStatusEnd
-            |> Maybe.withDefault False
+        isCurrentStatusEnd exercise.steps
 
 
 timeTaken : Exercise -> Time
@@ -122,9 +119,7 @@ exerciseCharacterCount exercise =
                 >> List.filter Step.isTypable
                 >> List.length
     in
-        exercise.steps
-            |> Maybe.map nonSkippedStepCount
-            |> Maybe.withDefault 0
+        nonSkippedStepCount exercise.steps
 
 
 addCharacter : Char -> Int -> Int

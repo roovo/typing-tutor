@@ -50,7 +50,8 @@ exerciseDecoderTests =
                             , steps =
                                 ExerciseParser.toSteps "a"
                                     |> Zipper.fromList
-                                    |> Maybe.map (Zipper.update Step.makeCurrent)
+                                    |> Maybe.withDefault (Zipper.singleton Step.initEnd)
+                                    |> (Zipper.update Step.makeCurrent)
                             , typedCharacterCount = 0
                             , timeTaken = 0
                             }
