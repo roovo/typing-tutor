@@ -31,6 +31,7 @@ attemptDecoderTests =
                             , exerciseId = 2
                             , accuracy = 95.3
                             , wpm = 31.71
+                            , events = []
                             }
                         )
         ]

@@ -1,6 +1,7 @@
 module Exercise
     exposing
-        ( Exercise
+        ( Event
+        , Exercise
         , accuracy
         , consume
         , init
