@@ -13,7 +13,7 @@ curl -X "POST" "http://localhost:5000/exercises" \
      -H "Accept: application/json" \
      -d $'{
   "title": "3 lines",
-  "text": "Something to type\\n  that spans multiple lines\\n  in fact there are 3 of them!"
+  "text": "  \\n  Something to type\\n  that spans multiple lines\\n  in fact there are 3 of them!"
 }'
 
 ## add 1 line

@@ -21,7 +21,7 @@ all =
 
 stepsTests : Test
 stepsTests =
-    describe "steps"
+    describe "init / steps"
         [ test "returns a list with only the end item for an empty string" <|
             \() ->
                 exerciseWithText ""
@@ -33,6 +33,30 @@ stepsTests =
                     |> Exercise.steps
                     |> Expect.equal
                         [ { content = "a", status = Current, moveTo = None }
+                        , { content = "b", status = Waiting, moveTo = None }
+                        , { content = "c", status = Waiting, moveTo = None }
+                        , { content = "", status = End, moveTo = None }
+                        ]
+        , test "skips whitespace at the start of the first line" <|
+            \() ->
+                exerciseWithText "  abc"
+                    |> Exercise.steps
+                    |> Expect.equal
+                        [ { content = "  ", status = Skip, moveTo = None }
+                        , { content = "a", status = Current, moveTo = None }
+                        , { content = "b", status = Waiting, moveTo = None }
+                        , { content = "c", status = Waiting, moveTo = None }
+                        , { content = "", status = End, moveTo = None }
+                        ]
+        , test "skips whitespace-only lines at the start" <|
+            \() ->
+                exerciseWithText "  \n  abc"
+                    |> Exercise.steps
+                    |> Expect.equal
+                        [ { content = "  ", status = Skip, moveTo = None }
+                        , { content = "\x0D", status = Skip, moveTo = None }
+                        , { content = "  ", status = Skip, moveTo = None }
+                        , { content = "a", status = Current, moveTo = None }
                         , { content = "b", status = Waiting, moveTo = None }
                         , { content = "c", status = Waiting, moveTo = None }
                         , { content = "", status = End, moveTo = None }

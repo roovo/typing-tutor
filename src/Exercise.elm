@@ -41,7 +41,7 @@ init id title text =
     , steps =
         ExerciseParser.toSteps text
             |> Zipper.fromList
-            |> Maybe.map setCurrentStatus
+            |> Maybe.map toInitialStep
     , typedCharacterCount = 0
     , timeTaken = 0
     }
@@ -171,6 +171,23 @@ skipOver direction steps =
 setCurrentStatus : Zipper Step -> Zipper Step
 setCurrentStatus steps =
     Zipper.update Step.makeCurrent steps
+
+
+goForwardIfSkip : Zipper Step -> Zipper Step
+goForwardIfSkip steps =
+    let
+        currentStatus =
+            (Zipper.current steps).status
+    in
+        if currentStatus == Skip then
+            skipOver Next steps
+        else
+            steps
+
+
+toInitialStep : Zipper Step -> Zipper Step
+toInitialStep =
+    goForwardIfSkip >> setCurrentStatus
 
 
 zipperMover : Direction -> (Zipper Step -> Zipper Step)
