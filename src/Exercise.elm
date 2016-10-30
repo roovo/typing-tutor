@@ -75,9 +75,31 @@ consume char timeTaken exercise =
                         |> (updateCurrentStep char)
                         |> moveZipper
                         |> setCurrentStatus
+                , events = logEvent char timeTaken exercise
                 , typedCharacterCount = addCharacter char exercise.typedCharacterCount
                 , timeTaken = exercise.timeTaken + timeTaken
             }
+
+
+logEvent : Char -> Time -> Exercise -> List Event
+logEvent char timeTaken exercise =
+    let
+        currentStep =
+            Zipper.current exercise.steps
+    in
+        case Step.isTypable currentStep of
+            True ->
+                let
+                    newEvent =
+                        { expected = currentStep.content
+                        , actual = String.fromChar char
+                        , timeTaken = timeTaken
+                        }
+                in
+                    newEvent :: exercise.events
+
+            False ->
+                exercise.events
 
 
 isComplete : Exercise -> Bool
