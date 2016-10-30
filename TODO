@@ -1,4 +1,3 @@
-- remove ExampleExercise
 - show stats summaries
   - graph over time of accuracy and wpm
 - better combining of parsers perhaps using andMap instead of
@@ -77,3 +76,4 @@ done
            and the zipper too
 - BUG (probably) it should start in the right place if ther are
   blank lines at the start of the exercise
+- remove ExampleExercise
