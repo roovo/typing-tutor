@@ -63,29 +63,21 @@ line =
 
 whitespaceLine : Parser (List Step)
 whitespaceLine =
-    let
-        skipCompleteLine spaces =
-            List.head spaces
-                |> Maybe.map Step.initSkip
-                |> Maybe.map (flip (::) [])
-                |> Maybe.withDefault []
-                |> (flip (++) [ Step.initSkip "\x0D" ])
-    in
-        P.map
-            skipCompleteLine
-            (P.manyTill (P.regex " +") Char.eol)
+    liftA2 (++)
+        (P.manyTill spaces Char.eol)
+        (P.succeed [ Step.initSkip "\x0D" ])
 
 
 lineWithContent : Parser (List Step)
 lineWithContent =
-    P.andThen
+    liftA2 (++)
         (spacesThenCharacters <|> characters)
-        (\r -> P.succeed (List.append r [ Step.init "\x0D" ]))
+        (P.succeed [ Step.init "\x0D" ])
 
 
 spacesThenCharacters : Parser (List Step)
 spacesThenCharacters =
-    liftA2 (++) (P.count 1 spaces) characters
+    liftA2 (::) spaces characters
 
 
 characters : Parser (List Step)
