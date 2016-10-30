@@ -162,7 +162,7 @@ viewTests =
                     |> Expect.equal "00:00"
         , test "is 00:04 if the time is 4748.97312" <|
             \() ->
-                Stopwatch.view 4748.97312
+                Stopwatch.view 4748
                     |> Expect.equal "00:04"
         , test "is 00:59 if the time is 59999" <|
             \() ->
@@ -174,7 +174,7 @@ viewTests =
                     |> Expect.equal "01:00"
         , test "is 02:04 if the time is 124748.97312" <|
             \() ->
-                Stopwatch.view 124748.97312
+                Stopwatch.view 124748
                     |> Expect.equal "02:04"
         , test "is 126:59 if the time is 7619023" <|
             \() ->

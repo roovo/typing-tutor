@@ -37,7 +37,7 @@ type alias Exercise =
 type alias Event =
     { expected : String
     , actual : String
-    , timeTaken : Time
+    , timeTaken : Int
     }
 
 
@@ -88,7 +88,7 @@ logEvent char timeTaken exercise =
                     newEvent =
                         { expected = currentStep.content
                         , actual = String.fromChar char
-                        , timeTaken = timeTaken
+                        , timeTaken = round timeTaken
                         }
                 in
                     newEvent :: exercise.events
@@ -106,7 +106,7 @@ isComplete exercise =
         isCurrentStatusEnd exercise.steps
 
 
-timeTaken : Exercise -> Time
+timeTaken : Exercise -> Int
 timeTaken exercise =
     exercise.events
         |> List.map .timeTaken
@@ -131,7 +131,7 @@ wpm : Exercise -> Float
 wpm exercise =
     let
         timeMins =
-            timeTaken exercise / 60000
+            toFloat (timeTaken exercise) / 60000
     in
         if timeMins == 0 then
             0

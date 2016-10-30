@@ -42,7 +42,7 @@ encodeEvent event =
     tuple3Encoder
         JE.string
         JE.string
-        JE.float
+        JE.int
         ( event.expected, event.actual, event.timeTaken )
 
 
