@@ -53,7 +53,6 @@ exerciseDecoderTests =
                                     |> Maybe.withDefault (Zipper.singleton Step.initEnd)
                                     |> (Zipper.update Step.makeCurrent)
                             , events = []
-                            , typedCharacterCount = 0
                             , timeTaken = 0
                             }
                         )

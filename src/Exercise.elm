@@ -22,7 +22,7 @@ import Time exposing (Time)
 
 
 backspaceChar =
-    (Char.fromCode 8)
+    String.fromChar (Char.fromCode 8)
 
 
 type alias Exercise =
@@ -30,7 +30,6 @@ type alias Exercise =
     , title : String
     , steps : Zipper Step
     , events : List Event
-    , typedCharacterCount : Int
     , timeTaken : Float
     }
 
@@ -52,7 +51,6 @@ init id title text =
             |> Maybe.withDefault (Zipper.singleton Step.initEnd)
             |> toInitialStep
     , events = []
-    , typedCharacterCount = 0
     , timeTaken = 0
     }
 
@@ -76,7 +74,6 @@ consume char timeTaken exercise =
                         |> moveZipper
                         |> setCurrentStatus
                 , events = logEvent char timeTaken exercise
-                , typedCharacterCount = addCharacter char exercise.typedCharacterCount
                 , timeTaken = exercise.timeTaken + timeTaken
             }
 
@@ -118,11 +115,11 @@ timeTaken exercise =
 
 accuracy : Exercise -> Float
 accuracy exercise =
-    if exercise.typedCharacterCount == 0 then
+    if typedCharacterCount exercise == 0 then
         0
     else
         (toFloat <| exerciseCharacterCount exercise)
-            / (toFloat <| exercise.typedCharacterCount)
+            / (toFloat <| typedCharacterCount exercise)
             * 100
 
 
@@ -142,23 +139,24 @@ wpm exercise =
 -- PRIVATE FUNCTIONS
 
 
+matchedEvents : List Event -> List Event
+matchedEvents =
+    List.filter (\e -> e.actual == e.expected)
+
+
+typedEvents : List Event -> List Event
+typedEvents =
+    List.filter (\e -> e.actual /= backspaceChar)
+
+
 exerciseCharacterCount : Exercise -> Int
 exerciseCharacterCount exercise =
-    let
-        nonSkippedStepCount =
-            Zipper.toList
-                >> List.filter Step.isTypable
-                >> List.length
-    in
-        nonSkippedStepCount exercise.steps
+    List.length (matchedEvents exercise.events)
 
 
-addCharacter : Char -> Int -> Int
-addCharacter char currentCount =
-    if char == backspaceChar then
-        currentCount
-    else
-        currentCount + 1
+typedCharacterCount : Exercise -> Int
+typedCharacterCount exercise =
+    List.length (typedEvents exercise.events)
 
 
 updateCurrentStep : Char -> Zipper Step -> Zipper Step

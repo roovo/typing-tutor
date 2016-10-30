@@ -252,12 +252,12 @@ accuracyTests =
                 exerciseWithText "a"
                     |> Exercise.accuracy
                     |> Expect.equal 0
-        , test "returns 100% for a single character with only a single bad character typed" <|
+        , test "returns 0% for a single character with only a single bad character typed" <|
             \() ->
                 exerciseWithText "a"
                     |> Exercise.consume 'b' 0
                     |> Exercise.accuracy
-                    |> Expect.equal 100
+                    |> Expect.equal 0
         , test "returns 50% for a single character with a corrected single bad character typed" <|
             \() ->
                 exerciseWithText "a"
