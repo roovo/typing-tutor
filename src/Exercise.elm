@@ -29,8 +29,16 @@ type alias Exercise =
     { id : Int
     , title : String
     , steps : Zipper Step
+    , events : List Event
     , typedCharacterCount : Int
     , timeTaken : Float
+    }
+
+
+type alias Event =
+    { expected : String
+    , actual : String
+    , timeTaken : Time
     }
 
 
@@ -43,6 +51,7 @@ init id title text =
             |> Zipper.fromList
             |> Maybe.withDefault (Zipper.singleton Step.initEnd)
             |> toInitialStep
+    , events = []
     , typedCharacterCount = 0
     , timeTaken = 0
     }
