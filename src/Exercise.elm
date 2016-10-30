@@ -30,7 +30,6 @@ type alias Exercise =
     , title : String
     , steps : Zipper Step
     , events : List Event
-    , timeTaken : Float
     }
 
 
@@ -51,7 +50,6 @@ init id title text =
             |> Maybe.withDefault (Zipper.singleton Step.initEnd)
             |> toInitialStep
     , events = []
-    , timeTaken = 0
     }
 
 
@@ -74,7 +72,6 @@ consume char timeTaken exercise =
                         |> moveZipper
                         |> setCurrentStatus
                 , events = logEvent char timeTaken exercise
-                , timeTaken = exercise.timeTaken + timeTaken
             }
 
 
@@ -110,7 +107,13 @@ isComplete exercise =
 
 timeTaken : Exercise -> Time
 timeTaken exercise =
-    exercise.timeTaken
+    exercise.events
+        |> List.map .timeTaken
+        |> List.sum
+
+
+
+-- exercise.timeTaken
 
 
 accuracy : Exercise -> Float

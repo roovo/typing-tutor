@@ -71,7 +71,7 @@ viewResults exercise =
                 , Html.br [] []
                 , Html.text <|
                     "Time taken: "
-                        ++ Stopwatch.view exercise.timeTaken
+                        ++ Stopwatch.view (Exercise.timeTaken exercise)
                 ]
             ]
         ]
