@@ -2,7 +2,7 @@ module Api exposing (createAttempt, fetchExercise, fetchExercises)
 
 import Attempt exposing (Attempt)
 import Decoders
-import Exercise exposing (Exercise)
+import Exercise exposing (Event, Exercise)
 import Http
 import Json.Decode as JD exposing ((:=))
 import Json.Encode as JE
@@ -33,7 +33,22 @@ encodeAttempt attempt =
         , ( "completedAt", JE.float attempt.completedAt )
         , ( "accuracy", JE.float attempt.accuracy )
         , ( "wpm", JE.float attempt.wpm )
+        , ( "events", JE.list (List.map encodeEvent attempt.events) )
         ]
+
+
+encodeEvent : Event -> JE.Value
+encodeEvent event =
+    tuple3Encoder
+        JE.string
+        JE.string
+        JE.float
+        ( event.expected, event.actual, event.timeTaken )
+
+
+tuple3Encoder : (a -> JE.Value) -> (b -> JE.Value) -> (c -> JE.Value) -> ( a, b, c ) -> JE.Value
+tuple3Encoder enc1 enc2 enc3 ( val1, val2, val3 ) =
+    JE.list [ enc1 val1, enc2 val2, enc3 val3 ]
 
 
 defaultRequest : Model -> String -> Http.Request
