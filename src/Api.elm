@@ -2,7 +2,8 @@ module Api exposing (createAttempt, fetchExercise, fetchExercises)
 
 import Attempt exposing (Attempt)
 import Decoders
-import Exercise exposing (Event, Exercise)
+import Event exposing (Event)
+import Exercise exposing (Exercise)
 import Http
 import Json.Decode as JD exposing ((:=))
 import Json.Encode as JE

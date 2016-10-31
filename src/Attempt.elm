@@ -1,6 +1,7 @@
 module Attempt exposing (Attempt, init)
 
-import Exercise exposing (Event)
+import Event exposing (Event)
+import Exercise
 import Model exposing (Model)
 import Time exposing (Time)
 

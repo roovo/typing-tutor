@@ -1,5 +1,6 @@
-api/db.json
+elm.js
 index.html
+api/db.json
 elm-stuff/*
 node_modules/*
 tmp/*

@@ -1,7 +1,6 @@
 module Exercise
     exposing
-        ( Event
-        , Exercise
+        ( Exercise
         , accuracy
         , consume
         , init
@@ -12,6 +11,7 @@ module Exercise
         )
 
 import Char
+import Event exposing (Event)
 import ExerciseParser
 import Html exposing (Html)
 import Html.Attributes
@@ -31,13 +31,6 @@ type alias Exercise =
     , title : String
     , steps : Zipper Step
     , events : List Event
-    }
-
-
-type alias Event =
-    { expected : String
-    , actual : String
-    , timeTaken : Int
     }
 
 
@@ -111,10 +104,6 @@ timeTaken exercise =
     exercise.events
         |> List.map .timeTaken
         |> List.sum
-
-
-
--- exercise.timeTaken
 
 
 accuracy : Exercise -> Float
