@@ -37,7 +37,7 @@ update msg model =
 
         GotTime timeNow ->
             ( model
-            , Api.createAttempt model (Attempt.init timeNow model) (always NoOp) (always NoOp)
+            , Api.createAttempt model (Attempt.init timeNow model.exercise) (always NoOp) (always NoOp)
             )
 
         GotExercises exercises ->

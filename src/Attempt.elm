@@ -1,8 +1,8 @@
 module Attempt exposing (Attempt, init)
 
 import Event exposing (Event)
-import Exercise
-import Model exposing (Model)
+import Exercise exposing (Exercise)
+import Model
 import Time exposing (Time)
 
 
@@ -16,12 +16,12 @@ type alias Attempt =
     }
 
 
-init : Time -> Model -> Attempt
-init time model =
+init : Time -> Exercise -> Attempt
+init time exercise =
     { id = Nothing
     , completedAt = time
-    , exerciseId = model.exercise.id
-    , accuracy = Event.accuracy model.exercise.events
-    , wpm = Event.wpm model.exercise.events
-    , events = model.exercise.events
+    , exerciseId = exercise.id
+    , accuracy = Event.accuracy exercise.events
+    , wpm = Event.wpm exercise.events
+    , events = exercise.events
     }
