@@ -2,6 +2,7 @@ module View.Exercises.Run exposing (view)
 
 import Html exposing (Html)
 import Html.Attributes
+import Event
 import Exercise exposing (Exercise)
 import Model exposing (Model)
 import Msg exposing (Msg)
@@ -62,17 +63,17 @@ viewResults exercise =
             , Html.p []
                 [ Html.text <|
                     "Accuracy: "
-                        ++ (percentage <| Exercise.accuracy exercise)
+                        ++ (percentage <| Event.accuracy exercise.events)
                 , Html.br [] []
                 , Html.text <|
                     "Speed: "
-                        ++ toString (round <| Exercise.wpm exercise)
+                        ++ toString (round <| Event.wpm exercise.events)
                         ++ " WPM"
                 , Html.br [] []
                 , Html.br [] []
                 , Html.text <|
                     "Time taken: "
-                        ++ Stopwatch.view (Exercise.timeTaken exercise)
+                        ++ Stopwatch.view (Event.timeTaken exercise.events)
                 ]
             ]
         ]

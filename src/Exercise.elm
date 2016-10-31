@@ -1,16 +1,12 @@
 module Exercise
     exposing
         ( Exercise
-        , accuracy
         , consume
         , init
         , isComplete
         , steps
-        , timeTaken
-        , wpm
         )
 
-import Char
 import Event exposing (Event)
 import ExerciseParser
 import Html exposing (Html)
@@ -20,10 +16,6 @@ import SafeZipper
 import Step exposing (Step, Direction(..), Status(..))
 import String
 import Time exposing (Time)
-
-
-backspaceChar =
-    String.fromChar (Char.fromCode 8)
 
 
 type alias Exercise =
@@ -99,57 +91,8 @@ isComplete exercise =
         isCurrentStatusEnd exercise.steps
 
 
-timeTaken : Exercise -> Int
-timeTaken exercise =
-    exercise.events
-        |> List.map .timeTaken
-        |> List.sum
-
-
-accuracy : Exercise -> Float
-accuracy exercise =
-    if typedCharacterCount exercise == 0 then
-        0
-    else
-        (toFloat <| exerciseCharacterCount exercise)
-            / (toFloat <| typedCharacterCount exercise)
-            * 100
-
-
-wpm : Exercise -> Float
-wpm exercise =
-    let
-        timeMins =
-            toFloat (timeTaken exercise) / 60000
-    in
-        if timeMins == 0 then
-            0
-        else
-            (toFloat (exerciseCharacterCount exercise) / 5) / timeMins
-
-
 
 -- PRIVATE FUNCTIONS
-
-
-matchedEvents : List Event -> List Event
-matchedEvents =
-    List.filter (\e -> e.actual == e.expected)
-
-
-typedEvents : List Event -> List Event
-typedEvents =
-    List.filter (\e -> e.actual /= backspaceChar)
-
-
-exerciseCharacterCount : Exercise -> Int
-exerciseCharacterCount exercise =
-    List.length (matchedEvents exercise.events)
-
-
-typedCharacterCount : Exercise -> Int
-typedCharacterCount exercise =
-    List.length (typedEvents exercise.events)
 
 
 updateCurrentStep : Char -> Zipper Step -> Zipper Step

@@ -5,6 +5,7 @@ import Expect
 import Exercise exposing (Exercise)
 import Test exposing (..)
 import DecoderTests
+import EventTests
 import ExerciseTests
 import ExerciseParserTests
 import SafeZipperTests
@@ -16,6 +17,7 @@ all : Test
 all =
     describe "All Tests"
         [ DecoderTests.all
+        , EventTests.all
         , ExerciseTests.all
         , ExerciseParserTests.all
         , SafeZipperTests.all

@@ -21,7 +21,7 @@ init time model =
     { id = Nothing
     , completedAt = time
     , exerciseId = model.exercise.id
-    , accuracy = Exercise.accuracy model.exercise
-    , wpm = Exercise.wpm model.exercise
+    , accuracy = Event.accuracy model.exercise.events
+    , wpm = Event.wpm model.exercise.events
     , events = model.exercise.events
     }
