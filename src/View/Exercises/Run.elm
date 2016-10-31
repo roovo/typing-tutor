@@ -40,7 +40,7 @@ stopwatchView model =
             Html.p []
                 [ Html.text <|
                     Stopwatch.view <|
-                        floor model.stopwatch.time
+                        model.stopwatch.time
                 ]
 
 

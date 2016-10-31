@@ -13,39 +13,49 @@ type alias Event =
 
 accuracy : List Event -> Float
 accuracy events =
-    if typedCharacterCount events == 0 then
-        0
-    else
-        (toFloat <| exerciseCharacterCount events)
-            / (toFloat <| typedCharacterCount events)
-            * 100
+    case howManyTyped events of
+        0 ->
+            0
+
+        n ->
+            howManyCharacters events / n * 100
 
 
-timeTaken : List Event -> Int
-timeTaken events =
-    events
-        |> List.map .timeTaken
-        |> List.sum
+timeTaken : List Event -> Float
+timeTaken =
+    toFloat << List.sum << List.map .timeTaken
 
 
 wpm : List Event -> Float
 wpm events =
-    let
-        timeMins =
-            toFloat (timeTaken events) / 60000
-    in
-        if timeMins == 0 then
+    case timeTaken events of
+        0 ->
             0
-        else
-            (toFloat (exerciseCharacterCount events) / 5) / timeMins
+
+        n ->
+            howManyWords events / n * 60000
 
 
 
 -- PRIVATE FUNCTIONS
 
 
+lettersPerWord =
+    5
+
+
 backspaceChar =
-    String.fromChar (Char.fromCode 8)
+    String.fromChar << Char.fromCode <| 8
+
+
+howManyWords : List Event -> Float
+howManyWords events =
+    ((howManyCharacters events) / lettersPerWord)
+
+
+timeTakenMins : List Event -> Float
+timeTakenMins events =
+    timeTaken events / 60000
 
 
 matchedEvents : List Event -> List Event
@@ -58,11 +68,11 @@ typedEvents =
     List.filter (\e -> e.actual /= backspaceChar)
 
 
-exerciseCharacterCount : List Event -> Int
-exerciseCharacterCount events =
-    List.length (matchedEvents events)
+howManyCharacters : List Event -> Float
+howManyCharacters =
+    toFloat << List.length << matchedEvents
 
 
-typedCharacterCount : List Event -> Int
-typedCharacterCount events =
-    List.length (typedEvents events)
+howManyTyped : List Event -> Float
+howManyTyped =
+    toFloat << List.length << typedEvents
