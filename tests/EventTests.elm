@@ -57,6 +57,17 @@ accuracyTests =
                 ]
                     |> Event.accuracy
                     |> Expect.equal 100
+        , test "doesn't count correctly typed characters when in error state" <|
+            \() ->
+                [ Event "a" "a" 0
+                , Event "b" "a" 0
+                , Event "b" "b" 0
+                , Event "b" "\x08" 0
+                , Event "b" "\x08" 0
+                , Event "b" "b" 0
+                ]
+                    |> Event.accuracy
+                    |> Expect.equal 50
         , test "returns 66.66% for a 2 corrected mistakes in a total of 4" <|
             \() ->
                 [ Event "a" "a" 0
