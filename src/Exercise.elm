@@ -1,9 +1,12 @@
 module Exercise
     exposing
         ( Exercise
+        , Printable
+        , Style(..)
         , consume
         , init
         , isComplete
+        , printables
         , steps
         )
 
@@ -26,6 +29,19 @@ type alias Exercise =
     }
 
 
+type Style
+    = SCurrent
+    | SError
+    | SCompleted
+    | SWaiting
+
+
+type alias Printable =
+    { content : String
+    , style : Style
+    }
+
+
 init : Int -> String -> String -> Exercise
 init id title text =
     { id = id
@@ -37,6 +53,101 @@ init id title text =
             |> toInitialStep
     , events = []
     }
+
+
+printables : Exercise -> List Printable
+printables exercise =
+    exercise.steps
+        |> Zipper.first
+        |> toInitialStep
+        |> followEvents exercise.events
+        |> setStyles
+
+
+followEvents : List Event -> Zipper Step -> ( Zipper Step, Int )
+followEvents events steps =
+    let
+        func event ( steps, errors ) =
+            let
+                matchingChar =
+                    event.expected == event.actual
+
+                isErrorFree =
+                    errors <= 0
+
+                backSpace =
+                    event.actual == "\x08"
+
+                atEnd =
+                    Zipper.current steps
+                        |> .status
+                        |> (==) End
+            in
+                if matchingChar && isErrorFree then
+                    ( skipOver Next steps, errors )
+                else if atEnd then
+                    ( steps, errors )
+                else if backSpace && isErrorFree then
+                    ( skipOver Previous steps, errors )
+                else if backSpace then
+                    ( steps, errors - 1 )
+                else
+                    ( steps, errors + 1 )
+    in
+        List.foldr func ( steps, 0 ) events
+
+
+beforeStyles : Zipper Step -> List Printable
+beforeStyles steps =
+    let
+        toPrintable step =
+            { content = step.content
+            , style = SCompleted
+            }
+    in
+        steps
+            |> Zipper.before
+            |> List.map toPrintable
+
+
+currentStyle : Int -> Zipper Step -> List Printable
+currentStyle errorCount steps =
+    let
+        currentStyle =
+            if errorCount <= 0 then
+                SCurrent
+            else
+                SError
+
+        toPrintable step =
+            { content = step.content
+            , style = currentStyle
+            }
+
+        current =
+            Zipper.current steps
+    in
+        [ toPrintable current ]
+
+
+afterStyles : Zipper Step -> List Printable
+afterStyles steps =
+    let
+        toPrintable step =
+            { content = step.content
+            , style = SWaiting
+            }
+    in
+        steps
+            |> Zipper.after
+            |> List.map toPrintable
+
+
+setStyles : ( Zipper Step, Int ) -> List Printable
+setStyles ( steps, errorCount ) =
+    beforeStyles steps
+        ++ currentStyle errorCount steps
+        ++ afterStyles steps
 
 
 steps : Exercise -> List Step

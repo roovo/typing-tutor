@@ -3,7 +3,7 @@ module View.Exercises.Run exposing (view)
 import Html exposing (Html)
 import Html.Attributes
 import Event
-import Exercise exposing (Exercise)
+import Exercise exposing (Exercise, Printable, Style(..))
 import Model exposing (Model)
 import Msg exposing (Msg)
 import Step exposing (Step, Status(..))
@@ -48,8 +48,8 @@ viewSteps : Exercise -> List (Html msg)
 viewSteps exercise =
     [ Html.pre
         []
-        (Exercise.steps exercise
-            |> List.map viewStep
+        (Exercise.printables exercise
+            |> List.map viewPrintable
         )
     ]
 
@@ -92,42 +92,35 @@ percentage float =
         |> (flip (++) "%")
 
 
-viewStep : Step -> Html msg
-viewStep step =
+viewPrintable : Printable -> Html msg
+viewPrintable printable =
     Html.span
         [ Html.Attributes.style
-            (case step.status of
-                Completed ->
+            (case printable.style of
+                SCompleted ->
                     [ ( "color", "black" )
                     ]
 
-                Current ->
+                SCurrent ->
                     [ ( "color", "black" )
                     , ( "background-color", "orange" )
                     ]
 
-                Error _ ->
+                SError ->
                     [ ( "color", "gray" )
                     , ( "background-color", "red" )
                     ]
 
-                Waiting ->
+                SWaiting ->
                     [ ( "color", "gray" )
                     ]
-
-                Skip ->
-                    [ ( "color", "gray" )
-                    ]
-
-                End ->
-                    []
             )
         ]
-        [ viewStepContent step.content ]
+        [ viewPrintableContent printable.content ]
 
 
-viewStepContent : String -> Html msg
-viewStepContent content =
+viewPrintableContent : String -> Html msg
+viewPrintableContent content =
     if content == "\x0D" then
         Html.span []
             [ Html.text " "

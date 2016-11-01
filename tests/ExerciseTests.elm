@@ -1,7 +1,7 @@
 module ExerciseTests exposing (all)
 
 import Char
-import Exercise exposing (Exercise)
+import Exercise exposing (Exercise, Printable, Style(..))
 import Expect
 import Step exposing (Step, Direction(..), Status(..))
 import Test exposing (..)
@@ -14,6 +14,98 @@ all =
         , consumeTests
         , isCompleteTests
         , eventStreamTests
+        , printablesTests
+        ]
+
+
+printablesTests : Test
+printablesTests =
+    describe "printables tests"
+        [ test "returns a list with just the end for an empty Exercise" <|
+            \() ->
+                exerciseWithText ""
+                    |> Exercise.printables
+                    |> Expect.equal
+                        [ { content = "", style = SCurrent } ]
+        , test "return Printables for an exercise with nothing typed" <|
+            \() ->
+                exerciseWithText "a \n \n b"
+                    |> Exercise.printables
+                    |> Expect.equal
+                        [ { content = "a", style = SCurrent }
+                        , { content = "\x0D", style = SWaiting }
+                        , { content = " ", style = SWaiting }
+                        , { content = "\x0D", style = SWaiting }
+                        , { content = " ", style = SWaiting }
+                        , { content = "b", style = SWaiting }
+                        , { content = "", style = SWaiting }
+                        ]
+        , test "return Printables for an exercise with leading whitespace" <|
+            \() ->
+                exerciseWithText "  \n  a"
+                    |> Exercise.printables
+                    |> Expect.equal
+                        [ { content = "  ", style = SCompleted }
+                        , { content = "\x0D", style = SCompleted }
+                        , { content = "  ", style = SCompleted }
+                        , { content = "a", style = SCurrent }
+                        , { content = "", style = SWaiting }
+                        ]
+        , test "return Printables for an exercise with some stuff typed" <|
+            \() ->
+                exerciseWithText "a \n \n b"
+                    |> Exercise.consume 'a' 0
+                    |> Exercise.consume enterChar 0
+                    |> Exercise.printables
+                    |> Expect.equal
+                        [ { content = "a", style = SCompleted }
+                        , { content = "\x0D", style = SCompleted }
+                        , { content = " ", style = SCompleted }
+                        , { content = "\x0D", style = SCompleted }
+                        , { content = " ", style = SCompleted }
+                        , { content = "b", style = SCurrent }
+                        , { content = "", style = SWaiting }
+                        ]
+        , test "return Printables with some stuff typed including an error" <|
+            \() ->
+                exerciseWithText "a \n bcd"
+                    |> Exercise.consume 'a' 0
+                    |> Exercise.consume enterChar 0
+                    |> Exercise.consume 'b' 0
+                    |> Exercise.consume 'b' 0
+                    |> Exercise.consume 'c' 0
+                    |> Exercise.consume backspaceChar 0
+                    |> Exercise.printables
+                    |> Expect.equal
+                        [ { content = "a", style = SCompleted }
+                        , { content = "\x0D", style = SCompleted }
+                        , { content = " ", style = SCompleted }
+                        , { content = "b", style = SCompleted }
+                        , { content = "c", style = SError }
+                        , { content = "d", style = SWaiting }
+                        , { content = "", style = SWaiting }
+                        ]
+        , test "return Printables with some stuff typed including a" <|
+            \() ->
+                exerciseWithText "a \n bcd"
+                    |> Exercise.consume 'a' 0
+                    |> Exercise.consume enterChar 0
+                    |> Exercise.consume 'b' 0
+                    |> Exercise.consume 'b' 0
+                    |> Exercise.consume 'c' 0
+                    |> Exercise.consume backspaceChar 0
+                    |> Exercise.consume backspaceChar 0
+                    |> Exercise.consume 'c' 0
+                    |> Exercise.printables
+                    |> Expect.equal
+                        [ { content = "a", style = SCompleted }
+                        , { content = "\x0D", style = SCompleted }
+                        , { content = " ", style = SCompleted }
+                        , { content = "b", style = SCompleted }
+                        , { content = "c", style = SCompleted }
+                        , { content = "d", style = SCurrent }
+                        , { content = "", style = SWaiting }
+                        ]
         ]
 
 
