@@ -1,6 +1,7 @@
 module Step
     exposing
-        ( Step
+        ( Line
+        , Step
         , Direction(..)
         , Status(..)
         , consume
@@ -24,6 +25,10 @@ type alias Step =
     , status : Status
     , moveTo : Direction
     }
+
+
+type alias Line =
+    List Step
 
 
 type Status

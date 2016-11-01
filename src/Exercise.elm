@@ -33,8 +33,8 @@ init id title text =
     , steps =
         ExerciseParser.toSteps text
             |> Zipper.fromList
-            |> Maybe.withDefault (Zipper.singleton Step.initEnd)
-            |> toInitialStep
+            |> Maybe.withDefault (Zipper.singleton [ Step.initEnd ])
+        -- |> toInitialStep
     , events = []
     }
 

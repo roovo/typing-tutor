@@ -5,11 +5,11 @@ import Combine as P exposing (Parser)
 import Combine.Char as Char
 import Combine.Infix exposing ((<$>), (<*>), (*>), (<|>))
 import List.Extra exposing (dropWhileRight)
-import Step exposing (Step)
+import Step exposing (Line, Step)
 import String
 
 
-toSteps : String -> List Step
+toSteps : String -> List Line
 toSteps =
     preProcess
         >> P.parse lines
@@ -25,35 +25,37 @@ preProcess =
     flip String.append "\n" << String.trimRight
 
 
-postProcess : ( Result a (List Step), context ) -> List Step
+postProcess : ( Result a (List Line), context ) -> List Line
 postProcess =
     extractResult
-        >> removeTrailingReturns
-        >> addEnd
+        -- >> removeTrailingReturns
+        >>
+            addEnd
 
 
-extractResult : ( Result a (List Step), context ) -> List Step
+extractResult : ( Result a (List Line), context ) -> List Line
 extractResult ( result, _ ) =
     Result.withDefault [] result
 
 
-removeTrailingReturns : List Step -> List Step
-removeTrailingReturns =
-    dropWhileRight <| \s -> s.content == "\x0D"
+
+-- removeTrailingReturns : List Line -> List Line
+-- removeTrailingReturns =
+--     dropWhileRight <| \s -> s.content == "\x0D"
 
 
-addEnd : List Step -> List Step
-addEnd =
-    flip List.append [ Step.initEnd ]
+addEnd : List Line -> List Line
+addEnd lines =
+    [ Step.initEnd ] :: lines
 
 
 
 -- PARSERS
 
 
-lines : Parser (List Step)
+lines : Parser (List Line)
 lines =
-    liftA (List.concatMap identity) (P.many line)
+    P.many line
 
 
 line : Parser (List Step)
