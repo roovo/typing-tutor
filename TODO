@@ -1,5 +1,4 @@
 - event stream re-design
-  - add tests that the event stream ignores Skip's
   - set the styles based purely on the event stream
   - detect if at end based purely on the event stream
   - Remove the need for many of the different status's of character
@@ -90,3 +89,4 @@ done
 - remove ExampleExercise
 - move event stream into Attempt
 - move wpm and accuracy calcs into Attempt
+- add tests that the event stream ignores Skip's

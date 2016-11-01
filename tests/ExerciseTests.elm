@@ -13,6 +13,69 @@ all =
         [ stepsTests
         , consumeTests
         , isCompleteTests
+        , eventStreamTests
+        ]
+
+
+eventStreamTests : Test
+eventStreamTests =
+    describe "event stream tests"
+        [ test "returns an empty stream if nothing has been typed" <|
+            \() ->
+                exerciseWithText "ab"
+                    |> .events
+                    |> Expect.equal []
+        , test "returns stream of correctly type characters" <|
+            \() ->
+                exerciseWithText "ab"
+                    |> Exercise.consume 'a' 1
+                    |> Exercise.consume 'b' 2
+                    |> .events
+                    |> Expect.equal
+                        [ { expected = "b", actual = "b", timeTaken = 2 }
+                        , { expected = "a", actual = "a", timeTaken = 1 }
+                        ]
+        , test "includes mistakes, backspaces and corrections" <|
+            \() ->
+                exerciseWithText "abcd"
+                    |> Exercise.consume 'a' 0
+                    |> Exercise.consume 'a' 0
+                    |> Exercise.consume backspaceChar 0
+                    |> Exercise.consume 'b' 0
+                    |> Exercise.consume 'c' 0
+                    |> Exercise.consume backspaceChar 0
+                    |> .events
+                    |> Expect.equal
+                        [ { expected = "d", actual = "\x08", timeTaken = 0 }
+                        , { expected = "c", actual = "c", timeTaken = 0 }
+                        , { expected = "b", actual = "b", timeTaken = 0 }
+                        , { expected = "b", actual = "\x08", timeTaken = 0 }
+                        , { expected = "b", actual = "a", timeTaken = 0 }
+                        , { expected = "a", actual = "a", timeTaken = 0 }
+                        ]
+        , test "ignores leading whitespace and empty lines" <|
+            \() ->
+                exerciseWithText " a  \n  \n b"
+                    |> Exercise.consume 'a' 0
+                    |> Exercise.consume enterChar 0
+                    |> Exercise.consume 'b' 0
+                    |> .events
+                    |> Expect.equal
+                        [ { expected = "b", actual = "b", timeTaken = 0 }
+                        , { expected = "\x0D", actual = "\x0D", timeTaken = 0 }
+                        , { expected = "a", actual = "a", timeTaken = 0 }
+                        ]
+        , test "stops when the exercise is complete" <|
+            \() ->
+                exerciseWithText "ab"
+                    |> Exercise.consume 'a' 0
+                    |> Exercise.consume 'b' 0
+                    |> Exercise.consume 'c' 0
+                    |> .events
+                    |> Expect.equal
+                        [ { expected = "b", actual = "b", timeTaken = 0 }
+                        , { expected = "a", actual = "a", timeTaken = 0 }
+                        ]
         ]
 
 
