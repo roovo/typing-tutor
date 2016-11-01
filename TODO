@@ -1,3 +1,14 @@
+- event stream re-design
+  - add tests that the event stream ignores Skip's
+  - set the styles based purely on the event stream
+  - detect if at end based purely on the event stream
+  - Remove the need for many of the different status's of character
+    - should just need Untyepables - Skip, End and Typeable - Char
+  - no more need for Zipper for the steps
+  - with no zipper, can represent the steps as a List Line, where each
+    Line is a List Step
+  - all-in all should move complexity from step handling and parsing to
+    event stream playback and interpretation - hopefully overall simpler
 - show stats summaries
   - graph over time of accuracy and wpm
 - how to show a loading state when the page is drawn bu we're waiting for
