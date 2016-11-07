@@ -184,8 +184,8 @@ eventStreamTests =
                     |> Exercise.consume 'b' 2
                     |> .events
                     |> Expect.equal
-                        [ { expected = "b", actual = "b", timeTaken = 2 }
-                        , { expected = "a", actual = "a", timeTaken = 1 }
+                        [ { actual = "b", timeTaken = 2 }
+                        , { actual = "a", timeTaken = 1 }
                         ]
         , test "includes mistakes, backspaces and corrections" <|
             \() ->
@@ -198,12 +198,12 @@ eventStreamTests =
                     |> Exercise.consume backspaceChar 0
                     |> .events
                     |> Expect.equal
-                        [ { expected = "d", actual = "\x08", timeTaken = 0 }
-                        , { expected = "c", actual = "c", timeTaken = 0 }
-                        , { expected = "b", actual = "b", timeTaken = 0 }
-                        , { expected = "b", actual = "\x08", timeTaken = 0 }
-                        , { expected = "b", actual = "a", timeTaken = 0 }
-                        , { expected = "a", actual = "a", timeTaken = 0 }
+                        [ { actual = "\x08", timeTaken = 0 }
+                        , { actual = "c", timeTaken = 0 }
+                        , { actual = "b", timeTaken = 0 }
+                        , { actual = "\x08", timeTaken = 0 }
+                        , { actual = "a", timeTaken = 0 }
+                        , { actual = "a", timeTaken = 0 }
                         ]
         , test "ignores leading whitespace and empty lines" <|
             \() ->
@@ -213,9 +213,9 @@ eventStreamTests =
                     |> Exercise.consume 'b' 0
                     |> .events
                     |> Expect.equal
-                        [ { expected = "b", actual = "b", timeTaken = 0 }
-                        , { expected = "\x0D", actual = "\x0D", timeTaken = 0 }
-                        , { expected = "a", actual = "a", timeTaken = 0 }
+                        [ { actual = "b", timeTaken = 0 }
+                        , { actual = "\x0D", timeTaken = 0 }
+                        , { actual = "a", timeTaken = 0 }
                         ]
         , test "stops when the exercise is complete" <|
             \() ->
@@ -225,8 +225,8 @@ eventStreamTests =
                     |> Exercise.consume 'c' 0
                     |> .events
                     |> Expect.equal
-                        [ { expected = "b", actual = "b", timeTaken = 0 }
-                        , { expected = "a", actual = "a", timeTaken = 0 }
+                        [ { actual = "b", timeTaken = 0 }
+                        , { actual = "a", timeTaken = 0 }
                         ]
         ]
 

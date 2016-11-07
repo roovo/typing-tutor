@@ -30,16 +30,16 @@ timeTakenTests =
 
 
 eventsWithCorrectedMistake =
-    [ Event "a" "a" 10000
-    , Event "b" "b" 10000
-    , Event "c" "c" 10000
-    , Event " " " " 10000
-    , Event "d" "d" 10000
-    , Event "e" "d" 10000
-    , Event "e" "\x08" 10000
-    , Event "e" "e" 10000
-    , Event "f" "f" 10000
-    , Event " " " " 10000
-    , Event "g" "g" 10000
-    , Event "h" "h" 10000
+    [ Event "a" 10000
+    , Event "b" 10000
+    , Event "c" 10000
+    , Event " " 10000
+    , Event "d" 10000
+    , Event "d" 10000
+    , Event "\x08" 10000
+    , Event "e" 10000
+    , Event "f" 10000
+    , Event " " 10000
+    , Event "g" 10000
+    , Event "h" 10000
     ]

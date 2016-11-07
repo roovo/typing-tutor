@@ -40,16 +40,15 @@ encodeAttempt attempt =
 
 encodeEvent : Event -> JE.Value
 encodeEvent event =
-    tuple3Encoder
-        JE.string
+    tuple2Encoder
         JE.string
         JE.int
-        ( event.expected, event.actual, event.timeTaken )
+        ( event.actual, event.timeTaken )
 
 
-tuple3Encoder : (a -> JE.Value) -> (b -> JE.Value) -> (c -> JE.Value) -> ( a, b, c ) -> JE.Value
-tuple3Encoder enc1 enc2 enc3 ( val1, val2, val3 ) =
-    JE.list [ enc1 val1, enc2 val2, enc3 val3 ]
+tuple2Encoder : (a -> JE.Value) -> (b -> JE.Value) -> ( a, b ) -> JE.Value
+tuple2Encoder enc1 enc2 ( val1, val2 ) =
+    JE.list [ enc1 val1, enc2 val2 ]
 
 
 defaultRequest : Model -> String -> Http.Request

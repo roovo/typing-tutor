@@ -142,8 +142,7 @@ logEvent char timeTaken exercise =
             True ->
                 let
                     newEvent =
-                        { expected = currentStep.content
-                        , actual = String.fromChar char
+                        { actual = String.fromChar char
                         , timeTaken = round timeTaken
                         }
                 in
@@ -158,8 +157,11 @@ followEvents events steps =
     let
         func event ( steps, errors ) =
             let
+                currentStep =
+                    Zipper.current steps
+
                 matchingChar =
-                    event.expected == event.actual
+                    currentStep.content == event.actual
 
                 isErrorFree =
                     errors <= 0
@@ -168,7 +170,7 @@ followEvents events steps =
                     event.actual == "\x08"
 
                 atEnd =
-                    Zipper.current steps
+                    currentStep
                         |> .status
                         |> (==) End
             in

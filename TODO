@@ -1,7 +1,4 @@
 - event stream re-design
-  - bug (I think) - accuracy calcs are wrong - if I mistype a letter
-    then type the correct one the maths will be wrong...
-  - detect if at end based purely on the event stream
   - Remove the need for many of the different status's of character
     - should just need Untyepables - Skip, End and Typeable - Char
   - no more need for Zipper for the steps - although will have to do something
@@ -94,3 +91,5 @@ done
 - move wpm and accuracy calcs into Attempt
 - add tests that the event stream ignores Skip's
 - set the styles based purely on the event stream
+- bug (I think) - accuracy calcs are wrong - if I mistype a letter
+  then type the correct one the maths will be wrong...

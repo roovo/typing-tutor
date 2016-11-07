@@ -5,8 +5,7 @@ import String
 
 
 type alias Event =
-    { expected : String
-    , actual : String
+    { actual : String
     , timeTaken : Int
     }
 
