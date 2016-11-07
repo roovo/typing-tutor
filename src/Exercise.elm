@@ -8,6 +8,7 @@ module Exercise
         , init
         , isComplete
         , printables
+        , wpm
         )
 
 import Event exposing (Event)
@@ -65,14 +66,6 @@ accuracy exercise =
             (toFloat <| howManyCharacters exercise) / n * 100
 
 
-howManyCharacters : Exercise -> Int
-howManyCharacters exercise =
-    exercise.steps
-        |> Zipper.before
-        |> List.filter Step.isTypable
-        |> List.length
-
-
 printables : Exercise -> List Printable
 printables exercise =
     exercise.steps
@@ -108,8 +101,35 @@ isComplete exercise =
         isCurrentStatusEnd exercise.steps
 
 
+wpm : Exercise -> Float
+wpm exercise =
+    case Event.timeTaken exercise.events of
+        0 ->
+            0
+
+        n ->
+            howManyWords exercise / n * 60000
+
+
 
 -- PRIVATE FUNCTIONS
+
+
+lettersPerWord =
+    5
+
+
+howManyCharacters : Exercise -> Int
+howManyCharacters exercise =
+    exercise.steps
+        |> Zipper.before
+        |> List.filter Step.isTypable
+        |> List.length
+
+
+howManyWords : Exercise -> Float
+howManyWords exercise =
+    ((toFloat <| howManyCharacters exercise) / lettersPerWord)
 
 
 logEvent : Char -> Time -> Exercise -> List Event

@@ -10,7 +10,6 @@ all : Test
 all =
     describe "Event Tests"
         [ timeTakenTests
-        , wpmTests
         ]
 
 
@@ -27,22 +26,6 @@ timeTakenTests =
                 eventsWithCorrectedMistake
                     |> Event.timeTaken
                     |> Expect.equal 120000
-        ]
-
-
-wpmTests : Test
-wpmTests =
-    describe "wpm"
-        [ test "returns 0 with no Events" <|
-            \() ->
-                []
-                    |> Event.wpm
-                    |> Expect.equal 0
-        , test "a word is defined as 5 characters (incl spaces) in the target string" <|
-            \() ->
-                eventsWithCorrectedMistake
-                    |> Event.wpm
-                    |> Expect.equal 1
         ]
 
 

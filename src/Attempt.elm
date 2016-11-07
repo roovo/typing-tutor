@@ -22,6 +22,6 @@ init time exercise =
     , completedAt = time
     , exerciseId = exercise.id
     , accuracy = Exercise.accuracy exercise
-    , wpm = Event.wpm exercise.events
+    , wpm = Exercise.wpm exercise
     , events = exercise.events
     }

@@ -67,7 +67,7 @@ viewResults exercise =
                 , Html.br [] []
                 , Html.text <|
                     "Speed: "
-                        ++ toString (round <| Event.wpm exercise.events)
+                        ++ toString (round <| Exercise.wpm exercise)
                         ++ " WPM"
                 , Html.br [] []
                 , Html.br [] []

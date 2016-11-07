@@ -12,9 +12,10 @@ all =
     describe "Exercise Tests"
         [ accuracyTests
         , consumeTests
-        , isCompleteTests
         , eventStreamTests
+        , isCompleteTests
         , printablesTests
+        , wpmTests
         ]
 
 
@@ -351,6 +352,22 @@ isCompleteTests =
                     |> Exercise.consume 'b' 0
                     |> Exercise.isComplete
                     |> Expect.equal True
+        ]
+
+
+wpmTests : Test
+wpmTests =
+    describe "wpm"
+        [ test "returns 0 for empty exercise with nothing typed" <|
+            \() ->
+                exerciseWithText ""
+                    |> Exercise.wpm
+                    |> Expect.equal 0
+          -- , test "a word is defined as 5 characters (incl spaces) in the target string" <|
+          --     \() ->
+          --         eventsWithCorrectedMistake
+          --             |> Event.wpm
+          --             |> Expect.equal 1
         ]
 
 
