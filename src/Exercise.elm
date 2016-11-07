@@ -31,10 +31,10 @@ type alias Exercise =
 
 
 type Style
-    = SCurrent
-    | SError
-    | SCompleted
-    | SWaiting
+    = Current
+    | Error
+    | Completed
+    | Waiting
 
 
 type alias Printable =
@@ -191,7 +191,7 @@ beforeStyles steps =
     let
         toPrintable step =
             { content = step.content
-            , style = SCompleted
+            , style = Completed
             }
     in
         steps
@@ -204,9 +204,9 @@ currentStyle errorCount steps =
     let
         currentStyle =
             if errorCount <= 0 then
-                SCurrent
+                Current
             else
-                SError
+                Error
 
         toPrintable step =
             { content = step.content
@@ -224,7 +224,7 @@ afterStyles steps =
     let
         toPrintable step =
             { content = step.content
-            , style = SWaiting
+            , style = Waiting
             }
     in
         steps

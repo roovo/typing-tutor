@@ -97,21 +97,21 @@ viewPrintable printable =
     Html.span
         [ Html.Attributes.style
             (case printable.style of
-                SCompleted ->
+                Completed ->
                     [ ( "color", "black" )
                     ]
 
-                SCurrent ->
+                Current ->
                     [ ( "color", "black" )
                     , ( "background-color", "orange" )
                     ]
 
-                SError ->
+                Error ->
                     [ ( "color", "gray" )
                     , ( "background-color", "red" )
                     ]
 
-                SWaiting ->
+                Waiting ->
                     [ ( "color", "gray" )
                     ]
             )

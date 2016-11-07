@@ -2,6 +2,7 @@
   - is the End status actually needed?
   - no more need for Zipper for the steps - although will have to do something
     equivalentish to the SafeZipper for event replay....
+  - can I just create the zipper on demand and only save the text on the model?
   - with no zipper, can represent the steps as a List Line, where each
     Line is a List Step
   - all-in all should move complexity from step handling and parsing to
