@@ -1,7 +1,6 @@
 module Step
     exposing
         ( Step
-        , Direction(..)
         , Status(..)
         , init
         , initEnd
@@ -20,7 +19,6 @@ backspaceCode =
 type alias Step =
     { content : String
     , status : Status
-    , moveTo : Direction
     }
 
 
@@ -30,17 +28,10 @@ type Status
     | End
 
 
-type Direction
-    = Next
-    | Previous
-    | None
-
-
 init : String -> Step
 init string =
     { content = string
     , status = Typeable
-    , moveTo = None
     }
 
 
@@ -48,7 +39,6 @@ initSkip : String -> Step
 initSkip string =
     { content = string
     , status = Skip
-    , moveTo = None
     }
 
 
@@ -56,7 +46,6 @@ initEnd : Step
 initEnd =
     { content = ""
     , status = End
-    , moveTo = None
     }
 
 

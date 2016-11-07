@@ -17,7 +17,7 @@ import Html exposing (Html)
 import Html.Attributes
 import List.Zipper as Zipper exposing (Zipper)
 import SafeZipper
-import Step exposing (Step, Direction(..), Status(..))
+import Step exposing (Step, Status(..))
 import String
 import Time exposing (Time)
 
@@ -115,6 +115,11 @@ wpm exercise =
 
 lettersPerWord =
     5
+
+
+type Direction
+    = Next
+    | Previous
 
 
 howManyCharacters : Exercise -> Int
@@ -236,19 +241,14 @@ setStyles ( steps, errorCount ) =
 
 skipOver : Direction -> Zipper Step -> Zipper Step
 skipOver direction steps =
-    case direction of
-        None ->
-            steps
-
-        _ ->
-            let
-                newSteps =
-                    zipperMover direction steps
-            in
-                if (Zipper.current newSteps).status == Skip then
-                    skipOver direction newSteps
-                else
-                    newSteps
+    let
+        newSteps =
+            zipperMover direction steps
+    in
+        if (Zipper.current newSteps).status == Skip then
+            skipOver direction newSteps
+        else
+            newSteps
 
 
 goForwardIfSkip : Zipper Step -> Zipper Step
@@ -276,6 +276,3 @@ zipperMover direction =
 
         Previous ->
             SafeZipper.previous
-
-        _ ->
-            identity

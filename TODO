@@ -1,5 +1,4 @@
 - event stream re-design
-  - does step need moveto?
   - is the End status actually needed?
   - no more need for Zipper for the steps - although will have to do something
     equivalentish to the SafeZipper for event replay....
@@ -95,3 +94,4 @@ done
   then type the correct one the maths will be wrong...
 - Remove the need for many of the different status's of character
   - should just need Untyepables - Skip, End and Typeable - Char
+- does step need moveto?

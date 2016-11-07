@@ -2,7 +2,7 @@ module StepTests exposing (all)
 
 import Char
 import Expect
-import Step exposing (Step, Direction(..), Status(..))
+import Step exposing (Step, Status(..))
 import Test exposing (..)
 
 
@@ -22,22 +22,22 @@ initTests : Test
 initTests =
     describe "Init Tests"
         [ describe "init"
-            [ test "returns a step with a status of Typeable and moveTo None" <|
+            [ test "returns a step with a status of Typeable" <|
                 \() ->
                     Step.init "foo"
-                        |> Expect.equal { content = "foo", status = Typeable, moveTo = None }
+                        |> Expect.equal { content = "foo", status = Typeable }
             ]
         , describe "initEnd"
-            [ test "returns an empty step with a status of End and moveTo None" <|
+            [ test "returns an empty step with a status of End" <|
                 \() ->
                     Step.initEnd
-                        |> Expect.equal { content = "", status = End, moveTo = None }
+                        |> Expect.equal { content = "", status = End }
             ]
         , describe "initSkip"
-            [ test "returns a step with a status of Skip and moveTo None" <|
+            [ test "returns a step with a status of Skip" <|
                 \() ->
                     Step.initSkip "foo"
-                        |> Expect.equal { content = "foo", status = Skip, moveTo = None }
+                        |> Expect.equal { content = "foo", status = Skip }
             ]
         ]
 

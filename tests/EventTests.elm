@@ -2,7 +2,7 @@ module EventTests exposing (all)
 
 import Event exposing (Event)
 import Expect
-import Step exposing (Step, Direction(..), Status(..))
+import Step exposing (Step, Status(..))
 import Test exposing (..)
 
 
