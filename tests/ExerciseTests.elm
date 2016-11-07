@@ -3,15 +3,14 @@ module ExerciseTests exposing (all)
 import Char
 import Exercise exposing (Exercise, Printable, Style(..))
 import Expect
-import Step exposing (Step, Direction(..), Status(..))
+import Step exposing (Step, Direction(..))
 import Test exposing (..)
 
 
 all : Test
 all =
     describe "Exercise Tests"
-        [ stepsTests
-        , consumeTests
+        [ consumeTests
         , isCompleteTests
         , eventStreamTests
         , printablesTests
@@ -171,51 +170,6 @@ eventStreamTests =
         ]
 
 
-stepsTests : Test
-stepsTests =
-    describe "init / steps"
-        [ test "returns a list with only the end item for an empty string" <|
-            \() ->
-                exerciseWithText ""
-                    |> Exercise.steps
-                    |> Expect.equal [ { content = "", status = End, moveTo = None } ]
-        , test "returns multiple chunks for a multi-character string" <|
-            \() ->
-                exerciseWithText "abc"
-                    |> Exercise.steps
-                    |> Expect.equal
-                        [ { content = "a", status = Current, moveTo = None }
-                        , { content = "b", status = Waiting, moveTo = None }
-                        , { content = "c", status = Waiting, moveTo = None }
-                        , { content = "", status = End, moveTo = None }
-                        ]
-        , test "skips whitespace at the start of the first line" <|
-            \() ->
-                exerciseWithText "  abc"
-                    |> Exercise.steps
-                    |> Expect.equal
-                        [ { content = "  ", status = Skip, moveTo = None }
-                        , { content = "a", status = Current, moveTo = None }
-                        , { content = "b", status = Waiting, moveTo = None }
-                        , { content = "c", status = Waiting, moveTo = None }
-                        , { content = "", status = End, moveTo = None }
-                        ]
-        , test "skips whitespace-only lines at the start" <|
-            \() ->
-                exerciseWithText "  \n  abc"
-                    |> Exercise.steps
-                    |> Expect.equal
-                        [ { content = "  ", status = Skip, moveTo = None }
-                        , { content = "\x0D", status = Skip, moveTo = None }
-                        , { content = "  ", status = Skip, moveTo = None }
-                        , { content = "a", status = Current, moveTo = None }
-                        , { content = "b", status = Waiting, moveTo = None }
-                        , { content = "c", status = Waiting, moveTo = None }
-                        , { content = "", status = End, moveTo = None }
-                        ]
-        ]
-
-
 consumeTests : Test
 consumeTests =
     describe "consume"
@@ -224,12 +178,12 @@ consumeTests =
                 \() ->
                     exerciseWithText "abc"
                         |> Exercise.consume 'a' 0
-                        |> Exercise.steps
+                        |> Exercise.printables
                         |> Expect.equal
-                            [ { content = "a", status = Completed, moveTo = Next }
-                            , { content = "b", status = Current, moveTo = None }
-                            , { content = "c", status = Waiting, moveTo = None }
-                            , { content = "", status = End, moveTo = None }
+                            [ { content = "a", style = SCompleted }
+                            , { content = "b", style = SCurrent }
+                            , { content = "c", style = SWaiting }
+                            , { content = "", style = SWaiting }
                             ]
             , test "handles newlines in the string" <|
                 \() ->
@@ -237,25 +191,25 @@ consumeTests =
                         |> Exercise.consume 'a' 0
                         |> Exercise.consume 'b' 0
                         |> Exercise.consume enterChar 0
-                        |> Exercise.steps
+                        |> Exercise.printables
                         |> Expect.equal
-                            [ { content = "a", status = Completed, moveTo = Next }
-                            , { content = "b", status = Completed, moveTo = Next }
-                            , { content = "\x0D", status = Completed, moveTo = Next }
-                            , { content = "c", status = Current, moveTo = None }
-                            , { content = "", status = End, moveTo = None }
+                            [ { content = "a", style = SCompleted }
+                            , { content = "b", style = SCompleted }
+                            , { content = "\x0D", style = SCompleted }
+                            , { content = "c", style = SCurrent }
+                            , { content = "", style = SWaiting }
                             ]
             , test "won't advance if the wrong character is given" <|
                 \() ->
                     exerciseWithText "abc"
                         |> Exercise.consume 'a' 0
                         |> Exercise.consume 'c' 0
-                        |> Exercise.steps
+                        |> Exercise.printables
                         |> Expect.equal
-                            [ { content = "a", status = Completed, moveTo = Next }
-                            , { content = "b", status = Error 1, moveTo = None }
-                            , { content = "c", status = Waiting, moveTo = None }
-                            , { content = "", status = End, moveTo = None }
+                            [ { content = "a", style = SCompleted }
+                            , { content = "b", style = SError }
+                            , { content = "c", style = SWaiting }
+                            , { content = "", style = SWaiting }
                             ]
             , test "handles leading whitespace" <|
                 \() ->
@@ -263,15 +217,15 @@ consumeTests =
                         |> Exercise.consume 'a' 0
                         |> Exercise.consume 'b' 0
                         |> Exercise.consume enterChar 0
-                        |> Exercise.steps
+                        |> Exercise.printables
                         |> Expect.equal
-                            [ { content = "a", status = Completed, moveTo = Next }
-                            , { content = "b", status = Completed, moveTo = Next }
-                            , { content = "\x0D", status = Completed, moveTo = Next }
-                            , { content = "  ", status = Skip, moveTo = None }
-                            , { content = "c", status = Current, moveTo = None }
-                            , { content = "d", status = Waiting, moveTo = None }
-                            , { content = "", status = End, moveTo = None }
+                            [ { content = "a", style = SCompleted }
+                            , { content = "b", style = SCompleted }
+                            , { content = "\x0D", style = SCompleted }
+                            , { content = "  ", style = SCompleted }
+                            , { content = "c", style = SCurrent }
+                            , { content = "d", style = SWaiting }
+                            , { content = "", style = SWaiting }
                             ]
             ]
         , describe "consume with backspace"
@@ -279,12 +233,12 @@ consumeTests =
                 \() ->
                     exerciseWithText "abc"
                         |> Exercise.consume backspaceChar 0
-                        |> Exercise.steps
+                        |> Exercise.printables
                         |> Expect.equal
-                            [ { content = "a", status = Current, moveTo = Previous }
-                            , { content = "b", status = Waiting, moveTo = None }
-                            , { content = "c", status = Waiting, moveTo = None }
-                            , { content = "", status = End, moveTo = None }
+                            [ { content = "a", style = SCurrent }
+                            , { content = "b", style = SWaiting }
+                            , { content = "c", style = SWaiting }
+                            , { content = "", style = SWaiting }
                             ]
             , test "goes back a character if beyond the start" <|
                 \() ->
@@ -292,12 +246,12 @@ consumeTests =
                         |> Exercise.consume 'a' 0
                         |> Exercise.consume 'b' 0
                         |> Exercise.consume backspaceChar 0
-                        |> Exercise.steps
+                        |> Exercise.printables
                         |> Expect.equal
-                            [ { content = "a", status = Completed, moveTo = Next }
-                            , { content = "b", status = Current, moveTo = Next }
-                            , { content = "c", status = Waiting, moveTo = Previous }
-                            , { content = "", status = End, moveTo = None }
+                            [ { content = "a", style = SCompleted }
+                            , { content = "b", style = SCurrent }
+                            , { content = "c", style = SWaiting }
+                            , { content = "", style = SWaiting }
                             ]
             , test "resets a single error" <|
                 \() ->
@@ -305,12 +259,12 @@ consumeTests =
                         |> Exercise.consume 'a' 0
                         |> Exercise.consume 'c' 0
                         |> Exercise.consume backspaceChar 0
-                        |> Exercise.steps
+                        |> Exercise.printables
                         |> Expect.equal
-                            [ { content = "a", status = Completed, moveTo = Next }
-                            , { content = "b", status = Current, moveTo = None }
-                            , { content = "c", status = Waiting, moveTo = None }
-                            , { content = "", status = End, moveTo = None }
+                            [ { content = "a", style = SCompleted }
+                            , { content = "b", style = SCurrent }
+                            , { content = "c", style = SWaiting }
+                            , { content = "", style = SWaiting }
                             ]
             ]
         ]

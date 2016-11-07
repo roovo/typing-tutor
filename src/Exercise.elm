@@ -7,7 +7,6 @@ module Exercise
         , init
         , isComplete
         , printables
-        , steps
         )
 
 import Event exposing (Event)
@@ -62,6 +61,57 @@ printables exercise =
         |> toInitialStep
         |> followEvents exercise.events
         |> setStyles
+
+
+consume : Char -> Time -> Exercise -> Exercise
+consume char timeTaken exercise =
+    case isComplete exercise of
+        True ->
+            exercise
+
+        False ->
+            { exercise
+                | steps =
+                    exercise.steps
+                        |> (updateCurrentStep char)
+                        |> moveZipper
+                        |> setCurrentStatus
+                , events = logEvent char timeTaken exercise
+            }
+
+
+isComplete : Exercise -> Bool
+isComplete exercise =
+    let
+        isCurrentStatusEnd =
+            Zipper.current >> .status >> (==) End
+    in
+        isCurrentStatusEnd exercise.steps
+
+
+
+-- PRIVATE FUNCTIONS
+
+
+logEvent : Char -> Time -> Exercise -> List Event
+logEvent char timeTaken exercise =
+    let
+        currentStep =
+            Zipper.current exercise.steps
+    in
+        case Step.isTypable currentStep of
+            True ->
+                let
+                    newEvent =
+                        { expected = currentStep.content
+                        , actual = String.fromChar char
+                        , timeTaken = round timeTaken
+                        }
+                in
+                    newEvent :: exercise.events
+
+            False ->
+                exercise.events
 
 
 followEvents : List Event -> Zipper Step -> ( Zipper Step, Int )
@@ -148,62 +198,6 @@ setStyles ( steps, errorCount ) =
     beforeStyles steps
         ++ currentStyle errorCount steps
         ++ afterStyles steps
-
-
-steps : Exercise -> List Step
-steps exercise =
-    Zipper.toList exercise.steps
-
-
-consume : Char -> Time -> Exercise -> Exercise
-consume char timeTaken exercise =
-    case isComplete exercise of
-        True ->
-            exercise
-
-        False ->
-            { exercise
-                | steps =
-                    exercise.steps
-                        |> (updateCurrentStep char)
-                        |> moveZipper
-                        |> setCurrentStatus
-                , events = logEvent char timeTaken exercise
-            }
-
-
-logEvent : Char -> Time -> Exercise -> List Event
-logEvent char timeTaken exercise =
-    let
-        currentStep =
-            Zipper.current exercise.steps
-    in
-        case Step.isTypable currentStep of
-            True ->
-                let
-                    newEvent =
-                        { expected = currentStep.content
-                        , actual = String.fromChar char
-                        , timeTaken = round timeTaken
-                        }
-                in
-                    newEvent :: exercise.events
-
-            False ->
-                exercise.events
-
-
-isComplete : Exercise -> Bool
-isComplete exercise =
-    let
-        isCurrentStatusEnd =
-            Zipper.current >> .status >> (==) End
-    in
-        isCurrentStatusEnd exercise.steps
-
-
-
--- PRIVATE FUNCTIONS
 
 
 updateCurrentStep : Char -> Zipper Step -> Zipper Step
