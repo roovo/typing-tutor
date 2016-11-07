@@ -83,22 +83,20 @@ consume char timeTaken exercise =
 
         False ->
             { exercise
-                | steps =
-                    exercise.steps
-                        |> (updateCurrentStep char)
-                        |> moveZipper
-                        |> setCurrentStatus
-                , events = logEvent char timeTaken exercise
+                | events = logEvent char timeTaken exercise
             }
 
 
 isComplete : Exercise -> Bool
 isComplete exercise =
-    let
-        isCurrentStatusEnd =
-            Zipper.current >> .status >> (==) End
-    in
-        isCurrentStatusEnd exercise.steps
+    exercise.steps
+        |> Zipper.first
+        |> toInitialStep
+        |> followEvents exercise.events
+        |> fst
+        |> Zipper.current
+        |> .status
+        |> (==) End
 
 
 wpm : Exercise -> Float
@@ -122,6 +120,10 @@ lettersPerWord =
 howManyCharacters : Exercise -> Int
 howManyCharacters exercise =
     exercise.steps
+        |> Zipper.first
+        |> toInitialStep
+        |> followEvents exercise.events
+        |> fst
         |> Zipper.before
         |> List.filter Step.isTypable
         |> List.length
@@ -135,21 +137,12 @@ howManyWords exercise =
 logEvent : Char -> Time -> Exercise -> List Event
 logEvent char timeTaken exercise =
     let
-        currentStep =
-            Zipper.current exercise.steps
+        newEvent =
+            { actual = String.fromChar char
+            , timeTaken = round timeTaken
+            }
     in
-        case Step.isTypable currentStep of
-            True ->
-                let
-                    newEvent =
-                        { actual = String.fromChar char
-                        , timeTaken = round timeTaken
-                        }
-                in
-                    newEvent :: exercise.events
-
-            False ->
-                exercise.events
+        newEvent :: exercise.events
 
 
 followEvents : List Event -> Zipper Step -> ( Zipper Step, Int )
@@ -241,22 +234,6 @@ setStyles ( steps, errorCount ) =
         ++ afterStyles steps
 
 
-updateCurrentStep : Char -> Zipper Step -> Zipper Step
-updateCurrentStep char steps =
-    Zipper.update (Step.consume char) steps
-
-
-moveZipper : Zipper Step -> Zipper Step
-moveZipper steps =
-    let
-        direction =
-            steps
-                |> Zipper.current
-                |> .moveTo
-    in
-        skipOver direction steps
-
-
 skipOver : Direction -> Zipper Step -> Zipper Step
 skipOver direction steps =
     case direction of
@@ -274,11 +251,6 @@ skipOver direction steps =
                     newSteps
 
 
-setCurrentStatus : Zipper Step -> Zipper Step
-setCurrentStatus steps =
-    Zipper.update Step.makeCurrent steps
-
-
 goForwardIfSkip : Zipper Step -> Zipper Step
 goForwardIfSkip steps =
     let
@@ -293,7 +265,7 @@ goForwardIfSkip steps =
 
 toInitialStep : Zipper Step -> Zipper Step
 toInitialStep =
-    goForwardIfSkip >> setCurrentStatus
+    goForwardIfSkip
 
 
 zipperMover : Direction -> (Zipper Step -> Zipper Step)

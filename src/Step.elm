@@ -3,12 +3,10 @@ module Step
         ( Step
         , Direction(..)
         , Status(..)
-        , consume
         , init
         , initEnd
         , initSkip
         , isTypable
-        , makeCurrent
         )
 
 import Char
@@ -65,77 +63,6 @@ initEnd =
     }
 
 
-consume : Char -> Step -> Step
-consume char step =
-    let
-        matchingChar =
-            step.content == String.fromChar char
-
-        backSpace =
-            Char.toCode char == backspaceCode
-    in
-        if matchingChar && isErrorFree step then
-            { step | status = Completed, moveTo = Next }
-        else if step.status == End then
-            { step | status = End, moveTo = None }
-        else if backSpace && isErrorFree step then
-            { step | status = Waiting, moveTo = Previous }
-        else if backSpace then
-            { step | status = removeError step.status, moveTo = None }
-        else
-            { step | status = addError step.status, moveTo = None }
-
-
-makeCurrent : Step -> Step
-makeCurrent step =
-    case step.status of
-        Waiting ->
-            { step | status = Current }
-
-        Completed ->
-            { step | status = Current }
-
-        _ ->
-            step
-
-
 isTypable : Step -> Bool
 isTypable step =
     not <| List.member step.status [ Skip, End ]
-
-
-
--- PRIVATE FUNCTIONS
-
-
-isErrorFree : Step -> Bool
-isErrorFree step =
-    case step.status of
-        Error _ ->
-            False
-
-        _ ->
-            True
-
-
-addError : Status -> Status
-addError status =
-    case status of
-        Error count ->
-            Error (count + 1)
-
-        _ ->
-            Error 1
-
-
-removeError : Status -> Status
-removeError status =
-    case status of
-        Error 1 ->
-            Waiting
-
-        Error count ->
-            Error (count - 1)
-
-        _ ->
-            status

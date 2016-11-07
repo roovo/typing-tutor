@@ -52,7 +52,6 @@ exerciseDecoderTests =
                                 ExerciseParser.toSteps "a"
                                     |> Zipper.fromList
                                     |> Maybe.withDefault (Zipper.singleton Step.initEnd)
-                                    |> (Zipper.update Step.makeCurrent)
                             , events = []
                             }
                         )
