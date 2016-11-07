@@ -3,6 +3,7 @@ module Exercise
         ( Exercise
         , Printable
         , Style(..)
+        , accuracy
         , consume
         , init
         , isComplete
@@ -52,6 +53,24 @@ init id title text =
             |> toInitialStep
     , events = []
     }
+
+
+accuracy : Exercise -> Float
+accuracy exercise =
+    case Event.howManyTyped exercise.events of
+        0 ->
+            0
+
+        n ->
+            (toFloat <| howManyCharacters exercise) / n * 100
+
+
+howManyCharacters : Exercise -> Int
+howManyCharacters exercise =
+    exercise.steps
+        |> Zipper.before
+        |> List.filter Step.isTypable
+        |> List.length
 
 
 printables : Exercise -> List Printable

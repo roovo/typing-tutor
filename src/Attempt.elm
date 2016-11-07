@@ -21,7 +21,7 @@ init time exercise =
     { id = Nothing
     , completedAt = time
     , exerciseId = exercise.id
-    , accuracy = Event.accuracy exercise.events
+    , accuracy = Exercise.accuracy exercise
     , wpm = Event.wpm exercise.events
     , events = exercise.events
     }

@@ -9,82 +9,8 @@ import Test exposing (..)
 all : Test
 all =
     describe "Event Tests"
-        [ accuracyTests
-        , timeTakenTests
+        [ timeTakenTests
         , wpmTests
-        ]
-
-
-accuracyTests : Test
-accuracyTests =
-    describe "accuracy"
-        [ test "returns 0% for no Events" <|
-            \() ->
-                []
-                    |> Event.accuracy
-                    |> Expect.equal 0
-        , test "returns 0% for a single Event with a bad character typed" <|
-            \() ->
-                [ Event "a" "b" 0 ]
-                    |> Event.accuracy
-                    |> Expect.equal 0
-        , test "returns 100% for a single character typed correctly" <|
-            \() ->
-                [ Event "a" "a" 0 ]
-                    |> Event.accuracy
-                    |> Expect.equal 100
-        , test "returns 50% for a single character with a corrected single bad character typed" <|
-            \() ->
-                [ Event "a" "b" 0
-                , Event "a" "\x08" 0
-                , Event "a" "a" 0
-                ]
-                    |> Event.accuracy
-                    |> Expect.equal 50
-        , test "returns 100% for a multiple characters typed correctly" <|
-            \() ->
-                [ Event "a" "a" 0
-                , Event "b" "b" 0
-                , Event "c" "c" 0
-                ]
-                    |> Event.accuracy
-                    |> Expect.equal 100
-        , test "counts the return key as a character" <|
-            \() ->
-                [ Event "a" "a" 0
-                , Event "\x0D" "\x0D" 0
-                , Event "b" "b" 0
-                ]
-                    |> Event.accuracy
-                    |> Expect.equal 100
-        , test "doesn't count correctly typed characters when in error state" <|
-            \() ->
-                [ Event "a" "a" 0
-                , Event "b" "a" 0
-                , Event "b" "b" 0
-                , Event "b" "\x08" 0
-                , Event "b" "\x08" 0
-                , Event "b" "b" 0
-                ]
-                    |> Event.accuracy
-                    |> Expect.equal 50
-        , test "returns 66.66% for a 2 corrected mistakes in a total of 4" <|
-            \() ->
-                [ Event "a" "a" 0
-                , Event "b" "c" 0
-                , Event "b" "\x08" 0
-                , Event "b" "b" 0
-                , Event "c" "c" 0
-                , Event "d" "c" 0
-                , Event "d" "\x08" 0
-                , Event "d" "d" 0
-                ]
-                    |> Event.accuracy
-                    |> (*) 100
-                    |> truncate
-                    |> toFloat
-                    |> (flip (/) 100.0)
-                    |> Expect.equal 66.66
         ]
 
 

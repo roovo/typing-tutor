@@ -1,4 +1,4 @@
-module Event exposing (Event, accuracy, timeTaken, wpm)
+module Event exposing (Event, howManyTyped, timeTaken, wpm)
 
 import Char
 import String
@@ -11,14 +11,9 @@ type alias Event =
     }
 
 
-accuracy : List Event -> Float
-accuracy events =
-    case howManyTyped events of
-        0 ->
-            0
-
-        n ->
-            howManyCharacters events / n * 100
+howManyTyped : List Event -> Float
+howManyTyped =
+    toFloat << List.length << typedEvents
 
 
 timeTaken : List Event -> Float
@@ -71,8 +66,3 @@ typedEvents =
 howManyCharacters : List Event -> Float
 howManyCharacters =
     toFloat << List.length << matchedEvents
-
-
-howManyTyped : List Event -> Float
-howManyTyped =
-    toFloat << List.length << typedEvents

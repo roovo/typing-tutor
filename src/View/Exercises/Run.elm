@@ -63,7 +63,7 @@ viewResults exercise =
             , Html.p []
                 [ Html.text <|
                     "Accuracy: "
-                        ++ (percentage <| Event.accuracy exercise.events)
+                        ++ (percentage <| Exercise.accuracy exercise)
                 , Html.br [] []
                 , Html.text <|
                     "Speed: "

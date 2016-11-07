@@ -10,10 +10,70 @@ import Test exposing (..)
 all : Test
 all =
     describe "Exercise Tests"
-        [ consumeTests
+        [ accuracyTests
+        , consumeTests
         , isCompleteTests
         , eventStreamTests
         , printablesTests
+        ]
+
+
+accuracyTests : Test
+accuracyTests =
+    describe "accuracy"
+        [ test "returns 0% for empty exercise with nothing typed" <|
+            \() ->
+                exerciseWithText ""
+                    |> Exercise.accuracy
+                    |> Expect.equal 0
+        , test "returns 0% for a single character incorrectly typed" <|
+            \() ->
+                exerciseWithText "a"
+                    |> Exercise.consume 'b' 0
+                    |> Exercise.accuracy
+                    |> Expect.equal 0
+        , test "returns 100% for a single character correctly typed" <|
+            \() ->
+                exerciseWithText "a"
+                    |> Exercise.consume 'a' 0
+                    |> Exercise.accuracy
+                    |> Expect.equal 100
+        , test "returns 50% for a single character with a corrected single bad character typed" <|
+            \() ->
+                exerciseWithText "a"
+                    |> Exercise.consume 'b' 0
+                    |> Exercise.consume backspaceChar 0
+                    |> Exercise.consume 'a' 0
+                    |> Exercise.accuracy
+                    |> Expect.equal 50
+        , test "returns 100% for a multiple characters correctly typed" <|
+            \() ->
+                exerciseWithText "abc"
+                    |> Exercise.consume 'a' 0
+                    |> Exercise.consume 'b' 0
+                    |> Exercise.consume 'c' 0
+                    |> Exercise.accuracy
+                    |> Expect.equal 100
+        , test "counts the return key as a character" <|
+            \() ->
+                exerciseWithText "a\nbc"
+                    |> Exercise.consume 'a' 0
+                    |> Exercise.consume enterChar 0
+                    |> Exercise.consume 'b' 0
+                    |> Exercise.consume 'b' 0
+                    |> Exercise.accuracy
+                    |> Expect.equal 75
+        , test "doesn't count correctly typed characters when in error state" <|
+            \() ->
+                exerciseWithText "abc"
+                    |> Exercise.consume 'a' 0
+                    |> Exercise.consume 'a' 0
+                    |> Exercise.consume 'b' 0
+                    |> Exercise.consume backspaceChar 0
+                    |> Exercise.consume backspaceChar 0
+                    |> Exercise.consume 'b' 0
+                    |> Exercise.accuracy
+                    |> Expect.equal 50
         ]
 
 
