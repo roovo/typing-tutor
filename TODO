@@ -1,6 +1,6 @@
 - event stream re-design
-  - Remove the need for many of the different status's of character
-    - should just need Untyepables - Skip, End and Typeable - Char
+  - does step need moveto?
+  - is the End status actually needed?
   - no more need for Zipper for the steps - although will have to do something
     equivalentish to the SafeZipper for event replay....
   - with no zipper, can represent the steps as a List Line, where each
@@ -93,3 +93,5 @@ done
 - set the styles based purely on the event stream
 - bug (I think) - accuracy calcs are wrong - if I mistype a letter
   then type the correct one the maths will be wrong...
+- Remove the need for many of the different status's of character
+  - should just need Untyepables - Skip, End and Typeable - Char

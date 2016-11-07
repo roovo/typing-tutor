@@ -125,7 +125,7 @@ howManyCharacters exercise =
         |> followEvents exercise.events
         |> fst
         |> Zipper.before
-        |> List.filter Step.isTypable
+        |> List.filter Step.isTypeable
         |> List.length
 
 

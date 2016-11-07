@@ -14,7 +14,7 @@ all : Test
 all =
     describe "Step Tests"
         [ initTests
-        , isTypableTests
+        , isTypeableTests
         ]
 
 
@@ -22,10 +22,10 @@ initTests : Test
 initTests =
     describe "Init Tests"
         [ describe "init"
-            [ test "returns a step with a status of Waiting and moveTo None" <|
+            [ test "returns a step with a status of Typeable and moveTo None" <|
                 \() ->
                     Step.init "foo"
-                        |> Expect.equal { content = "foo", status = Waiting, moveTo = None }
+                        |> Expect.equal { content = "foo", status = Typeable, moveTo = None }
             ]
         , describe "initEnd"
             [ test "returns an empty step with a status of End and moveTo None" <|
@@ -42,22 +42,22 @@ initTests =
         ]
 
 
-isTypableTests : Test
-isTypableTests =
-    describe "isTypable"
+isTypeableTests : Test
+isTypeableTests =
+    describe "isTypeable"
         [ test "returns True for a normal step" <|
             \() ->
                 Step.init "a"
-                    |> Step.isTypable
+                    |> Step.isTypeable
                     |> Expect.equal True
         , test "returns False for a Skip step" <|
             \() ->
                 Step.initSkip "a"
-                    |> Step.isTypable
+                    |> Step.isTypeable
                     |> Expect.equal False
         , test "returns False for an End step" <|
             \() ->
                 Step.initEnd
-                    |> Step.isTypable
+                    |> Step.isTypeable
                     |> Expect.equal False
         ]

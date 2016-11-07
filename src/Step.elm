@@ -6,7 +6,7 @@ module Step
         , init
         , initEnd
         , initSkip
-        , isTypable
+        , isTypeable
         )
 
 import Char
@@ -25,10 +25,7 @@ type alias Step =
 
 
 type Status
-    = Waiting
-    | Error Int
-    | Current
-    | Completed
+    = Typeable
     | Skip
     | End
 
@@ -42,7 +39,7 @@ type Direction
 init : String -> Step
 init string =
     { content = string
-    , status = Waiting
+    , status = Typeable
     , moveTo = None
     }
 
@@ -63,6 +60,6 @@ initEnd =
     }
 
 
-isTypable : Step -> Bool
-isTypable step =
-    not <| List.member step.status [ Skip, End ]
+isTypeable : Step -> Bool
+isTypeable step =
+    step.status == Typeable
