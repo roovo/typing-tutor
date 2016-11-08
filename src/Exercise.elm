@@ -160,35 +160,35 @@ logEvent char timeTaken exercise =
 followEvents : List Event -> Zipper Step -> ( Zipper Step, Int )
 followEvents events steps =
     let
-        func event ( steps, errors ) =
+        consumeEvent event ( steps, errorCount ) =
             let
                 currentStep =
                     Zipper.current steps
 
-                matchingChar =
+                isMatchingChar =
                     Step.matchesTyped event.char currentStep
 
                 isErrorFree =
-                    errors <= 0
+                    errorCount <= 0
 
-                backSpace =
+                isBackSpace =
                     event.char == backspaceChar
 
                 atEnd =
                     Step.isEnd currentStep
             in
-                if matchingChar && isErrorFree then
-                    ( skipOver Next steps, errors )
+                if isMatchingChar && isErrorFree then
+                    ( skipOver Next steps, errorCount )
                 else if atEnd then
-                    ( steps, errors )
-                else if backSpace && isErrorFree then
-                    ( skipOver Previous steps, errors )
-                else if backSpace then
-                    ( steps, errors - 1 )
+                    ( steps, errorCount )
+                else if isBackSpace && isErrorFree then
+                    ( skipOver Previous steps, errorCount )
+                else if isBackSpace then
+                    ( steps, errorCount - 1 )
                 else
-                    ( steps, errors + 1 )
+                    ( steps, errorCount + 1 )
     in
-        List.foldr func ( steps, 0 ) events
+        List.foldr consumeEvent ( steps, 0 ) events
 
 
 beforeStyles : Zipper Step -> List Printable
