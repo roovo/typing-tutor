@@ -1,6 +1,5 @@
 module SafeZipperTests exposing (all)
 
-import Char
 import SafeZipper
 import Expect
 import Test exposing (..)

@@ -24,6 +24,7 @@ timeTaken =
 -- PRIVATE FUNCTIONS
 
 
+backspaceChar : String
 backspaceChar =
     String.fromChar << Char.fromCode <| 8
 

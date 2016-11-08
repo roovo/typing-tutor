@@ -39,7 +39,7 @@ extractResult ( result, _ ) =
 
 removeTrailingReturns : List Step -> List Step
 removeTrailingReturns =
-    dropWhileRight <| \s -> s.content == "\x0D"
+    dropWhileRight (\s -> Step.isSkipableWhitespace s || Step.isTypeableEnter s)
 
 
 addEnd : List Step -> List Step
@@ -49,6 +49,11 @@ addEnd =
 
 
 -- PARSERS
+
+
+enterChar : Char
+enterChar =
+    (Char.fromCode 13)
 
 
 lines : Parser (List Step)
@@ -72,7 +77,7 @@ lineWithContent : Parser (List Step)
 lineWithContent =
     liftA2 (++)
         (spacesThenCharacters <|> characters)
-        (P.succeed [ Step.init "\x0D" ])
+        (P.succeed [ Step.init enterChar ])
 
 
 spacesThenCharacters : Parser (List Step)
@@ -92,7 +97,7 @@ eol =
 
 character : Parser Step
 character =
-    liftA Step.init (P.regex ".")
+    liftA Step.init Char.anyChar
 
 
 spaces : Parser Step

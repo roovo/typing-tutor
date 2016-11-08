@@ -15,7 +15,7 @@ import Event exposing (Event)
 import ExerciseParser
 import List.Zipper as Zipper exposing (Zipper)
 import SafeZipper
-import Step exposing (Step, Status(..))
+import Step exposing (Step)
 import String
 import Time exposing (Time)
 
@@ -89,8 +89,7 @@ isComplete exercise =
         |> followEvents exercise.events
         |> fst
         |> Zipper.current
-        |> .status
-        |> (==) End
+        |> Step.isEnd
 
 
 wpm : Exercise -> Float
@@ -162,7 +161,7 @@ followEvents events steps =
                     Zipper.current steps
 
                 matchingChar =
-                    currentStep.content == event.actual
+                    Step.toString currentStep == event.actual
 
                 isErrorFree =
                     errors <= 0
@@ -171,9 +170,7 @@ followEvents events steps =
                     event.actual == "\x08"
 
                 atEnd =
-                    currentStep
-                        |> .status
-                        |> (==) End
+                    Step.isEnd currentStep
             in
                 if matchingChar && isErrorFree then
                     ( skipOver Next steps, errors )
@@ -193,7 +190,7 @@ beforeStyles : Zipper Step -> List Printable
 beforeStyles steps =
     let
         toPrintable step =
-            { content = step.content
+            { content = Step.toString step
             , style = Completed
             }
     in
@@ -212,7 +209,7 @@ currentStyle errorCount steps =
                 Error
 
         toPrintable step =
-            { content = step.content
+            { content = Step.toString step
             , style = currentStyle
             }
 
@@ -226,7 +223,7 @@ afterStyles : Zipper Step -> List Printable
 afterStyles steps =
     let
         toPrintable step =
-            { content = step.content
+            { content = Step.toString step
             , style = Waiting
             }
     in
@@ -248,7 +245,7 @@ skipOver direction steps =
         newSteps =
             zipperMover direction steps
     in
-        if (Zipper.current newSteps).status == Skip then
+        if Step.isSkipable (Zipper.current newSteps) then
             skipOver direction newSteps
         else
             newSteps
@@ -257,10 +254,10 @@ skipOver direction steps =
 goForwardIfSkip : Zipper Step -> Zipper Step
 goForwardIfSkip steps =
     let
-        currentStatus =
-            (Zipper.current steps).status
+        currentStep =
+            Zipper.current steps
     in
-        if currentStatus == Skip then
+        if Step.isSkipable currentStep then
             skipOver Next steps
         else
             steps

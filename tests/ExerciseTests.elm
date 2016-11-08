@@ -3,7 +3,6 @@ module ExerciseTests exposing (all)
 import Char
 import Exercise exposing (Exercise, Printable, Style(..))
 import Expect
-import Step exposing (Step)
 import Test exposing (..)
 
 
@@ -371,10 +370,12 @@ wpmTests =
         ]
 
 
+backspaceChar : Char
 backspaceChar =
     (Char.fromCode 8)
 
 
+enterChar : Char
 enterChar =
     (Char.fromCode 13)
 

@@ -1,8 +1,5 @@
 module AllTests exposing (all)
 
-import Step exposing (Step, Status(..))
-import Expect
-import Exercise exposing (Exercise)
 import Test exposing (..)
 import DecoderTests
 import EventTests

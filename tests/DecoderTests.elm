@@ -1,12 +1,9 @@
 module DecoderTests exposing (all)
 
 import Decoders
-import ExerciseParser
 import Expect
 import Json.Decode as JD
-import Step
 import Test exposing (..)
-import List.Zipper as Zipper exposing (Zipper)
 
 
 all : Test

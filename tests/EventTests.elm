@@ -2,7 +2,6 @@ module EventTests exposing (all)
 
 import Event exposing (Event)
 import Expect
-import Step exposing (Step, Status(..))
 import Test exposing (..)
 
 
@@ -29,6 +28,7 @@ timeTakenTests =
         ]
 
 
+eventsWithCorrectedMistake : List Event
 eventsWithCorrectedMistake =
     [ Event "a" 10000
     , Event "b" 10000
