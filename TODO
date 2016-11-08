@@ -2,21 +2,18 @@
   - graph over time of accuracy and wpm
 - [BUG] need to prevent default on typed characters
 - scrolling when exercise is longer than the viewport
-- how to show a loading state when the page is drawn bu we're waiting for
+- how to show a loading state when the page is drawn but we're waiting for
   data from the backend (have been some discussions/posts on this recently)
-- don't get the exercise contents when getting the list of exercies
-  just get it when you start the exercise
 - [Rob, Joe, Tom] show characters wot are mis-typed as they are entered
 - [Rob, Tom] advance the cursor whilst mis-typing so you can
   see how many backspaces you need to type
 - auto-pause the timer if nothing typed for a while
 - track slow characters (as in slow to type)
+- don't get the exercise contents when getting the list of exercies
+  just get it when you start the exercise
 - pretty-fication
 - calculate statistics
-  - perhaps save tuples of (expected, actual) for mis-types
-      - only do this for the first mistake if there are more
-        than one mistakes in a row
-  - print which characters you got wrong
+  - show which characters you got wrong
 
 
 done
