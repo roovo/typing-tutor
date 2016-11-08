@@ -9,7 +9,6 @@ type Msg
     = KeyPress KeyCode
     | KeyDown KeyCode
     | Tick Time
-      -- | GetTimeAndThen Msg
     | GotTime Time
     | GotExercises (List Exercise)
     | GotExercise Exercise

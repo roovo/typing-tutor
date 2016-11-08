@@ -1,7 +1,6 @@
 - Model.exercise should be a MaybeExercise
 - Event.actual should be a Char (called character)
 - Exercise.followEvents - rename func to something more meaningful
-- Msg remove commented out message
 - Routes - move routes and urlFor up the file
 - show stats summaries
   - graph over time of accuracy and wpm
@@ -103,3 +102,4 @@ done
   - is the End status actually needed? - could probably loose it but not
     a big enough deal for now - better to get some more features in place...
 - make Step a union type of Typeable Char | Skip String | End
+- Msg remove commented out message
