@@ -1,3 +1,9 @@
+- make Step a union type of Typeable Char | Skip String | End
+- Model.exercise should be a MaybeExercise
+- Event.actual should be a Char (called character)
+- Exercise.followEvents - rename func to something more meaningful
+- Msg remove commented out message
+- Routes - move routes and urlFor up the file
 - show stats summaries
   - graph over time of accuracy and wpm
 - [BUG] need to prevent default on typed characters
