@@ -62,44 +62,6 @@ viewSteps exercise =
     ]
 
 
-viewResults : Exercise -> List (Html msg)
-viewResults exercise =
-    if Exercise.isComplete exercise then
-        [ Html.hr [] []
-        , Html.div []
-            [ Html.p [] [ Html.text "Finished" ]
-            , Html.p []
-                [ Html.text <|
-                    "Accuracy: "
-                        ++ (percentage <| Exercise.accuracy exercise)
-                , Html.br [] []
-                , Html.text <|
-                    "Speed: "
-                        ++ toString (round <| Exercise.wpm exercise)
-                        ++ " WPM"
-                , Html.br [] []
-                , Html.br [] []
-                , Html.text <|
-                    "Time taken: "
-                        ++ Stopwatch.view (Event.timeTaken exercise.events)
-                ]
-            ]
-        ]
-    else
-        []
-
-
-percentage : Float -> String
-percentage float =
-    float
-        |> (*) 100
-        |> truncate
-        |> toFloat
-        |> (flip (/) 100.0)
-        |> toString
-        |> (flip (++) "%")
-
-
 viewPrintable : Printable -> Html msg
 viewPrintable printable =
     Html.span
@@ -136,3 +98,41 @@ viewPrintableContent content =
             ]
     else
         Html.text content
+
+
+viewResults : Exercise -> List (Html msg)
+viewResults exercise =
+    if Exercise.isComplete exercise then
+        [ Html.hr [] []
+        , Html.div []
+            [ Html.p [] [ Html.text "Finished" ]
+            , Html.p []
+                [ Html.text <|
+                    "Accuracy: "
+                        ++ (percentage <| Exercise.accuracy exercise)
+                , Html.br [] []
+                , Html.text <|
+                    "Speed: "
+                        ++ toString (round <| Exercise.wpm exercise)
+                        ++ " WPM"
+                , Html.br [] []
+                , Html.br [] []
+                , Html.text <|
+                    "Time taken: "
+                        ++ Stopwatch.view (Event.timeTaken exercise.events)
+                ]
+            ]
+        ]
+    else
+        []
+
+
+percentage : Float -> String
+percentage float =
+    float
+        |> (*) 100
+        |> truncate
+        |> toFloat
+        |> (flip (/) 100.0)
+        |> toString
+        |> (flip (++) "%")

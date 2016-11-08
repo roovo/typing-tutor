@@ -13,18 +13,18 @@ view model =
     Html.div []
         [ Html.h2 [] [ Html.text "Available exercies" ]
         , Html.div []
-            [ exercisesTable model ]
+            [ exercisesList model ]
         ]
 
 
-exercisesTable : Model -> Html Msg
-exercisesTable model =
+exercisesList : Model -> Html Msg
+exercisesList model =
     Html.ul []
-        (List.map exerciseRow model.exercises)
+        (List.map exerciseItem model.exercises)
 
 
-exerciseRow : Exercise -> Html Msg
-exerciseRow exercise =
+exerciseItem : Exercise -> Html Msg
+exerciseItem exercise =
     Html.li []
         [ Html.a
             [ Html.Attributes.href (Route.urlFor (ExerciseRoute exercise.id)) ]
