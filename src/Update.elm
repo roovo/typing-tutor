@@ -37,15 +37,20 @@ update msg model =
             )
 
         GotTime timeNow ->
-            ( model
-            , Api.createAttempt model (Attempt.init timeNow model.exercise) (always NoOp) (always NoOp)
-            )
+            case model.exercise of
+                Nothing ->
+                    ( model, Cmd.none )
+
+                Just exercise ->
+                    ( model
+                    , Api.createAttempt model (Attempt.init timeNow exercise) (always NoOp) (always NoOp)
+                    )
 
         GotExercises exercises ->
             ( { model | exercises = exercises }, Cmd.none )
 
         GotExercise exercise ->
-            ( { model | exercise = exercise }, Cmd.none )
+            ( { model | exercise = Just exercise }, Cmd.none )
 
         NoOp ->
             ( model, Cmd.none )
@@ -57,13 +62,22 @@ consumeChar keyCode model =
         lappedWatch =
             Stopwatch.lap model.stopwatch
 
+        newExercise =
+            case model.exercise of
+                Nothing ->
+                    Nothing
+
+                Just exercise ->
+                    Just
+                        (Exercise.consume
+                            (Char.fromCode keyCode)
+                            (Stopwatch.lastLap lappedWatch)
+                            exercise
+                        )
+
         newModel =
             { model
-                | exercise =
-                    Exercise.consume
-                        (Char.fromCode keyCode)
-                        (Stopwatch.lastLap lappedWatch)
-                        model.exercise
+                | exercise = newExercise
                 , stopwatch = lappedWatch
             }
     in
@@ -74,10 +88,15 @@ consumeChar keyCode model =
 
 consumeCharCmd : Model -> Cmd Msg
 consumeCharCmd model =
-    if Exercise.isComplete model.exercise then
-        Task.perform (always NoOp) (GotTime) Time.now
-    else
-        Cmd.none
+    case model.exercise of
+        Nothing ->
+            Cmd.none
+
+        Just exercise ->
+            if Exercise.isComplete exercise then
+                Task.perform (always NoOp) (GotTime) Time.now
+            else
+                Cmd.none
 
 
 logWithoutTick : Msg -> Msg

@@ -13,33 +13,43 @@ view : Model -> Html Msg
 view model =
     Html.code
         []
-        [ exerciseView model.exercise
+        [ exerciseView model
         , Html.hr [] []
         , stopwatchView model
         ]
 
 
-exerciseView : Exercise -> Html msg
-exerciseView exercise =
-    Html.div []
-        (List.append
-            (viewSteps exercise)
-            (viewResults exercise)
-        )
+exerciseView : Model -> Html msg
+exerciseView model =
+    case model.exercise of
+        Nothing ->
+            Html.div [] []
+
+        Just exercise ->
+            Html.div []
+                (List.append
+                    (viewSteps exercise)
+                    (viewResults exercise)
+                )
 
 
 stopwatchView : Model -> Html Msg
 stopwatchView model =
-    case Exercise.isComplete model.exercise of
-        True ->
+    case model.exercise of
+        Nothing ->
             Html.text ""
 
-        False ->
-            Html.p []
-                [ Html.text <|
-                    Stopwatch.view <|
-                        model.stopwatch.time
-                ]
+        Just exercise ->
+            case Exercise.isComplete exercise of
+                True ->
+                    Html.text ""
+
+                False ->
+                    Html.p []
+                        [ Html.text <|
+                            Stopwatch.view <|
+                                model.stopwatch.time
+                        ]
 
 
 viewSteps : Exercise -> List (Html msg)

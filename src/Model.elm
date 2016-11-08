@@ -8,7 +8,7 @@ import Stopwatch exposing (Stopwatch)
 
 type alias Model =
     { baseUrl : String
-    , exercise : Exercise
+    , exercise : Maybe Exercise
     , exercises : List Exercise
     , stopwatch : Stopwatch
     , route : Route
@@ -19,7 +19,7 @@ type alias Model =
 initialModel : ( Route, Hop.Address ) -> Model
 initialModel ( route, address ) =
     { baseUrl = "http://localhost:5000"
-    , exercise = Exercise.init 1 "elm" ""
+    , exercise = Nothing
     , exercises = []
     , stopwatch = Stopwatch.init
     , route = route
