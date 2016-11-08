@@ -1,8 +1,5 @@
 - event stream re-design
   - is the End status actually needed?
-  - no more need for Zipper for the steps - although will have to do something
-    equivalentish to the SafeZipper for event replay....
-  - can I just create the zipper on demand and only save the text on the model?
   - with no zipper, can represent the steps as a List Line, where each
     Line is a List Step
   - all-in all should move complexity from step handling and parsing to
@@ -10,6 +7,8 @@
   - review code - is it better, can it be made simpler?
 - show stats summaries
   - graph over time of accuracy and wpm
+- [BUG] need to prevent default on typed characters
+- scrolling when exercise is longer than the viewport
 - how to show a loading state when the page is drawn bu we're waiting for
   data from the backend (have been some discussions/posts on this recently)
 - don't get the exercise contents when getting the list of exercies
@@ -96,3 +95,6 @@ done
 - Remove the need for many of the different status's of character
   - should just need Untyepables - Skip, End and Typeable - Char
 - does step need moveto?
+- no more need for Zipper for the steps - although will have to do something
+  equivalentish to the SafeZipper for event replay....
+- can I just create the zipper on demand and only save the text on the model?

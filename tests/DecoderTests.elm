@@ -48,10 +48,7 @@ exerciseDecoderTests =
                         (Ok
                             { id = 3
                             , title = "1 line"
-                            , steps =
-                                ExerciseParser.toSteps "a"
-                                    |> Zipper.fromList
-                                    |> Maybe.withDefault (Zipper.singleton Step.initEnd)
+                            , text = "a"
                             , events = []
                             }
                         )

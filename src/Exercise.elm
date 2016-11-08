@@ -25,7 +25,7 @@ import Time exposing (Time)
 type alias Exercise =
     { id : Int
     , title : String
-    , steps : Zipper Step
+    , text : String
     , events : List Event
     }
 
@@ -47,11 +47,7 @@ init : Int -> String -> String -> Exercise
 init id title text =
     { id = id
     , title = title
-    , steps =
-        ExerciseParser.toSteps text
-            |> Zipper.fromList
-            |> Maybe.withDefault (Zipper.singleton Step.initEnd)
-            |> toInitialStep
+    , text = text
     , events = []
     }
 
@@ -68,7 +64,7 @@ accuracy exercise =
 
 printables : Exercise -> List Printable
 printables exercise =
-    exercise.steps
+    steps exercise
         |> Zipper.first
         |> toInitialStep
         |> followEvents exercise.events
@@ -89,7 +85,7 @@ consume char timeTaken exercise =
 
 isComplete : Exercise -> Bool
 isComplete exercise =
-    exercise.steps
+    steps exercise
         |> Zipper.first
         |> toInitialStep
         |> followEvents exercise.events
@@ -122,9 +118,17 @@ type Direction
     | Previous
 
 
+steps : Exercise -> Zipper Step
+steps exercise =
+    ExerciseParser.toSteps exercise.text
+        |> Zipper.fromList
+        |> Maybe.withDefault (Zipper.singleton Step.initEnd)
+        |> toInitialStep
+
+
 howManyCharacters : Exercise -> Int
 howManyCharacters exercise =
-    exercise.steps
+    steps exercise
         |> Zipper.first
         |> toInitialStep
         |> followEvents exercise.events
