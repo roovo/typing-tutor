@@ -43,7 +43,7 @@ encodeEvent event =
     tuple2Encoder
         JE.string
         JE.int
-        ( event.actual, event.timeTaken )
+        ( toString event.char, event.timeTaken )
 
 
 tuple2Encoder : (a -> JE.Value) -> (b -> JE.Value) -> ( a, b ) -> JE.Value

@@ -1,11 +1,10 @@
 module Event exposing (Event, howManyTyped, timeTaken)
 
 import Char
-import String
 
 
 type alias Event =
-    { actual : String
+    { char : Char
     , timeTaken : Int
     }
 
@@ -24,9 +23,9 @@ timeTaken =
 -- PRIVATE FUNCTIONS
 
 
-backspaceChar : String
+backspaceChar : Char
 backspaceChar =
-    String.fromChar << Char.fromCode <| 8
+    Char.fromCode 8
 
 
 timeTakenMins : List Event -> Float
@@ -36,4 +35,4 @@ timeTakenMins events =
 
 typedEvents : List Event -> List Event
 typedEvents =
-    List.filter (\e -> e.actual /= backspaceChar)
+    List.filter (\e -> e.char /= backspaceChar)

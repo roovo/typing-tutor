@@ -10,6 +10,7 @@ module Step
         , isSkipableWhitespace
         , isTypeable
         , isTypeableEnter
+        , matchesTyped
         )
 
 import Char
@@ -58,6 +59,16 @@ toString step =
 
         End ->
             ""
+
+
+matchesTyped : Char -> Step -> Bool
+matchesTyped char step =
+    case step of
+        Typeable actual ->
+            actual == char
+
+        _ ->
+            False
 
 
 isEnd : Step -> Bool

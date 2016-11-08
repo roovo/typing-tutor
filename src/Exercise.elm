@@ -11,12 +11,12 @@ module Exercise
         , wpm
         )
 
+import Char
 import Event exposing (Event)
 import ExerciseParser
 import List.Zipper as Zipper exposing (Zipper)
 import SafeZipper
 import Step exposing (Step)
-import String
 import Time exposing (Time)
 
 
@@ -111,6 +111,11 @@ lettersPerWord =
     5
 
 
+backspaceChar : Char
+backspaceChar =
+    (Char.fromCode 8)
+
+
 type Direction
     = Next
     | Previous
@@ -145,7 +150,7 @@ logEvent : Char -> Time -> Exercise -> List Event
 logEvent char timeTaken exercise =
     let
         newEvent =
-            { actual = String.fromChar char
+            { char = char
             , timeTaken = round timeTaken
             }
     in
@@ -161,13 +166,13 @@ followEvents events steps =
                     Zipper.current steps
 
                 matchingChar =
-                    Step.toString currentStep == event.actual
+                    Step.matchesTyped event.char currentStep
 
                 isErrorFree =
                     errors <= 0
 
                 backSpace =
-                    event.actual == "\x08"
+                    event.char == backspaceChar
 
                 atEnd =
                     Step.isEnd currentStep
