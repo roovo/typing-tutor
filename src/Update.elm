@@ -11,6 +11,7 @@ import Task
 import Time exposing (Time)
 
 
+backspaceCode : Int
 backspaceCode =
     8
 

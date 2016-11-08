@@ -1,10 +1,3 @@
-- event stream re-design
-  - is the End status actually needed?
-  - with no zipper, can represent the steps as a List Line, where each
-    Line is a List Step
-  - all-in all should move complexity from step handling and parsing to
-    event stream playback and interpretation - hopefully overall simpler
-  - review code - is it better, can it be made simpler?
 - show stats summaries
   - graph over time of accuracy and wpm
 - [BUG] need to prevent default on typed characters
@@ -98,3 +91,9 @@ done
 - no more need for Zipper for the steps - although will have to do something
   equivalentish to the SafeZipper for event replay....
 - can I just create the zipper on demand and only save the text on the model?
+- event stream re-design
+  - with no zipper, can I represent the steps as a List Line, where each
+    Line is a List Step - leave this for now
+  - review code - is it better, can it be made simpler?
+  - is the End status actually needed? - could probably loose it but not
+    a big enough deal for now - better to get some more features in place...

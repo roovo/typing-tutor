@@ -2,7 +2,6 @@ module Model exposing (Model, initialModel)
 
 import Exercise exposing (Exercise)
 import Hop.Types as Hop
-import Msg exposing (Msg)
 import Route exposing (Route)
 import Stopwatch exposing (Stopwatch)
 

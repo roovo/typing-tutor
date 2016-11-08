@@ -13,8 +13,6 @@ module Exercise
 
 import Event exposing (Event)
 import ExerciseParser
-import Html exposing (Html)
-import Html.Attributes
 import List.Zipper as Zipper exposing (Zipper)
 import SafeZipper
 import Step exposing (Step, Status(..))
@@ -109,6 +107,7 @@ wpm exercise =
 -- PRIVATE FUNCTIONS
 
 
+lettersPerWord : Float
 lettersPerWord =
     5
 

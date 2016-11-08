@@ -6,9 +6,7 @@ import Event
 import Exercise exposing (Exercise, Printable, Style(..))
 import Model exposing (Model)
 import Msg exposing (Msg)
-import Step exposing (Step, Status(..))
 import Stopwatch
-import Time exposing (Time)
 
 
 view : Model -> Html Msg

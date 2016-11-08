@@ -1,8 +1,6 @@
 module Main exposing (..)
 
 import AnimationFrame
-import Char
-import Exercise exposing (Exercise)
 import Hop.Types as Hop
 import Model exposing (Model)
 import Msg exposing (Msg(..))
@@ -14,6 +12,7 @@ import UrlUpdate
 import View
 
 
+main : Program Never
 main =
     Navigation.program urlParser
         { init = init
