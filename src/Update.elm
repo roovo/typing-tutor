@@ -20,16 +20,10 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case logWithoutTick msg of
         KeyPress keyCode ->
-            if keyCode /= backspaceCode then
-                consumeChar keyCode model
-            else
-                ( model, Cmd.none )
+            consumeChar keyCode model
 
         KeyDown keyCode ->
-            if keyCode == backspaceCode then
-                consumeChar keyCode model
-            else
-                ( model, Cmd.none )
+            consumeChar keyCode model
 
         Tick elapsed ->
             ( { model | stopwatch = Stopwatch.tick elapsed model.stopwatch }
