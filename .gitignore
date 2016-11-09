@@ -1,6 +1,6 @@
 elm.js
-index.html
 api/db.json
 elm-stuff/*
 node_modules/*
+tests/index.html
 tmp/*

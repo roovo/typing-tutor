@@ -11,14 +11,14 @@ keep working on it whilst it's fun tho.
 I'm using (the excellent) [elm-live](https://github.com/tomekwi/elm-live)
 to run things whilst developing.  To install this locally:
 
-```
-> npm install elm-live
+```bash
+npm install elm-live
 ```
 
 then to run the project:
 
-```
-> ./node_modules/.bin/elm-live src/Main.elm --pushstate
+```bash
+./node_modules/.bin/elm-live src/Main.elm --pushstate  --dir=./dist --output=./dist/elm.js
 ```
 
 
@@ -27,34 +27,34 @@ then to run the project:
 The back end api is currently using [JSON Server](https://github.com/typicode/json-server).
 On first use, copy across the database file:
 
-```
-> cp api/db.example.json api/db.json
+```bash
+cp api/db.example.json api/db.json
 ```
 
 Then run the API server using:
 
-```
-> node api/api.js
+```bash
+node api/api.js
 ```
 
 And to seed the database, run:
 
-```
-> ./api/seedTutor.sh
+```bash
+./api/seedTutor.sh
 ```
 
 ## Tests
 
 There are tests - using elm-test - install this (globally) by:
 
-```
-> npm install -g elm-test
+```bash
+npm install -g elm-test
 ```
 
 and run the tests from the command line with:
 
-```
-> elm-test
+```bash
+elm-test
 ```
 
 ## Todo
