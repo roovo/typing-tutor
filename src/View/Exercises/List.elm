@@ -29,4 +29,9 @@ exerciseItem exercise =
         [ Html.a
             [ Html.Attributes.href (Route.urlFor (ExerciseRoute exercise.id)) ]
             [ Html.text exercise.title ]
+        , Html.text " ("
+        , Html.a
+            [ Html.Attributes.href (Route.urlFor (ResultRoute exercise.id)) ]
+            [ Html.text "results" ]
+        , Html.text ")"
         ]

@@ -6,6 +6,7 @@ import Msg exposing (Msg)
 import Route exposing (Route(..))
 import View.Exercises.List
 import View.Exercises.Run
+import View.Exercises.Result
 
 
 view : Model -> Html Msg
@@ -23,6 +24,9 @@ body model =
 
         ExerciseRoute id ->
             View.Exercises.Run.view model
+
+        ResultRoute id ->
+            View.Exercises.Result.view model
 
         NotFoundRoute ->
             Html.text "Sorry - not round these parts - 404"

@@ -15,6 +15,9 @@ urlFor route =
         ExerciseRoute id ->
             "/exercises/" ++ toString id
 
+        ResultRoute id ->
+            "/results/" ++ toString id
+
         NotFoundRoute ->
             "/404"
 
@@ -25,6 +28,7 @@ routes =
         [ UrlParser.format ExerciseListRoute (UrlParser.s "")
         , UrlParser.format ExerciseRoute (UrlParser.s "exercises" </> UrlParser.int)
         , UrlParser.format ExerciseListRoute (UrlParser.s "exercises")
+        , UrlParser.format ResultRoute (UrlParser.s "results" </> UrlParser.int)
         ]
 
 
@@ -38,6 +42,7 @@ hopConfig =
 type Route
     = ExerciseListRoute
     | ExerciseRoute Int
+    | ResultRoute Int
     | NotFoundRoute
 
 
