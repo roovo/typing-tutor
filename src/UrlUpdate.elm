@@ -16,6 +16,9 @@ cmdForModelRoute model =
         ExerciseRoute id ->
             Api.fetchExercise model id (always NoOp) <| GotExercise
 
+        ResultRoute exerciseId ->
+            Api.fetchAttempts model exerciseId (always NoOp) <| GotAttempts
+
         _ ->
             Cmd.none
 

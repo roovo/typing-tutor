@@ -1,4 +1,4 @@
-module Api exposing (createAttempt, fetchExercise, fetchExercises)
+module Api exposing (createAttempt, fetchAttempts, fetchExercise, fetchExercises)
 
 import Attempt exposing (Attempt)
 import Decoders
@@ -20,6 +20,11 @@ fetchExercise model id errorMsg msg =
 fetchExercises : Model -> (Http.Error -> Msg) -> (List Exercise -> Msg) -> Cmd Msg
 fetchExercises model errorMsg msg =
     get model "/exercises" Decoders.exercisesDecoder errorMsg msg
+
+
+fetchAttempts : Model -> Int -> (Http.Error -> Msg) -> (List Attempt -> Msg) -> Cmd Msg
+fetchAttempts model exerciseId errorMsg msg =
+    get model ("/attempts?exerciseId=" ++ toString exerciseId) Decoders.attemptsDecoder errorMsg msg
 
 
 createAttempt : Model -> Attempt -> (Http.Error -> Msg) -> (Attempt -> Msg) -> Cmd Msg

@@ -1,4 +1,4 @@
-module Decoders exposing (attemptDecoder, exerciseDecoder, exercisesDecoder)
+module Decoders exposing (attemptDecoder, attemptsDecoder, exerciseDecoder, exercisesDecoder)
 
 import Attempt exposing (Attempt)
 import Exercise exposing (Exercise)
@@ -16,6 +16,11 @@ exerciseDecoder =
         ("id" := JD.int)
         ("title" := JD.string)
         ("text" := JD.string)
+
+
+attemptsDecoder : JD.Decoder (List Attempt)
+attemptsDecoder =
+    JD.list attemptDecoder
 
 
 attemptDecoder : JD.Decoder Attempt

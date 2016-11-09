@@ -1,5 +1,6 @@
 module Msg exposing (Msg(..))
 
+import Attempt exposing (Attempt)
 import Exercise exposing (Exercise)
 import Keyboard exposing (KeyCode)
 import Time exposing (Time)
@@ -12,4 +13,5 @@ type Msg
     | GotTime Time
     | GotExercises (List Exercise)
     | GotExercise Exercise
+    | GotAttempts (List Attempt)
     | NoOp
