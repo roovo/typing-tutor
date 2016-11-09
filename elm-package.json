@@ -17,6 +17,7 @@
         "elm-lang/navigation": "1.0.0 <= v < 2.0.0",
         "evancz/elm-http": "3.0.1 <= v < 4.0.0",
         "evancz/url-parser": "1.0.0 <= v < 2.0.0",
+        "justinmimbs/elm-date-extra": "2.0.0 <= v < 3.0.0",
         "sporto/hop": "6.0.0 <= v < 7.0.0",
         "wernerdegroot/listzipper": "2.0.0 <= v < 3.0.0"
     },

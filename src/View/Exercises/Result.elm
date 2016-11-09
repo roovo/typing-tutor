@@ -1,6 +1,8 @@
 module View.Exercises.Result exposing (view)
 
 import Attempt exposing (Attempt)
+import Date
+import Date.Extra
 import Html exposing (Html)
 import Model exposing (Model)
 import Msg exposing (Msg)
@@ -29,7 +31,18 @@ viewAttemptsTable model =
 viewAttemptRow : Attempt -> Html Msg
 viewAttemptRow attempt =
     Html.tr []
-        [ Html.td [] [ Html.text (toString attempt.completedAt) ]
-        , Html.td [] [ Html.text (toString attempt.wpm) ]
-        , Html.td [] [ Html.text (toString attempt.accuracy) ]
+        [ Html.td [] [ Html.text (Date.Extra.toFormattedString "EEE ddd MMM @ HH:mm" <| Date.fromTime attempt.completedAt) ]
+        , Html.td [] [ Html.text (toString <| round attempt.wpm) ]
+        , Html.td [] [ Html.text <| percentage attempt.accuracy ]
         ]
+
+
+percentage : Float -> String
+percentage float =
+    float
+        |> (*) 100
+        |> truncate
+        |> toFloat
+        |> (flip (/) 100.0)
+        |> toString
+        |> (flip (++) "%")
