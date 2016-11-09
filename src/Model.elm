@@ -1,5 +1,6 @@
 module Model exposing (Model, initialModel)
 
+import Attempt exposing (Attempt)
 import Exercise exposing (Exercise)
 import Hop.Types as Hop
 import Route exposing (Route)
@@ -11,6 +12,7 @@ type alias Model =
     , exercise : Maybe Exercise
     , exercises : List Exercise
     , stopwatch : Stopwatch
+    , attempts : List Attempt
     , route : Route
     , address : Hop.Address
     }
@@ -22,6 +24,7 @@ initialModel ( route, address ) =
     , exercise = Nothing
     , exercises = []
     , stopwatch = Stopwatch.init
+    , attempts = []
     , route = route
     , address = address
     }

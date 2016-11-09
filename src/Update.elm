@@ -47,7 +47,7 @@ update msg model =
             ( { model | exercise = Just exercise }, Cmd.none )
 
         GotAttempts attempts ->
-            ( model, Cmd.none )
+            ( { model | attempts = attempts }, Cmd.none )
 
         NoOp ->
             ( model, Cmd.none )
