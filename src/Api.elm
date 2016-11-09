@@ -24,7 +24,7 @@ fetchExercises model errorMsg msg =
 
 fetchAttempts : Model -> Int -> (Http.Error -> Msg) -> (List Attempt -> Msg) -> Cmd Msg
 fetchAttempts model exerciseId errorMsg msg =
-    get model ("/attempts?exerciseId=" ++ toString exerciseId) Decoders.attemptsDecoder errorMsg msg
+    get model ("/attempts?exerciseId=" ++ toString exerciseId ++ "&_sort=exerciseId&_order=DESC") Decoders.attemptsDecoder errorMsg msg
 
 
 createAttempt : Model -> Attempt -> (Http.Error -> Msg) -> (Attempt -> Msg) -> Cmd Msg
