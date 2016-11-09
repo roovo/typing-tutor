@@ -2,7 +2,31 @@
 <link rel="stylesheet" href="/style.css" />
 
 <body>
-  <div></div>
+  <div id="main"></div>
   <script src="/elm.js"></script>
-  <script>Elm.Main.embed(document.querySelector("div"));</script>
+  <script>
+
+var mountNode = document.getElementById('main');
+
+var app = Elm.Main.embed(mountNode);
+
+document.onkeydown = function(e) {
+  if (e.keyCode === 8) {
+    app.ports.keyDown.send(e.keyCode)
+
+    e.preventDefault();
+    e.stopPropagation()
+  }
+}
+
+document.onkeypress = function(e) {
+  if (e.keyCode !== 8) {
+    app.ports.keyPress.send(e.keyCode)
+
+    e.preventDefault();
+    e.stopPropagation()
+  }
+}
+
+  </script>
 </body>
