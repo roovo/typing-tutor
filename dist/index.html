@@ -2,31 +2,10 @@
 
 <body>
   <div id="main"></div>
+
+  <canvas id="myChart" width="100" height="100"></canvas>
+
   <script src="/Chart.bundle.min.js"></script>
   <script src="/elm.js"></script>
-  <script>
-
-var mountNode = document.getElementById('main');
-
-var app = Elm.Main.embed(mountNode);
-
-document.onkeydown = function(e) {
-  if (e.keyCode === 8) {
-    app.ports.keyDown.send(e.keyCode)
-
-    e.preventDefault();
-    e.stopPropagation()
-  }
-}
-
-document.onkeypress = function(e) {
-  if (e.keyCode !== 8) {
-    app.ports.keyPress.send(e.keyCode)
-
-    e.preventDefault();
-    e.stopPropagation()
-  }
-}
-
-  </script>
+  <script src="/ports.js"></script>
 </body>
