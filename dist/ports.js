@@ -24,8 +24,6 @@ function newDate(epoc) {
   return moment(epoc).toDate();
 }
 
-var timeFormat = 'MM/DD/YYYY HH:mm';
-
 var ctx = document.getElementById("myChart");
 
 var myChart = new Chart(ctx, {

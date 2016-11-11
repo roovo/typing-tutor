@@ -1,4 +1,4 @@
-port module Browser exposing (keyDown, keyPress)
+port module Ports exposing (keyDown, keyPress)
 
 import Keyboard exposing (KeyCode)
 

@@ -1,11 +1,11 @@
 module Main exposing (..)
 
 import AnimationFrame
-import Browser
 import Hop.Types as Hop
 import Model exposing (Model)
 import Msg exposing (Msg(..))
 import Navigation
+import Ports
 import Route exposing (Route(..), urlParser)
 import Keyboard exposing (KeyCode)
 import Update
@@ -40,9 +40,7 @@ init ( route, address ) =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        -- [ Keyboard.presses KeyPress
-        -- , Keyboard.downs KeyDown
         [ AnimationFrame.diffs Tick
-        , Browser.keyDown KeyDown
-        , Browser.keyPress KeyPress
+        , Ports.keyDown KeyDown
+        , Ports.keyPress KeyPress
         ]
