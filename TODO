@@ -1,10 +1,8 @@
-- show stats summaries
-  - graph over time of accuracy and wpm
+- [Rob, Tom] advance the cursor whilst mis-typing so you can
+  see how many backspaces you need to type
 - how to show a loading state when the page is drawn but we're waiting for
   data from the backend (have been some discussions/posts on this recently)
 - [Rob, Joe, Tom] show characters wot are mis-typed as they are entered
-- [Rob, Tom] advance the cursor whilst mis-typing so you can
-  see how many backspaces you need to type
 - auto-pause the timer if nothing typed for a while
 - scrolling when exercise is longer than the viewport
 - track slow characters (as in slow to type)
@@ -100,3 +98,5 @@ done
 - Exercise.followEvents - rename func to something more meaningful
 - Routes - move routes and urlFor up the file
 - [BUG] need to prevent default on typed characters
+- show stats summaries
+  - graph over time of accuracy and wpm
