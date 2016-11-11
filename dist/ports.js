@@ -35,29 +35,34 @@ var myChart = new Chart(ctx, {
             label: 'WPM',
             radius: 5,
             backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            xAxisID: "time",
+            yAxisID: "wpm",
             data: [{
-                x: newDate(1478606177234),
-                y: 30
-            }, {
-                x: newDate(1478706177234),
-                y: 35
-            }, {
-                x: newDate(1478708177234),
-                y: 33
-            // }, {
-            // label: 'Accuracy',
-            // radius: 5,
-            // backgroundColor: 'rgba(255, 206, 86, 0.2)',
-            // data: [{
-            //     x: newDate(1478606177234),
-            //     y: 99.7
-            // }, {
-            //     x: newDate(1478706177234),
-            //     y: 90.456
-            // }, {
-            //     x: newDate(1478708177234),
-            //     y: 94.34
-            }]
+                      x: newDate(1478606177234),
+                      y: 30
+                  }, {
+                      x: newDate(1478706177234),
+                      y: 32
+                  }, {
+                      x: newDate(1478708177234),
+                      y: 33
+                  }]
+        } , {
+            label: 'Accuracy',
+            radius: 5,
+            backgroundColor: 'rgba(255, 206, 86, 0.2)',
+            xAxisID: "time",
+            yAxisID: "accuracy",
+            data: [{
+                    x: newDate(1478606177234),
+                    y: 99.7
+                }, {
+                    x: newDate(1478706177234),
+                    y: 90.456
+                }, {
+                    x: newDate(1478708177234),
+                    y: 94.34
+                }]
         }]
     },
     options: {
@@ -67,7 +72,24 @@ var myChart = new Chart(ctx, {
         scales: {
             xAxes: [{
                 type: 'time',
-                position: 'bottom'
+                position: 'bottom',
+                id: 'time'
+            }],
+            yAxes: [{
+                position: "left",
+                id: "wpm",
+                display: true,
+                ticks: {
+                  beginAtZero: true,
+                  suggestedMax: 100
+                }
+            }, {
+                position: "right",
+                id: "accuracy",
+                display: false,
+                ticks: {
+                  beginAtZero: true
+                }
             }]
         }
     }
