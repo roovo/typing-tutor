@@ -6,6 +6,7 @@ import Char
 import Exercise
 import Msg exposing (Msg(..))
 import Model exposing (Model)
+import Ports
 import Stopwatch
 import Task
 import Time exposing (Time)
@@ -47,7 +48,7 @@ update msg model =
             ( { model | exercise = Just exercise }, Cmd.none )
 
         GotAttempts attempts ->
-            ( { model | attempts = attempts }, Cmd.none )
+            ( { model | attempts = attempts }, Ports.showChart attempts )
 
         NoOp ->
             ( model, Cmd.none )
