@@ -1,4 +1,4 @@
-port module Ports exposing (keyDown, keyPress, showChart)
+port module Ports exposing (keyDown, keyPress, scrollIfNearEdge, showChart)
 
 import Attempt exposing (Attempt)
 import Keyboard exposing (KeyCode)
@@ -19,6 +19,9 @@ port keyPress : (KeyCode -> msg) -> Sub msg
 
 
 port chartAttempts : List ChartData -> Cmd msg
+
+
+port scrollIfNearEdge : Int -> Cmd msg
 
 
 showChart : List Attempt -> Cmd msg

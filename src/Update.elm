@@ -94,7 +94,7 @@ consumeCharCmd model =
             if Exercise.isComplete exercise then
                 Task.perform (always NoOp) (GotTime) Time.now
             else
-                Cmd.none
+                Ports.scrollIfNearEdge 1
 
 
 logWithoutTick : Msg -> Msg

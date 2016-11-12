@@ -26,6 +26,27 @@ function newDate(epoc) {
   return moment(epoc).toDate();
 }
 
+var DETECT_MARGIN_LINES = 3;
+var TARGET_MARGIN_LINES = 5;
+
+app.ports.scrollIfNearEdge.subscribe(function(nothing) {
+  console.log("Port (js): scrollIfNearEdge");
+  setTimeout(function() {
+    var currentStep = document.getElementById("current");
+
+    if (currentStep !== null) {
+      var height      = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+      var currentRect = currentStep.getBoundingClientRect();
+
+      if (currentRect.bottom + (currentRect.height * DETECT_MARGIN_LINES) > height) {
+        window.scrollBy(0, height - (currentRect.height * TARGET_MARGIN_LINES));
+      } else if (currentRect.top - (currentRect.height * DETECT_MARGIN_LINES) <= 0) {
+        window.scrollBy(0, -1 * (height - (currentRect.height * TARGET_MARGIN_LINES)));
+      }
+    }
+  }, 50);
+});
+
 app.ports.chartAttempts.subscribe(function(attempts) {
   console.log("Port (js): chartAttempts: " + attempts);
 
