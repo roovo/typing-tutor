@@ -65,7 +65,7 @@ viewSteps exercise =
 viewPrintable : Printable -> Html msg
 viewPrintable printable =
     Html.span
-        [ Html.Attributes.style
+        ([ Html.Attributes.style
             (case printable.style of
                 Completed ->
                     [ ( "color", "black" )
@@ -85,7 +85,12 @@ viewPrintable printable =
                     [ ( "color", "gray" )
                     ]
             )
-        ]
+         ]
+            ++ if printable.style == Current then
+                [ Html.Attributes.id "current" ]
+               else
+                []
+        )
         [ viewPrintableContent printable.content ]
 
 
