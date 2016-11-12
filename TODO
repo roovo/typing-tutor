@@ -2,6 +2,12 @@
 - add language identifier so can see stats on a per language basis as well
   as per exercise
 - pretty-fication
+- upload new exercise
+  - current processing used in vim to get file in right format is:
+      - :%s/"/\\"/g
+      - :%s/\n/\\n/g
+      - should also need to do something to escape "\" characters if
+        the file contains them...
 - how to show a loading state when the page is drawn but we're waiting for
   data from the backend (have been some discussions/posts on this recently)
 - [Rob, Joe, Tom] show characters wot are mis-typed as they are entered
