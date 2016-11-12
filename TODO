@@ -1,14 +1,15 @@
-- [Rob, Tom] advance the cursor whilst mis-typing so you can
-  see how many backspaces you need to type
+- [BUG] tooltip on graph shows epoc time not formatted time
+- scrolling when exercise is longer than the viewport
+- add language identifier so can see stats on a per language basis as well
+  as per exercise
+- pretty-fication
 - how to show a loading state when the page is drawn but we're waiting for
   data from the backend (have been some discussions/posts on this recently)
 - [Rob, Joe, Tom] show characters wot are mis-typed as they are entered
 - auto-pause the timer if nothing typed for a while
-- scrolling when exercise is longer than the viewport
 - track slow characters (as in slow to type)
 - don't get the exercise contents when getting the list of exercies
   just get it when you start the exercise
-- pretty-fication
 - calculate statistics
   - show which characters you got wrong
 
@@ -100,3 +101,5 @@ done
 - [BUG] need to prevent default on typed characters
 - show stats summaries
   - graph over time of accuracy and wpm
+- [Rob, Tom] advance the cursor whilst mis-typing so you can
+  see how many backspaces you need to type
