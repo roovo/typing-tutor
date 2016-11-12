@@ -22,6 +22,10 @@ document.onkeypress = function(e) {
   }
 }
 
+function newDate(epoc) {
+  return moment(epoc).toDate();
+}
+
 app.ports.chartAttempts.subscribe(function(attempts) {
   console.log("Port (js): chartAttempts: " + attempts);
 
@@ -29,11 +33,11 @@ app.ports.chartAttempts.subscribe(function(attempts) {
     var ctx = document.getElementById("attemptChart");
 
     var wpmData = attempts.map(function(a) {
-      return { x: a.completedAt, y: Math.round (a.wpm * 10) / 10 };
+      return { x: newDate(a.completedAt), y: Math.round (a.wpm * 10) / 10 };
     });
 
     var accuracyData = attempts.map(function(a) {
-      return { x: a.completedAt, y: Math.round (a.accuracy * 100) / 100 };
+      return { x: newDate(a.completedAt), y: Math.round (a.accuracy * 100) / 100 };
     });
 
     var myChart = new Chart(ctx, {
