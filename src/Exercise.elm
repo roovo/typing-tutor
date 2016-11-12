@@ -224,24 +224,29 @@ currentStyle errorCount steps =
         [ toPrintable current ]
 
 
-afterStyles : Zipper Step -> List Printable
-afterStyles steps =
+afterStyles : Int -> Zipper Step -> List Printable
+afterStyles errorCount steps =
     let
-        toPrintable step =
-            { content = Step.toString step
-            , style = Waiting
-            }
+        toPrintable index step =
+            if index < (errorCount - 1) then
+                { content = Step.toString step
+                , style = Error
+                }
+            else
+                { content = Step.toString step
+                , style = Waiting
+                }
     in
         steps
             |> Zipper.after
-            |> List.map toPrintable
+            |> List.indexedMap toPrintable
 
 
 setStyles : ( Zipper Step, Int ) -> List Printable
 setStyles ( steps, errorCount ) =
     beforeStyles steps
         ++ currentStyle errorCount steps
-        ++ afterStyles steps
+        ++ afterStyles errorCount steps
 
 
 skipOver : Direction -> Zipper Step -> Zipper Step
