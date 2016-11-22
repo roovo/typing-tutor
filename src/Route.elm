@@ -2,8 +2,6 @@ module Route exposing (Route(..), urlFor, urlParser)
 
 import Navigation
 import UrlParser exposing ((</>))
-import Hop
-import Hop.Types as Hop
 
 
 urlFor : Route -> String

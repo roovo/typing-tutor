@@ -2,7 +2,6 @@ module Model exposing (Model, initialModel)
 
 import Attempt exposing (Attempt)
 import Exercise exposing (Exercise)
-import Hop.Types as Hop
 import Route exposing (Route)
 import Stopwatch exposing (Stopwatch)
 

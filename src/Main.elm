@@ -1,7 +1,6 @@
 module Main exposing (..)
 
 import AnimationFrame
-import Hop.Types as Hop
 import Model exposing (Model)
 import Msg exposing (Msg(..))
 import Navigation

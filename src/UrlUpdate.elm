@@ -1,7 +1,6 @@
 module UrlUpdate exposing (urlUpdate)
 
 import Api
-import Hop.Types as Hop
 import Model exposing (Model)
 import Msg exposing (Msg(..))
 import Route exposing (Route(..))
