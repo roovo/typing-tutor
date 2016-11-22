@@ -5,31 +5,25 @@ import Model exposing (Model)
 import Msg exposing (Msg(..))
 import Navigation
 import Ports
-import Route exposing (Route(..), urlParser)
 import Keyboard exposing (KeyCode)
 import Update
 import UrlUpdate
 import View
 
 
-main : Program Never
+main : Program Never Model Msg
 main =
-    Navigation.program urlParser
+    Navigation.program UrlChange
         { init = init
         , subscriptions = subscriptions
         , update = Update.update
-        , urlUpdate = UrlUpdate.urlUpdate
         , view = View.view
         }
 
 
-init : ( Route, Hop.Address ) -> ( Model, Cmd Msg )
-init ( route, address ) =
-    UrlUpdate.urlUpdate
-        ( route, address )
-    <|
-        Model.initialModel <|
-            ( route, address )
+init : Navigation.Location -> ( Model, Cmd Msg )
+init location =
+    UrlUpdate.urlUpdate location (Model.initialModel location)
 
 
 

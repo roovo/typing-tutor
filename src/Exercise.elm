@@ -87,7 +87,7 @@ isComplete exercise =
         |> Zipper.first
         |> toInitialStep
         |> followEvents exercise.events
-        |> fst
+        |> Tuple.first
         |> Zipper.current
         |> Step.isEnd
 
@@ -135,7 +135,7 @@ howManyCharacters exercise =
         |> Zipper.first
         |> toInitialStep
         |> followEvents exercise.events
-        |> fst
+        |> Tuple.first
         |> Zipper.before
         |> List.filter Step.isTypeable
         |> List.length

@@ -2,7 +2,7 @@ module Decoders exposing (attemptDecoder, attemptsDecoder, exerciseDecoder, exer
 
 import Attempt exposing (Attempt)
 import Exercise exposing (Exercise)
-import Json.Decode as JD exposing ((:=))
+import Json.Decode as JD
 
 
 exercisesDecoder : JD.Decoder (List Exercise)
@@ -12,10 +12,10 @@ exercisesDecoder =
 
 exerciseDecoder : JD.Decoder Exercise
 exerciseDecoder =
-    JD.object3 Exercise.init
-        ("id" := JD.int)
-        ("title" := JD.string)
-        ("text" := JD.string)
+    JD.map3 Exercise.init
+        (JD.field "id" JD.int)
+        (JD.field "title" JD.string)
+        (JD.field "text" JD.string)
 
 
 attemptsDecoder : JD.Decoder (List Attempt)
@@ -25,10 +25,10 @@ attemptsDecoder =
 
 attemptDecoder : JD.Decoder Attempt
 attemptDecoder =
-    JD.object6 Attempt
-        (JD.maybe ("id" := JD.int))
-        ("completedAt" := JD.float)
-        ("exerciseId" := JD.int)
-        ("accuracy" := JD.float)
-        ("wpm" := JD.float)
+    JD.map6 Attempt
+        (JD.maybe (JD.field "id" JD.int))
+        (JD.field "completedAt" JD.float)
+        (JD.field "exerciseId" JD.int)
+        (JD.field "accuracy" JD.float)
+        (JD.field "wpm" JD.float)
         (JD.succeed [])

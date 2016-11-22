@@ -19,14 +19,14 @@ view model =
 body : Model -> Html Msg
 body model =
     case model.route of
-        ExerciseListRoute ->
+        Just ExerciseListRoute ->
             View.Exercises.List.view model
 
-        ExerciseRoute id ->
+        Just (ExerciseRoute id) ->
             View.Exercises.Run.view model
 
-        ResultRoute id ->
+        Just (ResultRoute id) ->
             View.Exercises.Result.view model
 
-        NotFoundRoute ->
+        Nothing ->
             Html.text "Sorry - not round these parts - 404"

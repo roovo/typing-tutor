@@ -10,6 +10,7 @@ import Ports
 import Stopwatch
 import Task
 import Time exposing (Time)
+import UrlUpdate
 
 
 backspaceCode : Int
@@ -31,6 +32,9 @@ update msg model =
             , Cmd.none
             )
 
+        UrlChange location ->
+            UrlUpdate.urlUpdate location model
+
         GotTime timeNow ->
             case model.exercise of
                 Nothing ->
@@ -38,19 +42,28 @@ update msg model =
 
                 Just exercise ->
                     ( model
-                    , Api.createAttempt model (Attempt.init timeNow exercise) (always NoOp) (always NoOp)
+                    , Api.createAttempt model (Attempt.init timeNow exercise) CreatedAttempt
                     )
 
-        GotExercises exercises ->
+        GotExercises (Result.Ok exercises) ->
             ( { model | exercises = exercises }, Cmd.none )
 
-        GotExercise exercise ->
+        GotExercises (Result.Err _) ->
+            ( model, Cmd.none )
+
+        GotExercise (Result.Ok exercise) ->
             ( { model | exercise = Just exercise }, Cmd.none )
 
-        GotAttempts attempts ->
+        GotExercise (Result.Err _) ->
+            ( model, Cmd.none )
+
+        CreatedAttempt _ ->
+            ( model, Cmd.none )
+
+        GotAttempts (Result.Ok attempts) ->
             ( { model | attempts = attempts }, Ports.showChart attempts )
 
-        NoOp ->
+        GotAttempts (Result.Err _) ->
             ( model, Cmd.none )
 
 
@@ -92,7 +105,7 @@ consumeCharCmd model =
 
         Just exercise ->
             if Exercise.isComplete exercise then
-                Task.perform (always NoOp) (GotTime) Time.now
+                Task.perform GotTime Time.now
             else
                 Ports.scrollIfNearEdge 1
 

@@ -5,31 +5,31 @@ import Decoders
 import Event exposing (Event)
 import Exercise exposing (Exercise)
 import Http
-import Json.Decode as JD exposing ((:=))
+import Json.Decode as JD
 import Json.Encode as JE
 import Model exposing (Model)
 import Msg exposing (Msg)
 import Task
 
 
-fetchExercise : Model -> Int -> (Http.Error -> Msg) -> (Exercise -> Msg) -> Cmd Msg
-fetchExercise model id errorMsg msg =
-    get model ("/exercises/" ++ toString id) Decoders.exerciseDecoder errorMsg msg
+fetchExercise : Model -> Int -> (Result Http.Error Exercise -> Msg) -> Cmd Msg
+fetchExercise model id msg =
+    get model ("/exercises/" ++ toString id) Decoders.exerciseDecoder msg
 
 
-fetchExercises : Model -> (Http.Error -> Msg) -> (List Exercise -> Msg) -> Cmd Msg
-fetchExercises model errorMsg msg =
-    get model "/exercises" Decoders.exercisesDecoder errorMsg msg
+fetchExercises : Model -> (Result Http.Error (List Exercise) -> Msg) -> Cmd Msg
+fetchExercises model msg =
+    get model "/exercises" Decoders.exercisesDecoder msg
 
 
-fetchAttempts : Model -> Int -> (Http.Error -> Msg) -> (List Attempt -> Msg) -> Cmd Msg
-fetchAttempts model exerciseId errorMsg msg =
-    get model ("/attempts?exerciseId=" ++ toString exerciseId ++ "&_sort=exerciseId&_order=DESC") Decoders.attemptsDecoder errorMsg msg
+fetchAttempts : Model -> Int -> (Result Http.Error (List Attempt) -> Msg) -> Cmd Msg
+fetchAttempts model exerciseId msg =
+    get model ("/attempts?exerciseId=" ++ toString exerciseId ++ "&_sort=exerciseId&_order=DESC") Decoders.attemptsDecoder msg
 
 
-createAttempt : Model -> Attempt -> (Http.Error -> Msg) -> (Attempt -> Msg) -> Cmd Msg
-createAttempt model attempt errorMsg msg =
-    post model "/attempts" (encodeAttempt attempt) Decoders.attemptDecoder errorMsg msg
+createAttempt : Model -> Attempt -> (Result Http.Error Attempt -> Msg) -> Cmd Msg
+createAttempt model attempt msg =
+    post model "/attempts" (encodeAttempt attempt) Decoders.attemptDecoder msg
 
 
 encodeAttempt : Attempt -> JE.Value
@@ -56,33 +56,18 @@ tuple2Encoder enc1 enc2 ( val1, val2 ) =
     JE.list [ enc1 val1, enc2 val2 ]
 
 
-defaultRequest : Model -> String -> Http.Request
-defaultRequest model path =
-    { verb = "GET"
-    , url = model.baseUrl ++ path
-    , body = Http.empty
-    , headers = [ ( "Content-Type", "application/json" ) ]
-    }
+get : Model -> String -> JD.Decoder a -> (Result Http.Error a -> Msg) -> Cmd Msg
+get model path decoder msg =
+    Http.get
+        (model.baseUrl ++ path)
+        decoder
+        |> Http.send msg
 
 
-get : Model -> String -> JD.Decoder a -> (Http.Error -> Msg) -> (a -> Msg) -> Cmd Msg
-get model path decoder errorMsg msg =
-    Http.send Http.defaultSettings
-        (defaultRequest model path)
-        |> Http.fromJson decoder
-        |> Task.perform errorMsg msg
-
-
-post : Model -> String -> JE.Value -> JD.Decoder a -> (Http.Error -> Msg) -> (a -> Msg) -> Cmd Msg
-post model path encoded decoder errorMsg msg =
-    let
-        request =
-            defaultRequest model path
-    in
-        Http.send Http.defaultSettings
-            { request
-                | verb = "POST"
-                , body = Http.string (encoded |> JE.encode 0)
-            }
-            |> Http.fromJson decoder
-            |> Task.perform errorMsg msg
+post : Model -> String -> JE.Value -> JD.Decoder a -> (Result Http.Error a -> Msg) -> Cmd Msg
+post model path encoded decoder msg =
+    Http.post
+        (model.baseUrl ++ path)
+        (Http.jsonBody encoded)
+        decoder
+        |> Http.send msg

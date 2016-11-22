@@ -1,7 +1,13 @@
-module Route exposing (Route(..), urlFor, urlParser)
+module Route exposing (Route(..), route, urlFor)
 
 import Navigation
 import UrlParser exposing ((</>))
+
+
+type Route
+    = ExerciseListRoute
+    | ExerciseRoute Int
+    | ResultRoute Int
 
 
 urlFor : Route -> String
@@ -16,43 +22,12 @@ urlFor route =
         ResultRoute id ->
             "/results/" ++ toString id
 
-        NotFoundRoute ->
-            "/404"
 
-
-routes : UrlParser.Parser (Route -> a) a
-routes =
+route : UrlParser.Parser (Route -> a) a
+route =
     UrlParser.oneOf
-        [ UrlParser.format ExerciseListRoute (UrlParser.s "")
-        , UrlParser.format ExerciseRoute (UrlParser.s "exercises" </> UrlParser.int)
-        , UrlParser.format ExerciseListRoute (UrlParser.s "exercises")
-        , UrlParser.format ResultRoute (UrlParser.s "results" </> UrlParser.int)
+        [ UrlParser.map ExerciseListRoute (UrlParser.s "")
+        , UrlParser.map ExerciseRoute (UrlParser.s "exercises" </> UrlParser.int)
+        , UrlParser.map ExerciseListRoute (UrlParser.s "exercises")
+        , UrlParser.map ResultRoute (UrlParser.s "results" </> UrlParser.int)
         ]
-
-
-hopConfig : Hop.Config
-hopConfig =
-    { hash = False
-    , basePath = ""
-    }
-
-
-type Route
-    = ExerciseListRoute
-    | ExerciseRoute Int
-    | ResultRoute Int
-    | NotFoundRoute
-
-
-urlParser : Navigation.Parser ( Route, Hop.Address )
-urlParser =
-    let
-        parse path =
-            path
-                |> UrlParser.parse identity routes
-                |> Result.withDefault NotFoundRoute
-
-        resolver =
-            Hop.makeResolver hopConfig parse
-    in
-        Navigation.makeParser (.href >> resolver)

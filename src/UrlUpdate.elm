@@ -3,37 +3,39 @@ module UrlUpdate exposing (urlUpdate)
 import Api
 import Model exposing (Model)
 import Msg exposing (Msg(..))
+import Navigation
 import Route exposing (Route(..))
+import UrlParser
 
 
-cmdForModelRoute : Model -> Cmd Msg
-cmdForModelRoute model =
-    case model.route of
-        ExerciseListRoute ->
-            Api.fetchExercises model (always NoOp) <| GotExercises
-
-        ExerciseRoute id ->
-            Api.fetchExercise model id (always NoOp) <| GotExercise
-
-        ResultRoute exerciseId ->
-            Api.fetchAttempts model exerciseId (always NoOp) <| GotAttempts
-
-        _ ->
-            Cmd.none
-
-
-urlUpdate : ( Route, Hop.Address ) -> Model -> ( Model, Cmd Msg )
-urlUpdate ( route, address ) model =
+urlUpdate : Navigation.Location -> Model -> ( Model, Cmd Msg )
+urlUpdate location model =
     let
         _ =
-            Debug.log "urlUpdate" ( route, address )
+            Debug.log "urlUpdate" location
 
         newModel =
             { model
-                | route = route
-                , address = address
+                | location = location
+                , route = UrlParser.parsePath Route.route location
             }
     in
         ( newModel
         , cmdForModelRoute newModel
         )
+
+
+cmdForModelRoute : Model -> Cmd Msg
+cmdForModelRoute model =
+    case model.route of
+        Just ExerciseListRoute ->
+            Api.fetchExercises model GotExercises
+
+        Just (ExerciseRoute id) ->
+            Api.fetchExercise model id GotExercise
+
+        Just (ResultRoute exerciseId) ->
+            Api.fetchAttempts model exerciseId GotAttempts
+
+        Nothing ->
+            Cmd.none
