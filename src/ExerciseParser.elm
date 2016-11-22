@@ -3,7 +3,6 @@ module ExerciseParser exposing (toSteps)
 import Char
 import Combine as P exposing (Parser)
 import Combine.Char as Char
-import Combine.Infix exposing ((<$>), (<*>), (*>), (<|>))
 import List.Extra exposing (dropWhileRight)
 import Step exposing (Step)
 import String
