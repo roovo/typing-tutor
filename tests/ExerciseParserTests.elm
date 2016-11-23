@@ -1,13 +1,12 @@
 module ExerciseParserTests exposing (all)
 
 import Char
-import Combine as P
+import Combine as P exposing ((<$>), (<*>), (*>), (<|>))
 import Combine.Char as Char
 import ExerciseParser
 import Expect
 import Step
 import Test exposing (..)
-import Combine.Infix exposing ((<$>), (<*>), (*>), (<|>))
 
 
 all : Test
@@ -24,15 +23,15 @@ experimentationTests =
         [ test "eol - \n" <|
             \() ->
                 P.parse (P.manyTill (Char.anyChar) (P.regex " *" *> Char.eol)) "abc  \nde"
-                    |> Expect.equal ( Ok [ 'a', 'b', 'c' ], { input = "de", position = 6 } )
+                    |> Expect.equal (Ok ( (), { input = "de", position = 6, data = "abc  \nde" }, [ 'a', 'b', 'c' ] ))
         , test "eol - \x0D \n" <|
             \() ->
                 P.parse (P.manyTill (P.regex ".") (Char.eol)) "abc\x0D\nde"
-                    |> Expect.equal ( Ok [ "a", "b", "c" ], { input = "de", position = 5 } )
+                    |> Expect.equal (Ok ( (), { input = "de", position = 5, data = "abc\x0D\nde" }, [ "a", "b", "c" ] ))
         , test "regex . doesn't match eol" <|
             \() ->
                 P.parse (P.many (P.regex ".")) "abc\nde"
-                    |> Expect.equal ( Ok [ "a", "b", "c" ], { input = "\nde", position = 3 } )
+                    |> Expect.equal (Ok ( (), { input = "\nde", position = 3, data = "abc\nde" }, [ "a", "b", "c" ] ))
         ]
 
 
