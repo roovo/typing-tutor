@@ -1,6 +1,7 @@
 module Main exposing (..)
 
 import AnimationFrame
+import Exercise
 import Model exposing (Model)
 import Msg exposing (Msg(..))
 import Navigation
@@ -32,8 +33,21 @@ init location =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.batch
-        [ AnimationFrame.diffs Tick
-        , Ports.keyDown KeyDown
-        , Ports.keyPress KeyPress
-        ]
+    case model.exercise of
+        Just exercise ->
+            if Exercise.isRunning exercise then
+                Sub.batch <|
+                    (AnimationFrame.diffs Tick)
+                        :: keyboardListeners
+            else
+                Sub.batch keyboardListeners
+
+        Nothing ->
+            Sub.none
+
+
+keyboardListeners : List (Sub Msg)
+keyboardListeners =
+    [ Ports.keyDown KeyDown
+    , Ports.keyPress KeyPress
+    ]

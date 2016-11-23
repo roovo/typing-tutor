@@ -1,4 +1,3 @@
-- stop the Tick when not doing an exercise
 - add language identifier so can see stats on a per language basis as well
   as per exercise
 - pretty-fication
@@ -111,3 +110,4 @@ done
   see how many backspaces you need to type
 - [BUG] tooltip on graph shows epoc time not formatted time
 - scrolling when exercise is longer than the viewport
+- stop the Tick when not doing an exercise
