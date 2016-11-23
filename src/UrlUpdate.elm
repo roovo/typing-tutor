@@ -16,8 +16,7 @@ urlUpdate location model =
 
         newModel =
             { model
-                | location = location
-                , route = UrlParser.parsePath Route.route location
+                | route = UrlParser.parsePath Route.route location
             }
     in
         ( newModel

@@ -15,7 +15,6 @@ type alias Model =
     , stopwatch : Stopwatch
     , attempts : List Attempt
     , route : Maybe Route
-    , location : Navigation.Location
     }
 
 
@@ -27,5 +26,4 @@ initialModel location =
     , stopwatch = Stopwatch.init
     , attempts = []
     , route = UrlParser.parsePath Route.route location
-    , location = location
     }

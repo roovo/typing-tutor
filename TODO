@@ -1,3 +1,4 @@
+- stop the Tick when not doing an exercise
 - add language identifier so can see stats on a per language basis as well
   as per exercise
 - pretty-fication
