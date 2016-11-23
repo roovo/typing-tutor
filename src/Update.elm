@@ -46,13 +46,26 @@ update msg model =
                     )
 
         GotExercises (Result.Ok exercises) ->
-            ( { model | exercises = exercises }, Cmd.none )
+            ( { model
+                | exercises = exercises
+                , exercise = Nothing
+                , attempts = []
+              }
+            , Cmd.none
+            )
 
         GotExercises (Result.Err _) ->
             ( model, Cmd.none )
 
         GotExercise (Result.Ok exercise) ->
-            ( { model | exercise = Just exercise }, Cmd.none )
+            ( { model
+                | exercise = Just exercise
+                , stopwatch = Stopwatch.reset model.stopwatch
+                , exercises = []
+                , attempts = []
+              }
+            , Cmd.none
+            )
 
         GotExercise (Result.Err _) ->
             ( model, Cmd.none )
@@ -61,7 +74,13 @@ update msg model =
             ( model, Cmd.none )
 
         GotAttempts (Result.Ok attempts) ->
-            ( { model | attempts = attempts }, Ports.showChart attempts )
+            ( { model
+                | attempts = attempts
+                , exercises = []
+                , exercise = Nothing
+              }
+            , Ports.showChart attempts
+            )
 
         GotAttempts (Result.Err _) ->
             ( model, Cmd.none )
