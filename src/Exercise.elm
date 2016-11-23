@@ -7,6 +7,7 @@ module Exercise
         , consume
         , init
         , isComplete
+        , isRunning
         , printables
         , wpm
         )
@@ -90,6 +91,11 @@ isComplete exercise =
         |> Tuple.first
         |> Zipper.current
         |> Step.isEnd
+
+
+isRunning : Exercise -> Bool
+isRunning exercise =
+    not <| List.isEmpty exercise.events || isComplete exercise
 
 
 wpm : Exercise -> Float

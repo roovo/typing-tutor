@@ -13,6 +13,7 @@ all =
         , consumeTests
         , eventStreamTests
         , isCompleteTests
+        , isRunningTests
         , printablesTests
         , wpmTests
         ]
@@ -327,6 +328,36 @@ consumeTests =
                             , { content = "", style = Waiting }
                             ]
             ]
+        ]
+
+
+isRunningTests : Test
+isRunningTests =
+    describe "isRunning"
+        [ test "returns False for a new exercise" <|
+            \() ->
+                exerciseWithText "a"
+                    |> Exercise.isRunning
+                    |> Expect.equal False
+        , test "returns True for an exercise with a correct character entered" <|
+            \() ->
+                exerciseWithText "ab"
+                    |> Exercise.consume 'a' 0
+                    |> Exercise.isRunning
+                    |> Expect.equal True
+        , test "returns True for an exercise with an incorrect character entered" <|
+            \() ->
+                exerciseWithText "ab"
+                    |> Exercise.consume 'b' 0
+                    |> Exercise.isRunning
+                    |> Expect.equal True
+        , test "returns False for a completed exercise" <|
+            \() ->
+                exerciseWithText "ab"
+                    |> Exercise.consume 'a' 0
+                    |> Exercise.consume 'b' 0
+                    |> Exercise.isRunning
+                    |> Expect.equal False
         ]
 
 
