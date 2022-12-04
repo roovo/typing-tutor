@@ -1,25 +1,29 @@
 {
   "name": "typing-tutor",
-  "version": "1.0.0",
-  "description": "An example app in [elm](http://elm-lang.org/) - tracks your typing.",
+  "version": "1.1.0",
+  "description": "Tracks your typing.",
   "main": "index.js",
-  "directories": {
-    "test": "tests"
-  },
-  "dependencies": {},
-  "devDependencies": {
-    "elm-live": "^2.6.0",
-    "json-server": "^0.8.22"
-  },
+  "author": "Rupert Voelcker",
+  "license": "MIT",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "NODE_ENV=production parcel build assets/index.html --no-source-maps",
+    "dev": "parcel assets/index.html"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "elm": "^0.19.1-5",
+    "elm-hot": "^1.1.6",
+    "elm-test": "^0.19.1-revision10",
+    "json-server": "^0.17.1",
+    "graceful-fs": "^4.2.10",
+    "parcel": "^2.8.0",
+    "parcel-plugin-clean-dist": "0.0.6"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/roovo/typing-tutor.git"
   },
-  "author": "",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/roovo/typing-tutor/issues"
   },
