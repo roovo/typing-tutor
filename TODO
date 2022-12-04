@@ -1,7 +1,22 @@
+- elm style elements
+  - pretty-fication
+- syntax highlighting
+  - https://ourcodeworld.com/articles/read/140/top-5-best-code-syntax-highlighter-javascript-plugins
+  - https://github.com/ccampbell/rainbow
+  - http://help.blumentals.net/webuilder/customizing/parsers/parsers_doc.htm
+  - how does vim do it?
+    - http://learnvimscriptthehardway.stevelosh.com/chapters/45.html
+    - https://github.com/asvd/microlight
+    - https://github.com/dasmurphy/microlighted
+- upload multiple examples of different languages and get it to pick sections
+  of the code for an exercise (so they are different each time).  Get it to
+  size according to how long you want your exercise to be.
+- ignore comments
 - add language identifier so can see stats on a per language basis as well
   as per exercise
-- pretty-fication
 - keep clock at foot of page if exercise is longer than a page
+- use local storage for exercises and stats
+  - export and import
 - upload new exercise
   - current processing used in vim to get file in right format is:
       - :%s/"/\\"/g
