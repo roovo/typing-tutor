@@ -1,5 +1,6 @@
-elm.js
+.parcel-cache
 api/db.json
+dist/*
 elm-stuff/*
 node_modules/*
 tests/index.html

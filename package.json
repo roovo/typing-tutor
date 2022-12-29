@@ -9,14 +9,13 @@
     "build": "NODE_ENV=production parcel build assets/index.html --no-source-maps",
     "dev": "parcel assets/index.html"
   },
-  "dependencies": {
-  },
   "devDependencies": {
+    "@parcel/transformer-elm": "^2.8.0",
     "elm": "^0.19.1-5",
     "elm-hot": "^1.1.6",
     "elm-test": "^0.19.1-revision10",
-    "json-server": "^0.17.1",
     "graceful-fs": "^4.2.10",
+    "json-server": "^0.17.1",
     "parcel": "^2.8.0",
     "parcel-plugin-clean-dist": "0.0.6"
   },
