@@ -13,15 +13,15 @@ module Stopwatch
         , view
         )
 
-import Time exposing (Time)
+import Time exposing (Posix)
 
 
 -- MODEL
 
 
 type alias Stopwatch =
-    { laps : List Time
-    , time : Time
+    { laps : List Int
+    , time : Int
     , status : Status
     }
 
@@ -57,7 +57,7 @@ reset stopwatch =
     }
 
 
-tick : Time -> Stopwatch -> Stopwatch
+tick : Int -> Stopwatch -> Stopwatch
 tick elapsedTime stopwatch =
     let
         elapseIfRuning =
@@ -71,28 +71,29 @@ tick elapsedTime stopwatch =
         { stopwatch | time = elapseIfRuning }
 
 
-time : Stopwatch -> Time
+time : Stopwatch -> Int
 time stopwatch =
     stopwatch.time
 
 
 lap : Stopwatch -> Stopwatch
 lap stopwatch =
-    { stopwatch
-        | laps =
-            stopwatch.time
-                |> (flip (-) (lappedTime stopwatch))
-                |> (flip (::) stopwatch.laps)
-        , status = Running
-    }
+    -- { stopwatch
+    --     | laps =
+    --         stopwatch.time
+    --             |> (flip (-) (lappedTime stopwatch))
+    --             |> (flip (::) stopwatch.laps)
+    --     , status = Running
+    -- }
+  stopwatch
 
 
-laps : Stopwatch -> List Time
+laps : Stopwatch -> List Int
 laps stopwatch =
     List.reverse stopwatch.laps
 
 
-lastLap : Stopwatch -> Time
+lastLap : Stopwatch -> Int
 lastLap stopwatch =
     stopwatch.laps
         |> List.head
@@ -103,14 +104,14 @@ lastLap stopwatch =
 -- VIEW
 
 
-view : Time -> String
-view time =
+view : Int -> String
+view t =
     let
         secs =
-            ((round <| time) // 1000) % 60
+            modBy 60 (t // 1000)
 
         mins =
-            floor <| time / 60000
+            t // 60000
     in
         addLeadingZero mins ++ ":" ++ addLeadingZero secs
 
@@ -119,7 +120,7 @@ view time =
 -- PRIVATE FUNCTIONS
 
 
-lappedTime : Stopwatch -> Time
+lappedTime : Stopwatch -> Int
 lappedTime stopwatch =
     stopwatch.laps
         |> List.sum
@@ -128,6 +129,6 @@ lappedTime stopwatch =
 addLeadingZero : Int -> String
 addLeadingZero num =
     if num < 10 then
-        "0" ++ (toString num)
+        "0" ++ (String.fromInt num)
     else
-        toString num
+        String.fromInt num

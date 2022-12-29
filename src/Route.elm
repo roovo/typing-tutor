@@ -1,7 +1,7 @@
-module Route exposing (Route(..), route, urlFor)
+module Route exposing (Route(..), fromUrl, urlFor)
 
-import Navigation
-import UrlParser exposing ((</>))
+import Url exposing (Url)
+import Url.Parser as Parser exposing ((</>), Parser)
 
 
 type Route
@@ -10,24 +10,33 @@ type Route
     | ResultRoute Int
 
 
+fromUrl : Url -> Maybe Route
+fromUrl url =
+    Parser.parse parser url
+
+
 urlFor : Route -> String
-urlFor route =
-    case route of
+urlFor r =
+    case r of
         ExerciseListRoute ->
             "/exercises"
 
         ExerciseRoute id ->
-            "/exercises/" ++ toString id
+            "/exercises/" ++ String.fromInt id
 
         ResultRoute id ->
-            "/results/" ++ toString id
+            "/results/" ++ String.fromInt id
 
 
-route : UrlParser.Parser (Route -> a) a
-route =
-    UrlParser.oneOf
-        [ UrlParser.map ExerciseListRoute (UrlParser.s "")
-        , UrlParser.map ExerciseRoute (UrlParser.s "exercises" </> UrlParser.int)
-        , UrlParser.map ExerciseListRoute (UrlParser.s "exercises")
-        , UrlParser.map ResultRoute (UrlParser.s "results" </> UrlParser.int)
+
+-- PRIVATE
+
+
+parser : Parser (Route -> a) a
+parser =
+    Parser.oneOf
+        [ Parser.map ExerciseListRoute (Parser.s "")
+        , Parser.map ExerciseRoute (Parser.s "exercises" </> Parser.int)
+        , Parser.map ExerciseListRoute (Parser.s "exercises")
+        , Parser.map ResultRoute (Parser.s "results" </> Parser.int)
         ]

@@ -1,7 +1,7 @@
 module View.Exercises.Run exposing (view)
 
 import Html exposing (Html)
-import Html.Attributes
+import Html.Attributes exposing (id, style)
 import Event
 import Exercise exposing (Exercise, Printable, Style(..))
 import Model exposing (Model)
@@ -65,29 +65,27 @@ viewSteps exercise =
 viewPrintable : Printable -> Html msg
 viewPrintable printable =
     Html.span
-        ([ Html.Attributes.style
-            (case printable.style of
+        ( (case printable.style of
                 Completed ->
-                    [ ( "color", "black" )
+                    [ style "color" "black"
                     ]
 
                 Current ->
-                    [ ( "color", "black" )
-                    , ( "background-color", "orange" )
+                    [ style "color" "black"
+                    , style "background-color" "orange"
                     ]
 
                 Error ->
-                    [ ( "color", "gray" )
-                    , ( "background-color", "red" )
+                    [ style "color" "gray"
+                    , style "background-color" "red"
                     ]
 
                 Waiting ->
-                    [ ( "color", "gray" )
+                    [ style "color" "gray"
                     ]
             )
-         ]
             ++ if printable.style == Current then
-                [ Html.Attributes.id "current" ]
+                [ id "current" ]
                else
                 []
         )
@@ -96,7 +94,8 @@ viewPrintable printable =
 
 viewPrintableContent : String -> Html msg
 viewPrintableContent content =
-    if content == "\x0D" then
+    -- if content == "\x0D" then
+    if content == "\n" then
         Html.span []
             [ Html.text " "
             , Html.br [] []
@@ -118,7 +117,7 @@ viewResults exercise =
                 , Html.br [] []
                 , Html.text <|
                     "Speed: "
-                        ++ toString (round <| Exercise.wpm exercise)
+                        ++ String.fromInt (round <| Exercise.wpm exercise)
                         ++ " WPM"
                 , Html.br [] []
                 , Html.br [] []
@@ -138,6 +137,6 @@ percentage float =
         |> (*) 100
         |> truncate
         |> toFloat
-        |> (flip (/) 100.0)
-        |> toString
-        |> (flip (++) "%")
+        |> (\f -> f / 100)
+        |> String.fromFloat
+        |> (\s -> String.append s "%")

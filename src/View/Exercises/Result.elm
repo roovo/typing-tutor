@@ -2,7 +2,6 @@ module View.Exercises.Result exposing (view)
 
 import Attempt exposing (Attempt)
 import Date
-import Date.Extra
 import Html exposing (Html)
 import Html.Attributes
 import Model exposing (Model)

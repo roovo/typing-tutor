@@ -9,14 +9,14 @@ type alias Event =
     }
 
 
-howManyTyped : List Event -> Float
+howManyTyped : List Event -> Int
 howManyTyped =
-    toFloat << List.length << typedEvents
+    List.length << typedEvents
 
 
-timeTaken : List Event -> Float
+timeTaken : List Event -> Int
 timeTaken =
-    toFloat << List.sum << List.map .timeTaken
+    List.sum << List.map .timeTaken
 
 
 
@@ -28,9 +28,9 @@ backspaceChar =
     Char.fromCode 8
 
 
-timeTakenMins : List Event -> Float
+timeTakenMins : List Event -> Int
 timeTakenMins events =
-    timeTaken events / 60000
+    timeTaken events // 60000
 
 
 typedEvents : List Event -> List Event

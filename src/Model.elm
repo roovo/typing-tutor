@@ -1,11 +1,10 @@
-module Model exposing (Model, initialModel)
+module Model exposing (Model)
 
 import Attempt exposing (Attempt)
 import Exercise exposing (Exercise)
-import Navigation
 import Route exposing (Route)
 import Stopwatch exposing (Stopwatch)
-import UrlParser
+import Url.Parser
 
 
 type alias Model =
@@ -18,12 +17,12 @@ type alias Model =
     }
 
 
-initialModel : Navigation.Location -> Model
-initialModel location =
-    { baseUrl = "http://localhost:5000"
-    , exercise = Nothing
-    , exercises = []
-    , stopwatch = Stopwatch.init
-    , attempts = []
-    , route = UrlParser.parsePath Route.route location
-    }
+-- initialModel : Navigation.Location -> Model
+-- initialModel location =
+--     { baseUrl = "http://localhost:5000"
+--     , exercise = Nothing
+--     , exercises = []
+--     , stopwatch = Stopwatch.init
+--     , attempts = []
+--     , route = Url.Parser.parsePath Route.route location
+--     }

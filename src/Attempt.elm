@@ -2,12 +2,12 @@ module Attempt exposing (Attempt, init)
 
 import Event exposing (Event)
 import Exercise exposing (Exercise)
-import Time exposing (Time)
+import Time exposing (Posix)
 
 
 type alias Attempt =
     { id : Maybe Int
-    , completedAt : Time
+    , completedAt : Posix
     , exerciseId : Int
     , accuracy : Float
     , wpm : Float
@@ -15,7 +15,7 @@ type alias Attempt =
     }
 
 
-init : Time -> Exercise -> Attempt
+init : Posix -> Exercise -> Attempt
 init time exercise =
     { id = Nothing
     , completedAt = time

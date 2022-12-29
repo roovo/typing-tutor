@@ -18,7 +18,6 @@ import ExerciseParser
 import List.Zipper as Zipper exposing (Zipper)
 import SafeZipper
 import Step exposing (Step)
-import Time exposing (Time)
 
 
 type alias Exercise =
@@ -58,7 +57,7 @@ accuracy exercise =
             0
 
         n ->
-            (toFloat <| howManyCharacters exercise) / n * 100
+            (toFloat <| howManyCharacters exercise) / (toFloat n) * 100
 
 
 printables : Exercise -> List Printable
@@ -70,7 +69,7 @@ printables exercise =
         |> setStyles
 
 
-consume : Char -> Time -> Exercise -> Exercise
+consume : Char -> Int -> Exercise -> Exercise
 consume char timeTaken exercise =
     case isComplete exercise of
         True ->
@@ -102,10 +101,10 @@ wpm : Exercise -> Float
 wpm exercise =
     case Event.timeTaken exercise.events of
         0 ->
-            0
+            toFloat 0
 
         n ->
-            howManyWords exercise / n * 60000
+            howManyWords exercise / (toFloat n) * 60000
 
 
 
@@ -114,7 +113,7 @@ wpm exercise =
 
 lettersPerWord : Float
 lettersPerWord =
-    5
+    5.0
 
 
 backspaceChar : Char
@@ -152,24 +151,24 @@ howManyWords exercise =
     ((toFloat <| howManyCharacters exercise) / lettersPerWord)
 
 
-logEvent : Char -> Time -> Exercise -> List Event
+logEvent : Char -> Int -> Exercise -> List Event
 logEvent char timeTaken exercise =
     let
         newEvent =
             { char = char
-            , timeTaken = round timeTaken
+            , timeTaken = timeTaken
             }
     in
         newEvent :: exercise.events
 
 
 followEvents : List Event -> Zipper Step -> ( Zipper Step, Int )
-followEvents events steps =
+followEvents events initialSteps =
     let
-        consumeEvent event ( steps, errorCount ) =
+        consumeEvent event ( steps1, errorCount ) =
             let
                 currentStep =
-                    Zipper.current steps
+                    Zipper.current steps1
 
                 isMatchingChar =
                     Step.matchesTyped event.char currentStep
@@ -184,36 +183,36 @@ followEvents events steps =
                     Step.isEnd currentStep
             in
                 if isMatchingChar && isErrorFree then
-                    ( skipOver Next steps, errorCount )
+                    ( skipOver Next steps1, errorCount )
                 else if atEnd then
-                    ( steps, errorCount )
+                    ( steps1, errorCount )
                 else if isBackSpace && isErrorFree then
-                    ( skipOver Previous steps, errorCount )
+                    ( skipOver Previous steps1, errorCount )
                 else if isBackSpace then
-                    ( steps, errorCount - 1 )
+                    ( steps1, errorCount - 1 )
                 else
-                    ( steps, errorCount + 1 )
+                    ( steps1, errorCount + 1 )
     in
-        List.foldr consumeEvent ( steps, 0 ) events
+        List.foldr consumeEvent ( initialSteps, 0 ) events
 
 
 beforeStyles : Zipper Step -> List Printable
-beforeStyles steps =
+beforeStyles steps1 =
     let
         toPrintable step =
             { content = Step.toString step
             , style = Completed
             }
     in
-        steps
+        steps1
             |> Zipper.before
             |> List.map toPrintable
 
 
 currentStyle : Int -> Zipper Step -> List Printable
-currentStyle errorCount steps =
+currentStyle errorCount steps1 =
     let
-        currentStyle =
+        style =
             if errorCount <= 0 then
                 Current
             else
@@ -221,17 +220,17 @@ currentStyle errorCount steps =
 
         toPrintable step =
             { content = Step.toString step
-            , style = currentStyle
+            , style = style
             }
 
         current =
-            Zipper.current steps
+            Zipper.current steps1
     in
         [ toPrintable current ]
 
 
 afterStyles : Int -> Zipper Step -> List Printable
-afterStyles errorCount steps =
+afterStyles errorCount steps1 =
     let
         toPrintable index step =
             if index < (errorCount - 1) then
@@ -243,23 +242,23 @@ afterStyles errorCount steps =
                 , style = Waiting
                 }
     in
-        steps
+        steps1
             |> Zipper.after
             |> List.indexedMap toPrintable
 
 
 setStyles : ( Zipper Step, Int ) -> List Printable
-setStyles ( steps, errorCount ) =
-    beforeStyles steps
-        ++ currentStyle errorCount steps
-        ++ afterStyles errorCount steps
+setStyles ( steps1, errorCount ) =
+    beforeStyles steps1
+        ++ currentStyle errorCount steps1
+        ++ afterStyles errorCount steps1
 
 
 skipOver : Direction -> Zipper Step -> Zipper Step
-skipOver direction steps =
+skipOver direction steps1 =
     let
         newSteps =
-            zipperMover direction steps
+            zipperMover direction steps1
     in
         if Step.isSkipable (Zipper.current newSteps) then
             skipOver direction newSteps
@@ -268,15 +267,15 @@ skipOver direction steps =
 
 
 goForwardIfSkip : Zipper Step -> Zipper Step
-goForwardIfSkip steps =
+goForwardIfSkip steps1 =
     let
         currentStep =
-            Zipper.current steps
+            Zipper.current steps1
     in
         if Step.isSkipable currentStep then
-            skipOver Next steps
+            skipOver Next steps1
         else
-            steps
+            steps1
 
 
 toInitialStep : Zipper Step -> Zipper Step

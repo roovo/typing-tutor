@@ -6,21 +6,12 @@ It's pretty rudimentary at the moment (and may stay that way) as it's more
 something to play with to learn-me-some-elm than a thing in itself.  I'll
 keep working on it whilst it's fun tho.
 
+
 ## Running
 
-I'm using (the excellent) [elm-live](https://github.com/tomekwi/elm-live)
-to run things whilst developing.  To install this locally:
-
 ```bash
-npm install elm-live
+npm run dev
 ```
-
-then to run the project:
-
-```bash
-./node_modules/.bin/elm-live src/Main.elm --pushstate  --dir=./dist --output=./dist/elm.js
-```
-
 
 ## Back end API
 
