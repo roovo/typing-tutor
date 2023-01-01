@@ -1,6 +1,7 @@
 module Session exposing
     ( Session
-    , fromNavKey
+    , apiRoot
+    , init
     )
 
 import Attempt exposing (Attempt)
@@ -10,29 +11,41 @@ import Route exposing (Route)
 import Stopwatch exposing (Stopwatch)
 
 
+
+-- MODEL
+
+
 type Session
     = Session Nav.Key Config
 
 
 type alias Config =
-    { baseUrl : String
-    , exercise : Maybe Exercise
-    , exercises : List Exercise
+    { apiRoot : String
     , stopwatch : Stopwatch
-    , attempts : List Attempt
-    , route : Maybe Route
     }
 
 
-fromNavKey : Nav.Key -> Session
-fromNavKey key =
+init : Nav.Key -> Session
+init key =
     Session key
-        { baseUrl = "http://localhost:5000"
-        , exercise = Nothing
-        , exercises = []
+        { apiRoot = "http://localhost:5000"
         , stopwatch = Stopwatch.init
-        , attempts = []
-
-        -- , route = Url.Parser.parsePath Route.route location
-        , route = Nothing
         }
+
+
+
+-- INFO
+
+
+apiRoot : Session -> String
+apiRoot =
+    .apiRoot << config
+
+
+
+-- PRIVATE
+
+
+config : Session -> Config
+config (Session _ c) =
+    c

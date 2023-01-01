@@ -1,74 +1,17 @@
-module Api exposing (fetchExercise, fetchExercises)
--- module Api exposing (createAttempt, fetchAttempts, fetchExercise, fetchExercises)
+module Api exposing (getMany)
 
-import Attempt exposing (Attempt)
-import Decoders
-import Event exposing (Event)
-import Exercise exposing (Exercise)
+import Api.Endpoint as Endpoint exposing (Endpoint)
 import Http
-import Json.Decode as JD
-import Json.Encode as JE
-import Model exposing (Model)
-import Msg exposing (Msg)
-import Task
 
 
-fetchExercise : Model -> Int -> (Result Http.Error Exercise -> Msg) -> Cmd Msg
-fetchExercise model id msg =
-    get model ("/exercises/" ++ String.fromInt id) Decoders.exerciseDecoder msg
-
-
-fetchExercises : Model -> (Result Http.Error (List Exercise) -> Msg) -> Cmd Msg
-fetchExercises model msg =
-    get model "/exercises" Decoders.exercisesDecoder msg
-
-
--- fetchAttempts : Model -> Int -> (Result Http.Error (List Attempt) -> Msg) -> Cmd Msg
--- fetchAttempts model exerciseId msg =
---     get model ("/attempts?exerciseId=" ++ String.fromInt exerciseId ++ "&_sort=exerciseId&_order=DESC") Decoders.attemptsDecoder msg
---
---
--- createAttempt : Model -> Attempt -> (Result Http.Error Attempt -> Msg) -> Cmd Msg
--- createAttempt model attempt msg =
---     post model "/attempts" (encodeAttempt attempt) Decoders.attemptDecoder msg
-
-
-encodeAttempt : Attempt -> JE.Value
-encodeAttempt attempt =
-    JE.object
-        [ ( "exerciseId", JE.int attempt.exerciseId )
-        -- , ( "completedAt", JE.float attempt.completedAt )
-        , ( "accuracy", JE.float attempt.accuracy )
-        , ( "wpm", JE.float attempt.wpm )
-        -- , ( "events", JE.list (List.map encodeEvent attempt.events) )
-        ]
-
-
--- encodeEvent : Event -> JE.Value
--- encodeEvent event =
---     tuple2Encoder
---         JE.string
---         JE.int
---         ( String.fromInt event.char, event.timeTaken )
---
---
--- tuple2Encoder : (a -> JE.Value) -> (b -> JE.Value) -> ( a, b ) -> JE.Value
--- tuple2Encoder enc1 enc2 ( val1, val2 ) =
---     JE.list [ enc1 val1, enc2 val2 ]
-
-
-get : Model -> String -> JD.Decoder a -> (Result Http.Error a -> Msg) -> Cmd Msg
-get model path decoder msg =
-    Http.get
-        { url = model.baseUrl ++ path
-        , expect = Http.expectJson msg decoder
+getMany : Endpoint -> Http.Expect a -> Cmd a
+getMany url expect =
+    Endpoint.request
+        { method = "GET"
+        , url = url
+        , expect = expect
+        , headers = []
+        , body = Http.emptyBody
+        , timeout = Nothing
+        , tracker = Nothing
         }
-
-
-post : Model -> String -> JE.Value -> JD.Decoder a -> (Result Http.Error a -> Msg) -> Cmd Msg
-post model path encoded decoder msg =
-    Http.post
-      { url = model.baseUrl ++ path
-      , body = (Http.jsonBody encoded)
-      , expect = Http.expectJson msg decoder
-      }

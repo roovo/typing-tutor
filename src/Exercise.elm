@@ -1,23 +1,29 @@
-module Exercise
-    exposing
-        ( Exercise
-        , Printable
-        , Style(..)
-        , accuracy
-        , consume
-        , init
-        , isComplete
-        , isRunning
-        , printables
-        , wpm
-        )
+module Exercise exposing
+    ( Exercise
+    , Printable
+    , Style(..)
+    , accuracy
+    , consume
+    , decoder
+    , init
+    , isComplete
+    , isRunning
+    , printables
+    , wpm
+    )
 
 import Char
 import Event exposing (Event)
 import ExerciseParser
+import Json.Decode as JD exposing (Decoder)
+import Json.Decode.Pipeline as JDP
 import List.Zipper as Zipper exposing (Zipper)
 import SafeZipper
 import Step exposing (Step)
+
+
+
+-- MODEL
 
 
 type alias Exercise =
@@ -50,6 +56,22 @@ init id title text =
     }
 
 
+
+-- SERIALISATION
+
+
+decoder : Decoder Exercise
+decoder =
+    JD.succeed init
+        |> JDP.required "id" JD.int
+        |> JDP.required "title" JD.string
+        |> JDP.required "text" JD.string
+
+
+
+-- INFO
+
+
 accuracy : Exercise -> Float
 accuracy exercise =
     case Event.howManyTyped exercise.events of
@@ -57,7 +79,7 @@ accuracy exercise =
             0
 
         n ->
-            (toFloat <| howManyCharacters exercise) / (toFloat n) * 100
+            (toFloat <| howManyCharacters exercise) / toFloat n * 100
 
 
 printables : Exercise -> List Printable
@@ -104,7 +126,7 @@ wpm exercise =
             toFloat 0
 
         n ->
-            howManyWords exercise / (toFloat n) * 60000
+            howManyWords exercise / toFloat n * 60000
 
 
 
@@ -118,7 +140,7 @@ lettersPerWord =
 
 backspaceChar : Char
 backspaceChar =
-    (Char.fromCode 8)
+    Char.fromCode 8
 
 
 type Direction
@@ -148,7 +170,7 @@ howManyCharacters exercise =
 
 howManyWords : Exercise -> Float
 howManyWords exercise =
-    ((toFloat <| howManyCharacters exercise) / lettersPerWord)
+    (toFloat <| howManyCharacters exercise) / lettersPerWord
 
 
 logEvent : Char -> Int -> Exercise -> List Event
@@ -159,7 +181,7 @@ logEvent char timeTaken exercise =
             , timeTaken = timeTaken
             }
     in
-        newEvent :: exercise.events
+    newEvent :: exercise.events
 
 
 followEvents : List Event -> Zipper Step -> ( Zipper Step, Int )
@@ -182,18 +204,22 @@ followEvents events initialSteps =
                 atEnd =
                     Step.isEnd currentStep
             in
-                if isMatchingChar && isErrorFree then
-                    ( skipOver Next steps1, errorCount )
-                else if atEnd then
-                    ( steps1, errorCount )
-                else if isBackSpace && isErrorFree then
-                    ( skipOver Previous steps1, errorCount )
-                else if isBackSpace then
-                    ( steps1, errorCount - 1 )
-                else
-                    ( steps1, errorCount + 1 )
+            if isMatchingChar && isErrorFree then
+                ( skipOver Next steps1, errorCount )
+
+            else if atEnd then
+                ( steps1, errorCount )
+
+            else if isBackSpace && isErrorFree then
+                ( skipOver Previous steps1, errorCount )
+
+            else if isBackSpace then
+                ( steps1, errorCount - 1 )
+
+            else
+                ( steps1, errorCount + 1 )
     in
-        List.foldr consumeEvent ( initialSteps, 0 ) events
+    List.foldr consumeEvent ( initialSteps, 0 ) events
 
 
 beforeStyles : Zipper Step -> List Printable
@@ -204,9 +230,9 @@ beforeStyles steps1 =
             , style = Completed
             }
     in
-        steps1
-            |> Zipper.before
-            |> List.map toPrintable
+    steps1
+        |> Zipper.before
+        |> List.map toPrintable
 
 
 currentStyle : Int -> Zipper Step -> List Printable
@@ -215,6 +241,7 @@ currentStyle errorCount steps1 =
         style =
             if errorCount <= 0 then
                 Current
+
             else
                 Error
 
@@ -226,7 +253,7 @@ currentStyle errorCount steps1 =
         current =
             Zipper.current steps1
     in
-        [ toPrintable current ]
+    [ toPrintable current ]
 
 
 afterStyles : Int -> Zipper Step -> List Printable
@@ -237,14 +264,15 @@ afterStyles errorCount steps1 =
                 { content = Step.toString step
                 , style = Error
                 }
+
             else
                 { content = Step.toString step
                 , style = Waiting
                 }
     in
-        steps1
-            |> Zipper.after
-            |> List.indexedMap toPrintable
+    steps1
+        |> Zipper.after
+        |> List.indexedMap toPrintable
 
 
 setStyles : ( Zipper Step, Int ) -> List Printable
@@ -260,10 +288,11 @@ skipOver direction steps1 =
         newSteps =
             zipperMover direction steps1
     in
-        if Step.isSkipable (Zipper.current newSteps) then
-            skipOver direction newSteps
-        else
-            newSteps
+    if Step.isSkipable (Zipper.current newSteps) then
+        skipOver direction newSteps
+
+    else
+        newSteps
 
 
 goForwardIfSkip : Zipper Step -> Zipper Step
@@ -272,10 +301,11 @@ goForwardIfSkip steps1 =
         currentStep =
             Zipper.current steps1
     in
-        if Step.isSkipable currentStep then
-            skipOver Next steps1
-        else
-            steps1
+    if Step.isSkipable currentStep then
+        skipOver Next steps1
+
+    else
+        steps1
 
 
 toInitialStep : Zipper Step -> Zipper Step

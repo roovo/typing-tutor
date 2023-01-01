@@ -12,120 +12,122 @@ if (module.hot) {
 import { Elm } from '../../src/Main.elm'
 
 function initializeApp() {
+  // debugger;
+
   const app = Elm.Main.init({
-    node: document.getElementById('main'),
-    flags: {}
+    node: document.getElementById('main')
   });
 
-  document.onkeydown = function(e) {
-    if (e.keyCode === 8) {
-      app.ports.keyDown.send(e.keyCode)
 
-      e.preventDefault();
-      e.stopPropagation()
-    }
-  }
+  // document.onkeydown = function(e) {
+  //   if (e.keyCode === 8) {
+  //     app.ports.keyDown.send(e.keyCode)
 
-  document.onkeypress = function(e) {
-    if (e.keyCode !== 8) {
-      app.ports.keyPress.send(e.keyCode)
+  //     e.preventDefault();
+  //     e.stopPropagation()
+  //   }
+  // }
 
-      e.preventDefault();
-      e.stopPropagation()
-    }
-  }
+  // document.onkeypress = function(e) {
+  //   if (e.keyCode !== 8) {
+  //     app.ports.keyPress.send(e.keyCode)
 
-  function newDate(epoc) {
-    return moment(epoc).toDate();
-  }
+  //     e.preventDefault();
+  //     e.stopPropagation()
+  //   }
+  // }
 
-  var DETECT_MARGIN_LINES = 3;
-  var TARGET_MARGIN_LINES = 5;
+  // function newDate(epoc) {
+  //   return moment(epoc).toDate();
+  // }
 
-  app.ports.scrollIfNearEdge.subscribe(function(nothing) {
-    console.log("Port (js): scrollIfNearEdge");
-    setTimeout(function() {
-      var currentStep = document.getElementById("current");
+  // var DETECT_MARGIN_LINES = 3;
+  // var TARGET_MARGIN_LINES = 5;
 
-      if (currentStep !== null) {
-        var height      = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
-        var currentRect = currentStep.getBoundingClientRect();
+  // app.ports.scrollIfNearEdge.subscribe(function(nothing) {
+  //   console.log("Port (js): scrollIfNearEdge");
+  //   setTimeout(function() {
+  //     var currentStep = document.getElementById("current");
 
-        if (currentRect.bottom + (currentRect.height * DETECT_MARGIN_LINES) > height) {
-          window.scrollBy(0, height - (currentRect.height * TARGET_MARGIN_LINES));
-        } else if (currentRect.top - (currentRect.height * DETECT_MARGIN_LINES) <= 0) {
-          window.scrollBy(0, -1 * (height - (currentRect.height * TARGET_MARGIN_LINES)));
-        }
-      }
-    }, 50);
-  });
+  //     if (currentStep !== null) {
+  //       var height      = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+  //       var currentRect = currentStep.getBoundingClientRect();
 
-  app.ports.chartAttempts.subscribe(function(attempts) {
-    console.log("Port (js): chartAttempts: " + attempts);
+  //       if (currentRect.bottom + (currentRect.height * DETECT_MARGIN_LINES) > height) {
+  //         window.scrollBy(0, height - (currentRect.height * TARGET_MARGIN_LINES));
+  //       } else if (currentRect.top - (currentRect.height * DETECT_MARGIN_LINES) <= 0) {
+  //         window.scrollBy(0, -1 * (height - (currentRect.height * TARGET_MARGIN_LINES)));
+  //       }
+  //     }
+  //   }, 50);
+  // });
 
-    setTimeout(function() {
-      var ctx = document.getElementById("attemptChart");
+  // app.ports.chartAttempts.subscribe(function(attempts) {
+  //   console.log("Port (js): chartAttempts: " + attempts);
 
-      var wpmData = attempts.map(function(a) {
-        return { x: newDate(a.completedAt), y: Math.round (a.wpm * 10) / 10 };
-      });
+  //   setTimeout(function() {
+  //     var ctx = document.getElementById("attemptChart");
 
-      var accuracyData = attempts.map(function(a) {
-        return { x: newDate(a.completedAt), y: Math.round (a.accuracy * 100) / 100 };
-      });
+  //     var wpmData = attempts.map(function(a) {
+  //       return { x: newDate(a.completedAt), y: Math.round (a.wpm * 10) / 10 };
+  //     });
 
-      var myChart = new Chart(ctx, {
-          type: 'line',
-          data: {
-              datasets: [{
-                  label: 'WPM',
-                  radius: 5,
-                  backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                  xAxisID: "time",
-                  yAxisID: "wpm",
-                  data: wpmData
-              } , {
-                  label: 'Accuracy',
-                  radius: 5,
-                  backgroundColor: 'rgba(255, 206, 86, 0.2)',
-                  xAxisID: "time",
-                  yAxisID: "accuracy",
-                  data: accuracyData
-              }]
-          },
-          options: {
-              showLines: false,
-              responsive: false,
-              maintainAspectRatio: false,
-              scales: {
-                  xAxes: [{
-                      type: 'time',
-                      position: 'bottom',
-                      id: 'time'
-                  }],
-                  yAxes: [{
-                      position: "left",
-                      id: "wpm",
-                      display: true,
-                      ticks: {
-                        beginAtZero: true,
-                        suggestedMax: 100
-                      }
-                  }, {
-                      position: "right",
-                      id: "accuracy",
-                      display: false,
-                      ticks: {
-                        beginAtZero: true
-                      }
-                  }]
-              }
-          }
-      });
+  //     var accuracyData = attempts.map(function(a) {
+  //       return { x: newDate(a.completedAt), y: Math.round (a.accuracy * 100) / 100 };
+  //     });
+
+  //     var myChart = new Chart(ctx, {
+  //         type: 'line',
+  //         data: {
+  //             datasets: [{
+  //                 label: 'WPM',
+  //                 radius: 5,
+  //                 backgroundColor: 'rgba(54, 162, 235, 0.2)',
+  //                 xAxisID: "time",
+  //                 yAxisID: "wpm",
+  //                 data: wpmData
+  //             } , {
+  //                 label: 'Accuracy',
+  //                 radius: 5,
+  //                 backgroundColor: 'rgba(255, 206, 86, 0.2)',
+  //                 xAxisID: "time",
+  //                 yAxisID: "accuracy",
+  //                 data: accuracyData
+  //             }]
+  //         },
+  //         options: {
+  //             showLines: false,
+  //             responsive: false,
+  //             maintainAspectRatio: false,
+  //             scales: {
+  //                 xAxes: [{
+  //                     type: 'time',
+  //                     position: 'bottom',
+  //                     id: 'time'
+  //                 }],
+  //                 yAxes: [{
+  //                     position: "left",
+  //                     id: "wpm",
+  //                     display: true,
+  //                     ticks: {
+  //                       beginAtZero: true,
+  //                       suggestedMax: 100
+  //                     }
+  //                 }, {
+  //                     position: "right",
+  //                     id: "accuracy",
+  //                     display: false,
+  //                     ticks: {
+  //                       beginAtZero: true
+  //                     }
+  //                 }]
+  //             }
+  //         }
+  //     });
 
 
-    }, 100);
-  });
+  //   }, 100);
+  // });
 }
 
 initializeApp();
