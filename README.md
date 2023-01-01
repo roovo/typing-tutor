@@ -45,7 +45,9 @@ npm install -g elm-test
 and run the tests from the command line with:
 
 ```bash
-elm-test
+npx elm-test
+npx chokidar "{src,tests}/**/*.elm" -c "npx elm-test"
+npx elm-test ./tests/SpecificFile.elm
 ```
 
 ## Todo

@@ -4,6 +4,7 @@ import Decoders
 import Expect
 import Json.Decode as JD
 import Test exposing (..)
+import Time
 
 
 all : Test
@@ -24,7 +25,7 @@ attemptDecoderTests =
                     |> Expect.equal
                         (Ok
                             { id = Just 1
-                            , completedAt = 1477511787975
+                            , completedAt = Time.millisToPosix 1477511787975
                             , exerciseId = 2
                             , accuracy = 95.3
                             , wpm = 31.71

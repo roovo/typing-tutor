@@ -26,5 +26,8 @@
   "bugs": {
     "url": "https://github.com/roovo/typing-tutor/issues"
   },
-  "homepage": "https://github.com/roovo/typing-tutor#readme"
+  "homepage": "https://github.com/roovo/typing-tutor#readme",
+  "dependencies": {
+    "chokidar": "^3.5.3"
+  }
 }

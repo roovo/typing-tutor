@@ -1,35 +1,36 @@
-module Decoders exposing (exerciseDecoder, exercisesDecoder)
--- module Decoders exposing (attemptDecoder, attemptsDecoder, exerciseDecoder, exercisesDecoder)
+module Decoders exposing (attemptDecoder, attemptsDecoder, exerciseDecoder, exercisesDecoder)
 
 import Attempt exposing (Attempt)
 import Exercise exposing (Exercise)
-import Json.Decode as JD
+import Json.Decode as Decode exposing (Decoder)
+import Json.Decode.Pipeline exposing (hardcoded, required)
+import Time
 
 
-exercisesDecoder : JD.Decoder (List Exercise)
+exercisesDecoder : Decoder (List Exercise)
 exercisesDecoder =
-    JD.list exerciseDecoder
+    Decode.list exerciseDecoder
 
 
-exerciseDecoder : JD.Decoder Exercise
+exerciseDecoder : Decoder Exercise
 exerciseDecoder =
-    JD.map3 Exercise.init
-        (JD.field "id" JD.int)
-        (JD.field "title" JD.string)
-        (JD.field "text" JD.string)
+    Decode.succeed Exercise.init
+        |> required "id" Decode.int
+        |> required "title" Decode.string
+        |> required "text" Decode.string
 
 
--- attemptsDecoder : JD.Decoder (List Attempt)
--- attemptsDecoder =
---     JD.list attemptDecoder
--- 
--- 
--- attemptDecoder : JD.Decoder Attempt
--- attemptDecoder =
---     JD.map6 Attempt
---         (JD.maybe (JD.field "id" JD.int))
---         (JD.field "completedAt" JD.float)
---         (JD.field "exerciseId" JD.int)
---         (JD.field "accuracy" JD.float)
---         (JD.field "wpm" JD.float)
---         (JD.succeed [])
+attemptsDecoder : Decoder (List Attempt)
+attemptsDecoder =
+    Decode.list attemptDecoder
+
+
+attemptDecoder : Decoder Attempt
+attemptDecoder =
+    Decode.succeed Attempt
+        |> required "id" (Decode.nullable Decode.int)
+        |> required "completedAt" (Decode.map Time.millisToPosix Decode.int)
+        |> required "exerciseId" Decode.int
+        |> required "accuracy" Decode.float
+        |> required "wpm" Decode.float
+        |> hardcoded []

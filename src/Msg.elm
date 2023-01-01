@@ -2,10 +2,10 @@ module Msg exposing (Msg(..))
 
 import Attempt exposing (Attempt)
 import Browser
-import Url exposing (Url)
 import Exercise exposing (Exercise)
 import Http
 import Time exposing (Posix)
+import Url exposing (Url)
 
 
 type Msg
@@ -16,6 +16,6 @@ type Msg
     | GotExercise (Result Http.Error Exercise)
     | GotExercises (Result Http.Error (List Exercise))
     | GotTime Posix
-    -- | KeyDown KeyCode
-    -- | KeyPress KeyCode
-    | Tick Posix
+      -- | KeyDown KeyCode
+      -- | KeyPress KeyCode
+    | Tick Float

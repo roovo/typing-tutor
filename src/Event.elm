@@ -20,7 +20,7 @@ timeTaken =
 
 
 
--- PRIVATE FUNCTIONS
+-- PRIVATE
 
 
 backspaceChar : Char

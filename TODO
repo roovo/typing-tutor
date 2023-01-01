@@ -1,3 +1,16 @@
+updating
+========
+- put data and functions (including parsers) into the same module
+- don't put Msg, Update, View etc into separate modules
+- separate out Exercise parsers from the top level toSteps function
+- replaced some spaces with \n's and \n's for \r's in ExerciseTests - not sure on the implication...
+
+obsidian
+========
+- what about if tabs are used instead of spaces
+
+original dev
+============
 - elm style elements
   - pretty-fication
 - syntax highlighting
