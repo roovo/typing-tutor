@@ -1,19 +1,19 @@
-module Stopwatch
-    exposing
-        ( Stopwatch
-        , init
-        , lap
-        , laps
-        , lastLap
-        , reset
-        , start
-        , stop
-        , tick
-        , time
-        , view
-        )
+module Stopwatch exposing
+    ( Stopwatch
+    , init
+    , lap
+    , laps
+    , lastLap
+    , reset
+    , start
+    , stop
+    , tick
+    , time
+    , view
+    )
 
 import Time exposing (Posix)
+
 
 
 -- MODEL
@@ -68,7 +68,7 @@ tick elapsedTime stopwatch =
                 Running ->
                     stopwatch.time + elapsedTime
     in
-        { stopwatch | time = elapseIfRuning }
+    { stopwatch | time = elapseIfRuning }
 
 
 time : Stopwatch -> Int
@@ -78,14 +78,13 @@ time stopwatch =
 
 lap : Stopwatch -> Stopwatch
 lap stopwatch =
-    -- { stopwatch
-    --     | laps =
-    --         stopwatch.time
-    --             |> (flip (-) (lappedTime stopwatch))
-    --             |> (flip (::) stopwatch.laps)
-    --     , status = Running
-    -- }
-  stopwatch
+    { stopwatch
+        | laps =
+            stopwatch.time
+                |> (\t -> t - lappedTime stopwatch)
+                |> (\t -> t :: stopwatch.laps)
+        , status = Running
+    }
 
 
 laps : Stopwatch -> List Int
@@ -104,16 +103,16 @@ lastLap stopwatch =
 -- VIEW
 
 
-view : Int -> String
+view : Float -> String
 view t =
     let
         secs =
-            modBy 60 (t // 1000)
+            modBy 60 (round t // 1000)
 
         mins =
-            t // 60000
+            floor t // 60000
     in
-        addLeadingZero mins ++ ":" ++ addLeadingZero secs
+    addLeadingZero mins ++ ":" ++ addLeadingZero secs
 
 
 
@@ -129,6 +128,7 @@ lappedTime stopwatch =
 addLeadingZero : Int -> String
 addLeadingZero num =
     if num < 10 then
-        "0" ++ (String.fromInt num)
+        "0" ++ String.fromInt num
+
     else
         String.fromInt num
