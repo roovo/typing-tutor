@@ -94,7 +94,7 @@ printablesTests =
                     |> Expect.equal
                         [ { content = "a", style = Current }
                         , { content = "\u{000D}", style = Waiting }
-                        , { content = "\n", style = Waiting }
+                        , { content = "   ", style = Waiting }
                         , { content = "\u{000D}", style = Waiting }
                         , { content = " ", style = Waiting }
                         , { content = "b", style = Waiting }
@@ -105,7 +105,7 @@ printablesTests =
                 exerciseWithText "  \n  a"
                     |> Exercise.printables
                     |> Expect.equal
-                        [ { content = "\n ", style = Completed }
+                        [ { content = "  ", style = Completed }
                         , { content = "\u{000D}", style = Completed }
                         , { content = "  ", style = Completed }
                         , { content = "a", style = Current }

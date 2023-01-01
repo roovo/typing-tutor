@@ -1,5 +1,6 @@
 module ExerciseParser exposing
-    ( lineParser
+    ( emptyLineParser
+    , lineParser
     , lineWithContentParser
     , linesParser
     , spacesParser
@@ -11,6 +12,7 @@ module ExerciseParser exposing
 
 import Char
 import Parser as P exposing ((|=), Parser)
+import Parser.Extra as PE
 import Step exposing (Step)
 import String
 
@@ -24,11 +26,18 @@ toSteps =
 -- PARSERS
 
 
+emptyLineParser : Parser (List Step)
+emptyLineParser =
+    P.getChompedString (PE.lookAhead <| P.token "\n")
+        |> P.map (\_ -> [ Step.initSkip "\n" ])
+
+
 lineParser : Parser (List Step)
 lineParser =
     P.oneOf
         [ P.backtrackable lineWithContentParser
         , whitespaceLineParser
+        , emptyLineParser
         ]
 
 
@@ -109,8 +118,13 @@ whitespaceLineParser =
                 P.problem "expected whitespace line, not found"
 
             else
-                P.succeed [ Step.initSkip "\u{000D}" ]
+                P.succeed [ Step.initSkip possibleSpaces ]
     in
+    -- (P.succeed String.append
+    --     |= P.loop "" spacesHelp
+    --     |= P.getChompedString (P.chompWhile isNewline)
+    -- )
+    --     |> P.andThen toSkips
     P.loop "" spacesHelp
         |> P.andThen toSkips
 
@@ -124,14 +138,14 @@ addEnd steps =
     List.append steps [ Step.initEnd ]
 
 
-isNotNewline : Char -> Bool
-isNotNewline char =
+isNewline : Char -> Bool
+isNewline char =
     case char of
         '\n' ->
-            False
+            True
 
         _ ->
-            True
+            False
 
 
 isSpace : Char -> Bool
@@ -168,8 +182,26 @@ spacesHelp spaces =
 typeablesHelp : String -> Parser (P.Step String String)
 typeablesHelp typeables =
     P.oneOf
-        [ P.getChompedString (P.chompIf isNotNewline)
+        [ P.getChompedString (P.chompIf (not << isNewline))
             |> P.map (\typeable -> P.Loop (typeables ++ typeable))
         , P.succeed ()
             |> P.map (\_ -> P.Done typeables)
         ]
+
+
+
+-- { start = ""
+-- , separator = "\n"
+-- , end = ""
+-- , spaces = P.succeed ()
+-- , item = lineParser
+-- , trailing = P.Optional
+-- }
+-- sequence :
+--     { separator : Parser ()
+--     , item : Parser a
+--     , trailing : Trailing
+--     }
+--     -> Parser (List a)
+-- sequence i =
+--             sequenceEnd i.item i.separator i.trailing

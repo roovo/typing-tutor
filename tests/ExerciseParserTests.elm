@@ -11,7 +11,8 @@ import Test exposing (..)
 all : Test
 all =
     describe "ExerciseParser"
-        [ lineParser
+        [ emptyLineParser
+        , lineParser
         , linesParser
         , lineWithContentParser
         , spacesThenTypeablesParser
@@ -19,6 +20,34 @@ all =
         , toSteps
         , typeablesParser
         , whitespaceLineParser
+        ]
+
+
+emptyLineParser : Test
+emptyLineParser =
+    describe "emptyLineParser"
+        [ test "parses a string containing a single newline" <|
+            \() ->
+                "\n"
+                    |> Parser.run ExerciseParser.emptyLineParser
+                    |> Expect.equal (Ok [ Step.initSkip "\n" ])
+        , test "parses a string containing multiple newlines" <|
+            \() ->
+                "\n\n"
+                    |> Parser.run ExerciseParser.emptyLineParser
+                    |> Expect.equal (Ok [ Step.initSkip "\n" ])
+        , test "fails to parse an empty string" <|
+            \() ->
+                ""
+                    |> Parser.run ExerciseParser.emptyLineParser
+                    |> Result.mapError (List.map .problem)
+                    |> Expect.equal (Err [ Parser.Expecting "\n" ])
+        , test "fails to parse a non empty string" <|
+            \() ->
+                "a"
+                    |> Parser.run ExerciseParser.emptyLineParser
+                    |> Result.mapError (List.map .problem)
+                    |> Expect.equal (Err [ Parser.Expecting "\n" ])
         ]
 
 
@@ -63,7 +92,27 @@ lineParser =
             \() ->
                 "  "
                     |> Parser.run ExerciseParser.lineParser
-                    |> Expect.equal (Ok [ Step.initSkip "\u{000D}" ])
+                    |> Expect.equal (Ok [ Step.initSkip "  " ])
+        , test "parses a string which contains only spaces ending in a newline" <|
+            \() ->
+                "  \n"
+                    |> Parser.run ExerciseParser.lineParser
+                    |> Expect.equal (Ok [ Step.initSkip "  " ])
+        , test "parses a string which contains only spaces ending in multiple newlines" <|
+            \() ->
+                "  \n\n\n"
+                    |> Parser.run ExerciseParser.lineParser
+                    |> Expect.equal (Ok [ Step.initSkip "  " ])
+        , test "parses a string which contains only a newline" <|
+            \() ->
+                "\n"
+                    |> Parser.run ExerciseParser.lineParser
+                    |> Expect.equal (Ok [ Step.initSkip "\n" ])
+        , test "parses a string which contains multiple newlines" <|
+            \() ->
+                "\n\n\n"
+                    |> Parser.run ExerciseParser.lineParser
+                    |> Expect.equal (Ok [ Step.initSkip "\n" ])
         ]
 
 
@@ -109,7 +158,7 @@ linesParser =
                             , Step.init ' '
                             , Step.init 'b'
                             , Step.init enterChar
-                            , Step.initSkip "\u{000D}"
+                            , Step.initSkip "   "
                             , Step.init enterChar
                             , Step.init 'c'
                             , Step.init ' '
@@ -118,40 +167,51 @@ linesParser =
                         )
         , test "parses multiple lines ending with an empty line" <|
             \() ->
-                "  a b\n   \nc d\n  "
+                "ab\n   \ncd\n  "
                     |> Parser.run ExerciseParser.linesParser
                     |> Expect.equal
                         (Ok
-                            [ Step.initSkip "  "
-                            , Step.init 'a'
-                            , Step.init ' '
+                            [ Step.init 'a'
                             , Step.init 'b'
                             , Step.init enterChar
-                            , Step.initSkip "\u{000D}"
+                            , Step.initSkip "   "
                             , Step.init enterChar
                             , Step.init 'c'
-                            , Step.init ' '
                             , Step.init 'd'
                             , Step.init enterChar
-                            , Step.initSkip "\u{000D}"
+                            , Step.initSkip "  "
                             ]
                         )
-        , test "parses multiple lines ending with a newlines" <|
+        , test "parses blank lines" <|
             \() ->
-                "  a b\nc d\n  \n\n\n"
+                "a\n\nc"
                     |> Parser.run ExerciseParser.linesParser
                     |> Expect.equal
                         (Ok
-                            [ Step.initSkip "  "
-                            , Step.init 'a'
-                            , Step.init ' '
+                            [ Step.init 'a'
+                            , Step.init enterChar
+                            , Step.initSkip "\n"
+                            , Step.init enterChar
+                            , Step.init 'c'
+                            ]
+                        )
+        , test "parses multiple lines ending with newlines" <|
+            \() ->
+                "ab\ncd\n \n\n\n"
+                    |> Parser.run ExerciseParser.linesParser
+                    |> Expect.equal
+                        (Ok
+                            [ Step.init 'a'
                             , Step.init 'b'
                             , Step.init enterChar
                             , Step.init 'c'
-                            , Step.init ' '
                             , Step.init 'd'
                             , Step.init enterChar
-                            , Step.initSkip "\u{000D}"
+                            , Step.initSkip " "
+                            , Step.init enterChar
+                            , Step.initSkip "\n"
+                            , Step.init enterChar
+                            , Step.initSkip "\n"
                             ]
                         )
         ]
@@ -362,6 +422,8 @@ toSteps =
                         [ Step.init 'a'
                         , Step.init 'b'
                         , Step.init enterChar
+                        , Step.initSkip "\n"
+                        , Step.init enterChar
                         , Step.init 'c'
                         , Step.init 'd'
                         , Step.initEnd
@@ -386,7 +448,7 @@ toSteps =
                         [ Step.init 'a'
                         , Step.init 'b'
                         , Step.init enterChar
-                        , Step.initSkip "\u{000D}"
+                        , Step.initSkip "   "
                         , Step.init enterChar
                         , Step.init 'c'
                         , Step.init 'd'
@@ -458,22 +520,22 @@ whitespaceLineParser =
             \() ->
                 " "
                     |> Parser.run ExerciseParser.whitespaceLineParser
-                    |> Expect.equal (Ok [ Step.initSkip "\u{000D}" ])
+                    |> Expect.equal (Ok [ Step.initSkip " " ])
         , test "parses a string containing multiple spaces" <|
             \() ->
                 "    "
                     |> Parser.run ExerciseParser.whitespaceLineParser
-                    |> Expect.equal (Ok [ Step.initSkip "\u{000D}" ])
+                    |> Expect.equal (Ok [ Step.initSkip "    " ])
         , test "parses up to a newline" <|
             \() ->
                 "    \n"
                     |> Parser.run ExerciseParser.whitespaceLineParser
-                    |> Expect.equal (Ok [ Step.initSkip "\u{000D}" ])
+                    |> Expect.equal (Ok [ Step.initSkip "    " ])
         , test "parses a line with leading spaces" <|
             \() ->
                 "  a"
                     |> Parser.run ExerciseParser.whitespaceLineParser
-                    |> Expect.equal (Ok [ Step.initSkip "\u{000D}" ])
+                    |> Expect.equal (Ok [ Step.initSkip "  " ])
         , test "fails to parse an empty string" <|
             \() ->
                 ""
@@ -487,123 +549,6 @@ whitespaceLineParser =
                     |> Result.mapError (List.map .problem)
                     |> Expect.equal (Err [ Parser.Problem "expected whitespace line, not found" ])
         ]
-
-
-
--- stepsParser : Test
--- stepsParser =
---     describe "stepsParser"
---         [ test "parses an empty string" <|
---             \() ->
---                 ""
---                     |> Parser.run ExerciseParser.stepsParser
---                     |> Result.withDefault [ Step.init 'x' ]
---                     |> Expect.equal []
---         , test "parses a line containing some characters" <|
---             \() ->
---                 "a$b"
---                     |> Parser.run ExerciseParser.stepsParser
---                     |> Result.withDefault [ Step.init 'x' ]
---                     |> Expect.equal
---                         [ Step.init 'a'
---                         , Step.init '$'
---                         , Step.init 'b'
---                         ]
---
---         -- , test "treats leading whitespace as a Skip" <|
---         --     \() ->
---         --         "  ab"
---         --             |> Parser.run ExerciseParser.stepsParser
---         --             |> Result.withDefault [ Step.init 'x' ]
---         --             |> Expect.equal
---         --                 [ Step.initSkip "  "
---         --                 , Step.init 'a'
---         --                 , Step.init 'b'
---         --                 ]
---         -- [ test "returns just an end Step for an empty string" <|
---         --     \() ->
---         --         ExerciseParser.toSteps ""
---         --             |> Expect.equal
---         --                 [ Step.initEnd
---         --                 ]
---         -- , test "returns steps for an newline terminated string" <|
---         --     \() ->
---         --         ExerciseParser.toSteps "ab\n"
---         --             |> Expect.equal
---         --                 [ Step.init 'a'
---         --                 , Step.init 'b'
---         --                 , Step.initEnd
---         --                 ]
---         -- , test "returns steps for a double newline terminated string" <|
---         --     \() ->
---         --         ExerciseParser.toSteps "ab\n\n"
---         --             |> Expect.equal
---         --                 [ Step.init 'a'
---         --                 , Step.init 'b'
---         --                 , Step.initEnd
---         --                 ]
---         -- , test "returns steps for a crlf terminated string" <|
---         --     \() ->
---         --         ExerciseParser.toSteps "ab\u{000D}\n"
---         --             |> Expect.equal
---         --                 [ Step.init 'a'
---         --                 , Step.init 'b'
---         --                 , Step.initEnd
---         --                 ]
---         -- , test "returns steps for a crlf terminated string contatining a crlf" <|
---         --     \() ->
---         --         ExerciseParser.toSteps "ab\u{000D}\ncd\u{000D}\n"
---         --             |> Expect.equal
---         --                 [ Step.init 'a'
---         --                 , Step.init 'b'
---         --                 , Step.init enterChar
---         --                 , Step.init 'c'
---         --                 , Step.init 'd'
---         --                 , Step.initEnd
---         --                 ]
---         -- , test "removes trailing whitespace from lines" <|
---         --     \() ->
---         --         ExerciseParser.toSteps "a \nb \nc"
---         --             |> Expect.equal
---         --                 [ Step.init 'a'
---         --                 , Step.init enterChar
---         --                 , Step.init 'b'
---         --                 , Step.init enterChar
---         --                 , Step.init 'c'
---         --                 , Step.initEnd
---         --                 ]
---         -- , test "returns skipped whitespace for leading whitespace" <|
---         --     \() ->
---         --         ExerciseParser.toSteps "a\n  b\n"
---         --             |> Expect.equal
---         --                 [ Step.init 'a'
---         --                 , Step.init enterChar
---         --                 , Step.initSkip "  "
---         --                 , Step.init 'b'
---         --                 , Step.initEnd
---         --                 ]
---         -- , test "skips the whole line if it only contains skipped characters" <|
---         --     \() ->
---         --         ExerciseParser.toSteps "a\n  \n b\n"
---         --             |> Expect.equal
---         --                 [ Step.init 'a'
---         --                 , Step.init enterChar
---         --                 , Step.initSkip "  "
---         --                 , Step.initSkip "\u{000D}"
---         --                 , Step.initSkip " "
---         --                 , Step.init 'b'
---         --                 , Step.initEnd
---         --                 ]
---         -- , test "returns steps for an unterminated string" <|
---         --     \() ->
---         --         ExerciseParser.toSteps "ab"
---         --             |> Expect.equal
---         --                 [ Step.init 'a'
---         --                 , Step.init 'b'
---         --                 , Step.initEnd
---         --                 ]
---         ]
---
 
 
 enterChar : Char
