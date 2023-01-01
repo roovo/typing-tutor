@@ -30,12 +30,12 @@ emptyLineParser =
             \() ->
                 "\n"
                     |> Parser.run ExerciseParser.emptyLineParser
-                    |> Expect.equal (Ok [ Step.initSkip "\n" ])
+                    |> Expect.equal (Ok [ Step.initSkip enterString ])
         , test "parses a string containing multiple newlines" <|
             \() ->
                 "\n\n"
                     |> Parser.run ExerciseParser.emptyLineParser
-                    |> Expect.equal (Ok [ Step.initSkip "\n" ])
+                    |> Expect.equal (Ok [ Step.initSkip enterString ])
         , test "fails to parse an empty string" <|
             \() ->
                 ""
@@ -64,6 +64,7 @@ lineParser =
                             , Step.init 'a'
                             , Step.init ' '
                             , Step.init 'b'
+                            , Step.init enterChar
                             ]
                         )
         , test "parses a string without leading whitespace" <|
@@ -75,6 +76,7 @@ lineParser =
                             [ Step.init 'a'
                             , Step.init ' '
                             , Step.init 'b'
+                            , Step.init enterChar
                             ]
                         )
         , test "parses a string up to a newline" <|
@@ -86,33 +88,49 @@ lineParser =
                             [ Step.init 'a'
                             , Step.init ' '
                             , Step.init 'b'
+                            , Step.init enterChar
                             ]
                         )
         , test "parses a string which contains only spaces" <|
             \() ->
                 "  "
                     |> Parser.run ExerciseParser.lineParser
-                    |> Expect.equal (Ok [ Step.initSkip "  " ])
+                    |> Expect.equal
+                        (Ok
+                            [ Step.initSkip "  "
+                            , Step.initSkip enterString
+                            ]
+                        )
         , test "parses a string which contains only spaces ending in a newline" <|
             \() ->
                 "  \n"
                     |> Parser.run ExerciseParser.lineParser
-                    |> Expect.equal (Ok [ Step.initSkip "  " ])
+                    |> Expect.equal
+                        (Ok
+                            [ Step.initSkip "  "
+                            , Step.initSkip enterString
+                            ]
+                        )
         , test "parses a string which contains only spaces ending in multiple newlines" <|
             \() ->
                 "  \n\n\n"
                     |> Parser.run ExerciseParser.lineParser
-                    |> Expect.equal (Ok [ Step.initSkip "  " ])
+                    |> Expect.equal
+                        (Ok
+                            [ Step.initSkip "  "
+                            , Step.initSkip enterString
+                            ]
+                        )
         , test "parses a string which contains only a newline" <|
             \() ->
                 "\n"
                     |> Parser.run ExerciseParser.lineParser
-                    |> Expect.equal (Ok [ Step.initSkip "\n" ])
+                    |> Expect.equal (Ok [ Step.initSkip enterString ])
         , test "parses a string which contains multiple newlines" <|
             \() ->
                 "\n\n\n"
                     |> Parser.run ExerciseParser.lineParser
-                    |> Expect.equal (Ok [ Step.initSkip "\n" ])
+                    |> Expect.equal (Ok [ Step.initSkip enterString ])
         ]
 
 
@@ -129,6 +147,7 @@ linesParser =
                             , Step.init 'a'
                             , Step.init ' '
                             , Step.init 'b'
+                            , Step.init enterChar
                             ]
                         )
         , test "parses multiple lines" <|
@@ -145,6 +164,7 @@ linesParser =
                             , Step.init 'c'
                             , Step.init ' '
                             , Step.init 'd'
+                            , Step.init enterChar
                             ]
                         )
         , test "parses multiple lines with empty lines" <|
@@ -159,13 +179,14 @@ linesParser =
                             , Step.init 'b'
                             , Step.init enterChar
                             , Step.initSkip "   "
-                            , Step.init enterChar
+                            , Step.initSkip enterString
                             , Step.init 'c'
                             , Step.init ' '
                             , Step.init 'd'
+                            , Step.init enterChar
                             ]
                         )
-        , test "parses multiple lines ending with an empty line" <|
+        , test "parses multiple lines ending with an empty line on the end" <|
             \() ->
                 "ab\n   \ncd\n  "
                     |> Parser.run ExerciseParser.linesParser
@@ -175,11 +196,12 @@ linesParser =
                             , Step.init 'b'
                             , Step.init enterChar
                             , Step.initSkip "   "
-                            , Step.init enterChar
+                            , Step.initSkip enterString
                             , Step.init 'c'
                             , Step.init 'd'
                             , Step.init enterChar
                             , Step.initSkip "  "
+                            , Step.initSkip enterString
                             ]
                         )
         , test "parses blank lines" <|
@@ -190,9 +212,9 @@ linesParser =
                         (Ok
                             [ Step.init 'a'
                             , Step.init enterChar
-                            , Step.initSkip "\n"
-                            , Step.init enterChar
+                            , Step.initSkip enterString
                             , Step.init 'c'
+                            , Step.init enterChar
                             ]
                         )
         , test "parses multiple lines ending with newlines" <|
@@ -208,10 +230,9 @@ linesParser =
                             , Step.init 'd'
                             , Step.init enterChar
                             , Step.initSkip " "
-                            , Step.init enterChar
-                            , Step.initSkip "\n"
-                            , Step.init enterChar
-                            , Step.initSkip "\n"
+                            , Step.initSkip enterString
+                            , Step.initSkip enterString
+                            , Step.initSkip enterString
                             ]
                         )
         ]
@@ -230,6 +251,7 @@ lineWithContentParser =
                             , Step.init 'a'
                             , Step.init ' '
                             , Step.init 'b'
+                            , Step.init enterChar
                             ]
                         )
         , test "parses a string without leading whitespace" <|
@@ -241,6 +263,7 @@ lineWithContentParser =
                             [ Step.init 'a'
                             , Step.init ' '
                             , Step.init 'b'
+                            , Step.init enterChar
                             ]
                         )
         , test "parses a string up to a newline" <|
@@ -252,6 +275,7 @@ lineWithContentParser =
                             [ Step.init 'a'
                             , Step.init ' '
                             , Step.init 'b'
+                            , Step.init enterChar
                             ]
                         )
         , test "fails to parse an empty string" <|
@@ -422,8 +446,7 @@ toSteps =
                         [ Step.init 'a'
                         , Step.init 'b'
                         , Step.init enterChar
-                        , Step.initSkip "\n"
-                        , Step.init enterChar
+                        , Step.initSkip enterString
                         , Step.init 'c'
                         , Step.init 'd'
                         , Step.initEnd
@@ -449,7 +472,7 @@ toSteps =
                         , Step.init 'b'
                         , Step.init enterChar
                         , Step.initSkip "   "
-                        , Step.init enterChar
+                        , Step.initSkip enterString
                         , Step.init 'c'
                         , Step.init 'd'
                         , Step.initEnd
@@ -520,22 +543,42 @@ whitespaceLineParser =
             \() ->
                 " "
                     |> Parser.run ExerciseParser.whitespaceLineParser
-                    |> Expect.equal (Ok [ Step.initSkip " " ])
+                    |> Expect.equal
+                        (Ok
+                            [ Step.initSkip " "
+                            , Step.initSkip enterString
+                            ]
+                        )
         , test "parses a string containing multiple spaces" <|
             \() ->
                 "    "
                     |> Parser.run ExerciseParser.whitespaceLineParser
-                    |> Expect.equal (Ok [ Step.initSkip "    " ])
+                    |> Expect.equal
+                        (Ok
+                            [ Step.initSkip "    "
+                            , Step.initSkip enterString
+                            ]
+                        )
         , test "parses up to a newline" <|
             \() ->
                 "    \n"
                     |> Parser.run ExerciseParser.whitespaceLineParser
-                    |> Expect.equal (Ok [ Step.initSkip "    " ])
-        , test "parses a line with leading spaces" <|
+                    |> Expect.equal
+                        (Ok
+                            [ Step.initSkip "    "
+                            , Step.initSkip enterString
+                            ]
+                        )
+        , test "parses a line with leading spaces - TODO really should write a version where this fails" <|
             \() ->
                 "  a"
                     |> Parser.run ExerciseParser.whitespaceLineParser
-                    |> Expect.equal (Ok [ Step.initSkip "  " ])
+                    |> Expect.equal
+                        (Ok
+                            [ Step.initSkip "  "
+                            , Step.initSkip enterString
+                            ]
+                        )
         , test "fails to parse an empty string" <|
             \() ->
                 ""
@@ -554,3 +597,8 @@ whitespaceLineParser =
 enterChar : Char
 enterChar =
     Char.fromCode 13
+
+
+enterString : String
+enterString =
+    "\u{000D}"

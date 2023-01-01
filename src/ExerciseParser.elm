@@ -11,6 +11,7 @@ module ExerciseParser exposing
     )
 
 import Char
+import List.Extra as LE
 import Parser as P exposing ((|=), Parser)
 import Parser.Extra as PE
 import Step exposing (Step)
@@ -29,7 +30,7 @@ toSteps =
 emptyLineParser : Parser (List Step)
 emptyLineParser =
     P.getChompedString (PE.lookAhead <| P.token "\n")
-        |> P.map (\_ -> [ Step.initSkip "\n" ])
+        |> P.map (\_ -> [ Step.initSkip enterString ])
 
 
 lineParser : Parser (List Step)
@@ -43,13 +44,6 @@ lineParser =
 
 linesParser : Parser (List Step)
 linesParser =
-    let
-        joinLines : List (List Step) -> List Step
-        joinLines lineSteps =
-            lineSteps
-                |> List.intersperse [ Step.init (Char.fromCode 13) ]
-                |> List.concat
-    in
     P.sequence
         { start = ""
         , separator = "\n"
@@ -58,7 +52,7 @@ linesParser =
         , item = lineParser
         , trailing = P.Optional
         }
-        |> P.map joinLines
+        |> P.map List.concat
 
 
 lineWithContentParser : Parser (List Step)
@@ -67,6 +61,7 @@ lineWithContentParser =
         [ spacesThenTypeablesParser
         , typeablesParser
         ]
+        |> P.map (\s -> List.append s [ Step.init enterChar ])
 
 
 spacesParser : Parser (List Step)
@@ -119,12 +114,8 @@ whitespaceLineParser =
 
             else
                 P.succeed [ Step.initSkip possibleSpaces ]
+                    |> P.map (\s -> List.append s [ Step.initSkip enterString ])
     in
-    -- (P.succeed String.append
-    --     |= P.loop "" spacesHelp
-    --     |= P.getChompedString (P.chompWhile isNewline)
-    -- )
-    --     |> P.andThen toSkips
     P.loop "" spacesHelp
         |> P.andThen toSkips
 
@@ -136,6 +127,16 @@ whitespaceLineParser =
 addEnd : List Step -> List Step
 addEnd steps =
     List.append steps [ Step.initEnd ]
+
+
+enterChar : Char
+enterChar =
+    Char.fromCode 13
+
+
+enterString : String
+enterString =
+    "\u{000D}"
 
 
 isNewline : Char -> Bool
@@ -160,7 +161,12 @@ isSpace char =
 
 postProcess : Result (List P.DeadEnd) (List Step) -> List Step
 postProcess =
-    Result.withDefault [] >> addEnd
+    addEnd << removeTrailingReturns << Result.withDefault []
+
+
+removeTrailingReturns : List Step -> List Step
+removeTrailingReturns =
+    LE.dropWhileRight (\s -> Step.isTypeableEnter s)
 
 
 preProcess : String -> String
@@ -187,21 +193,3 @@ typeablesHelp typeables =
         , P.succeed ()
             |> P.map (\_ -> P.Done typeables)
         ]
-
-
-
--- { start = ""
--- , separator = "\n"
--- , end = ""
--- , spaces = P.succeed ()
--- , item = lineParser
--- , trailing = P.Optional
--- }
--- sequence :
---     { separator : Parser ()
---     , item : Parser a
---     , trailing : Trailing
---     }
---     -> Parser (List a)
--- sequence i =
---             sequenceEnd i.item i.separator i.trailing

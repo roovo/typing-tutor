@@ -111,62 +111,61 @@ printablesTests =
                         , { content = "a", style = Current }
                         , { content = "", style = Waiting }
                         ]
-
-        -- , test "return Printables for an exercise with some stuff typed" <|
-        --     \() ->
-        --         exerciseWithText "a \n \n b"
-        --             |> Exercise.consume 'a' 0
-        --             |> Exercise.consume enterChar 0
-        --             |> Exercise.printables
-        --             |> Expect.equal
-        --                 [ { content = "a", style = Completed }
-        --                 , { content = "\n", style = Completed }
-        --                 , { content = " ", style = Completed }
-        --                 , { content = "\n", style = Completed }
-        --                 , { content = " ", style = Completed }
-        --                 , { content = "b", style = Current }
-        --                 , { content = "", style = Waiting }
-        --                 ]
-        -- , test "return Printables with some stuff typed including an error" <|
-        --     \() ->
-        --         exerciseWithText "a \n bcd"
-        --             |> Exercise.consume 'a' 0
-        --             |> Exercise.consume enterChar 0
-        --             |> Exercise.consume 'b' 0
-        --             |> Exercise.consume 'b' 0
-        --             |> Exercise.consume 'c' 0
-        --             |> Exercise.consume backspaceChar 0
-        --             |> Exercise.printables
-        --             |> Expect.equal
-        --                 [ { content = "a", style = Completed }
-        --                 , { content = "\n", style = Completed }
-        --                 , { content = " ", style = Completed }
-        --                 , { content = "b", style = Completed }
-        --                 , { content = "c", style = Error }
-        --                 , { content = "d", style = Waiting }
-        --                 , { content = "", style = Waiting }
-        --                 ]
-        -- , test "return Printables with some stuff typed including a" <|
-        --     \() ->
-        --         exerciseWithText "a \n bcd"
-        --             |> Exercise.consume 'a' 0
-        --             |> Exercise.consume enterChar 0
-        --             |> Exercise.consume 'b' 0
-        --             |> Exercise.consume 'b' 0
-        --             |> Exercise.consume 'c' 0
-        --             |> Exercise.consume backspaceChar 0
-        --             |> Exercise.consume backspaceChar 0
-        --             |> Exercise.consume 'c' 0
-        --             |> Exercise.printables
-        --             |> Expect.equal
-        --                 [ { content = "a", style = Completed }
-        --                 , { content = "\n", style = Completed }
-        --                 , { content = " ", style = Completed }
-        --                 , { content = "b", style = Completed }
-        --                 , { content = "c", style = Completed }
-        --                 , { content = "d", style = Current }
-        --                 , { content = "", style = Waiting }
-        --                 ]
+        , test "return Printables for an exercise with some stuff typed" <|
+            \() ->
+                exerciseWithText "a \n \n b"
+                    |> Exercise.consume 'a' 0
+                    |> Exercise.consume enterChar 0
+                    |> Exercise.printables
+                    |> Expect.equal
+                        [ { content = "a", style = Completed }
+                        , { content = enterString, style = Completed }
+                        , { content = " ", style = Completed }
+                        , { content = enterString, style = Completed }
+                        , { content = " ", style = Completed }
+                        , { content = "b", style = Current }
+                        , { content = "", style = Waiting }
+                        ]
+        , test "return Printables with some stuff typed including an error" <|
+            \() ->
+                exerciseWithText "a \n bcd"
+                    |> Exercise.consume 'a' 0
+                    |> Exercise.consume enterChar 0
+                    |> Exercise.consume 'b' 0
+                    |> Exercise.consume 'b' 0
+                    |> Exercise.consume 'c' 0
+                    |> Exercise.consume backspaceChar 0
+                    |> Exercise.printables
+                    |> Expect.equal
+                        [ { content = "a", style = Completed }
+                        , { content = enterString, style = Completed }
+                        , { content = " ", style = Completed }
+                        , { content = "b", style = Completed }
+                        , { content = "c", style = Error }
+                        , { content = "d", style = Waiting }
+                        , { content = "", style = Waiting }
+                        ]
+        , test "return Printables with some stuff typed including a" <|
+            \() ->
+                exerciseWithText "a \n bcd"
+                    |> Exercise.consume 'a' 0
+                    |> Exercise.consume enterChar 0
+                    |> Exercise.consume 'b' 0
+                    |> Exercise.consume 'b' 0
+                    |> Exercise.consume 'c' 0
+                    |> Exercise.consume backspaceChar 0
+                    |> Exercise.consume backspaceChar 0
+                    |> Exercise.consume 'c' 0
+                    |> Exercise.printables
+                    |> Expect.equal
+                        [ { content = "a", style = Completed }
+                        , { content = enterString, style = Completed }
+                        , { content = " ", style = Completed }
+                        , { content = "b", style = Completed }
+                        , { content = "c", style = Completed }
+                        , { content = "d", style = Current }
+                        , { content = "", style = Waiting }
+                        ]
         ]
 
 
@@ -394,12 +393,6 @@ wpmTests =
                 exerciseWithText ""
                     |> Exercise.wpm
                     |> Expect.equal 0
-
-        -- , test "a word is defined as 5 characters (incl spaces) in the target string" <|
-        --     \() ->
-        --         eventsWithCorrectedMistake
-        --             |> Event.wpm
-        --             |> Expect.equal 1
         ]
 
 
@@ -411,6 +404,11 @@ backspaceChar =
 enterChar : Char
 enterChar =
     Char.fromCode 13
+
+
+enterString : String
+enterString =
+    "\u{000D}"
 
 
 exerciseWithText : String -> Exercise
