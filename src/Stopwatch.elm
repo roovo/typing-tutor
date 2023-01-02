@@ -1,5 +1,6 @@
 module Stopwatch exposing
     ( Stopwatch
+    , delta
     , init
     , lap
     , laps
@@ -8,7 +9,6 @@ module Stopwatch exposing
     , start
     , stop
     , tick
-    , time
     , view
     )
 
@@ -20,8 +20,8 @@ import Time exposing (Posix)
 
 
 type alias Stopwatch =
-    { laps : List Int
-    , time : Int
+    { laps : List Float
+    , delta : Float
     , status : Status
     }
 
@@ -34,7 +34,7 @@ type Status
 init : Stopwatch
 init =
     { laps = []
-    , time = 0
+    , delta = 0
     , status = Stopped
     }
 
@@ -52,47 +52,47 @@ stop stopwatch =
 reset : Stopwatch -> Stopwatch
 reset stopwatch =
     { stopwatch
-        | time = 0
+        | delta = 0
         , laps = []
     }
 
 
-tick : Int -> Stopwatch -> Stopwatch
+tick : Float -> Stopwatch -> Stopwatch
 tick elapsedTime stopwatch =
     let
         elapseIfRuning =
             case stopwatch.status of
                 Stopped ->
-                    stopwatch.time
+                    stopwatch.delta
 
                 Running ->
-                    stopwatch.time + elapsedTime
+                    stopwatch.delta + elapsedTime
     in
-    { stopwatch | time = elapseIfRuning }
+    { stopwatch | delta = elapseIfRuning }
 
 
-time : Stopwatch -> Int
-time stopwatch =
-    stopwatch.time
+delta : Stopwatch -> Float
+delta stopwatch =
+    stopwatch.delta
 
 
 lap : Stopwatch -> Stopwatch
 lap stopwatch =
     { stopwatch
         | laps =
-            stopwatch.time
+            stopwatch.delta
                 |> (\t -> t - lappedTime stopwatch)
                 |> (\t -> t :: stopwatch.laps)
         , status = Running
     }
 
 
-laps : Stopwatch -> List Int
+laps : Stopwatch -> List Float
 laps stopwatch =
     List.reverse stopwatch.laps
 
 
-lastLap : Stopwatch -> Int
+lastLap : Stopwatch -> Float
 lastLap stopwatch =
     stopwatch.laps
         |> List.head
@@ -103,14 +103,14 @@ lastLap stopwatch =
 -- VIEW
 
 
-view : Int -> String
+view : Float -> String
 view t =
     let
         secs =
-            modBy 60 (t // 1000)
+            modBy 60 (round t // 1000)
 
         mins =
-            t // 60000
+            floor t // 60000
     in
     addLeadingZero mins ++ ":" ++ addLeadingZero secs
 
@@ -119,7 +119,7 @@ view t =
 -- PRIVATE FUNCTIONS
 
 
-lappedTime : Stopwatch -> Int
+lappedTime : Stopwatch -> Float
 lappedTime stopwatch =
     stopwatch.laps
         |> List.sum

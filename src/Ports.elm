@@ -1,6 +1,4 @@
-port module Ports exposing (scrollIfNearEdge)
-
--- port module Ports exposing (keyDown, keyPress, scrollIfNearEdge, showChart)
+port module Ports exposing (keyDown, keyPress, scrollIfNearEdge)
 
 import Attempt exposing (Attempt)
 import Time exposing (Posix)

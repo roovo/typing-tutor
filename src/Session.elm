@@ -2,6 +2,7 @@ module Session exposing
     ( Session
     , apiRoot
     , init
+    , mapConfig
     , navKey
     , stopwatch
     )
@@ -52,6 +53,15 @@ navKey (Session n _) =
 stopwatch : Session -> Stopwatch
 stopwatch =
     .stopwatch << config
+
+
+
+-- TRANSFORM
+
+
+mapConfig : (Config -> Config) -> Session -> Session
+mapConfig func (Session key conf) =
+    Session key (func conf)
 
 
 

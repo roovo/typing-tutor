@@ -91,7 +91,7 @@ printables exercise =
         |> setStyles
 
 
-consume : Char -> Int -> Exercise -> Exercise
+consume : Char -> Float -> Exercise -> Exercise
 consume char timeTaken exercise =
     case isComplete exercise of
         True ->
@@ -173,12 +173,12 @@ howManyWords exercise =
     (toFloat <| howManyCharacters exercise) / lettersPerWord
 
 
-logEvent : Char -> Int -> Exercise -> List Event
+logEvent : Char -> Float -> Exercise -> List Event
 logEvent char timeTaken exercise =
     let
         newEvent =
             { char = char
-            , timeTaken = timeTaken
+            , timeTaken = round timeTaken
             }
     in
     newEvent :: exercise.events

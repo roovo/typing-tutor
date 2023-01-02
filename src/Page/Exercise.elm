@@ -2,6 +2,7 @@ module Page.Exercise exposing
     ( Model
     , Msg
     , init
+    , subscriptions
     , toSession
     , update
     , view
@@ -9,6 +10,7 @@ module Page.Exercise exposing
 
 import Api
 import Api.Endpoint as Endpoint
+import Browser.Events exposing (onAnimationFrameDelta)
 import Event
 import Exercise exposing (Exercise, Printable, Style(..))
 import Html exposing (Html)
@@ -17,9 +19,12 @@ import Http
 import Json.Decode as JD
 import Json.Encode as JE
 import Page.Error
+import Ports
 import Route
 import Session exposing (Session)
 import Stopwatch exposing (Stopwatch)
+import Task
+import Time exposing (Posix)
 
 
 
@@ -59,6 +64,10 @@ toSession =
 
 type Msg
     = CompletedExerciseFetch (Result Http.Error Exercise)
+    | GotTime Posix
+    | KeyDown Int
+    | KeyPress Int
+    | Tick Float
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -69,6 +78,105 @@ update msg model =
 
         ( CompletedExerciseFetch (Err _), _ ) ->
             ( { model | exercise = Failed }, Cmd.none )
+
+        ( GotTime timeNow, exercise ) ->
+            -- case model.exercise of
+            --     Loaded exercise ->
+            --         ( model
+            --         , Api.createAttempt model (Attempt.init timeNow exercise) CreatedAttempt
+            --         )
+            --     _ ->
+            ( model, Cmd.none )
+
+        ( KeyPress keyCode, _ ) ->
+            consumeChar keyCode model
+
+        ( KeyDown keyCode, _ ) ->
+            consumeChar keyCode model
+
+        ( Tick elapsed, _ ) ->
+            let
+                tickedWatch =
+                    Stopwatch.tick elapsed (Session.stopwatch (toSession model))
+
+                performTick c =
+                    { c | stopwatch = tickedWatch }
+            in
+            ( { model | session = Session.mapConfig performTick model.session }
+            , Cmd.none
+            )
+
+
+consumeChar : Int -> Model -> ( Model, Cmd Msg )
+consumeChar keyCode model =
+    let
+        lappedWatch =
+            Stopwatch.lap <| Session.stopwatch (toSession model)
+
+        newExercise : Status Exercise
+        newExercise =
+            case model.exercise of
+                Loaded exercise ->
+                    Loaded
+                        (Exercise.consume
+                            (Char.fromCode keyCode)
+                            (Stopwatch.lastLap lappedWatch)
+                            exercise
+                        )
+
+                _ ->
+                    model.exercise
+
+        newModel =
+            { model
+                | exercise = newExercise
+                , session = Session.mapConfig (\c -> { c | stopwatch = lappedWatch }) model.session
+            }
+    in
+    ( newModel
+    , consumeCharCmd newModel
+    )
+
+
+consumeCharCmd : Model -> Cmd Msg
+consumeCharCmd model =
+    case model.exercise of
+        Loaded exercise ->
+            if Exercise.isComplete exercise then
+                Task.perform GotTime Time.now
+
+            else
+                Ports.scrollIfNearEdge 1
+
+        _ ->
+            Cmd.none
+
+
+
+-- SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    case model.exercise of
+        Loaded exercise ->
+            if Exercise.isRunning exercise then
+                Sub.batch <|
+                    onAnimationFrameDelta Tick
+                        :: keyboardListeners
+
+            else
+                Sub.batch keyboardListeners
+
+        _ ->
+            Sub.none
+
+
+keyboardListeners : List (Sub Msg)
+keyboardListeners =
+    [ Ports.keyDown KeyDown
+    , Ports.keyPress KeyPress
+    ]
 
 
 
@@ -135,7 +243,7 @@ stopwatchView exercise stopwatch =
             Html.p []
                 [ Html.text <|
                     Stopwatch.view <|
-                        stopwatch.time
+                        stopwatch.delta
                 ]
 
 

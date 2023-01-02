@@ -2,7 +2,6 @@ module Main exposing (..)
 
 import Attempt exposing (Attempt)
 import Browser exposing (Document)
-import Browser.Events exposing (onAnimationFrame)
 import Browser.Navigation as Nav
 import Exercise exposing (Exercise)
 import Html exposing (Html)
@@ -17,6 +16,7 @@ import Ports
 import Route exposing (Route)
 import Session exposing (Session)
 import Stopwatch
+import Task
 import Time exposing (Posix)
 import Url exposing (Url)
 
@@ -76,15 +76,11 @@ type Msg
     | GotExercisesMsg Page.Exercises.Msg
     | GotExerciseMsg Page.Exercise.Msg
     | Ignored
-    | KeyDown Int
-    | KeyPress Int
 
 
 
 -- | CreatedAttempt (Result Http.Error Attempt)
 -- | GotAttempts (Result Http.Error (List Attempt))
--- | GotTime Posix
--- | Tick Float
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -123,31 +119,8 @@ update msg model =
         ( Ignored, _ ) ->
             ( model, Cmd.none )
 
-        ( KeyPress keyCode, _ ) ->
-            -- consumeChar keyCode model
-            ( model, Cmd.none )
-
-        ( KeyDown keyCode, _ ) ->
-            -- consumeChar keyCode model
-            ( model, Cmd.none )
 
 
-
--- Tick elapsed ->
---     -- ( { model | stopwatch = Stopwatch.tick elapsed model.stopwatch }
---     ( model
---     , Cmd.none
---     )
--- GotTime timeNow ->
---     -- case model.exercise of
---     --     Nothing ->
---     --         ( model, Cmd.none )
---     --     Just exercise ->
---     --         ( model
---     --         , Cmd.none
---     --           -- , Api.createAttempt model (Attempt.init timeNow exercise) CreatedAttempt
---     --         )
---     ( model, Cmd.none )
 -- GotExercises (Result.Ok exercises) ->
 --     -- ( { model
 --     --     | exercises = exercises
@@ -230,24 +203,13 @@ updateWith toModel toMsg ( subModel, subCmd ) =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    -- case model.exercise of
-    --     Just exercise ->
-    --         if Exercise.isRunning exercise then
-    --             Sub.batch <|
-    --                 onAnimationFrame Tick
-    --                     :: keyboardListeners
-    --         else
-    --             Sub.batch keyboardListeners
-    --     Nothing ->
-    Sub.none
+    case model of
+        Exercise subModel ->
+            Page.Exercise.subscriptions subModel
+                |> Sub.map GotExerciseMsg
 
-
-keyboardListeners : List (Sub Msg)
-keyboardListeners =
-    -- [ Ports.keyDown KeyDown
-    -- , Ports.keyPress KeyPress
-    -- ]
-    []
+        _ ->
+            Sub.none
 
 
 
