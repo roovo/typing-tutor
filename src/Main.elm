@@ -10,6 +10,7 @@ import Http
 import Json.Decode as Decode
 import Page
 import Page.Blank
+import Page.Exercise
 import Page.Exercises
 import Page.NotFound
 import Ports
@@ -43,7 +44,8 @@ init flags url navKey =
 
 
 type Model
-    = Exercises Page.Exercises.Model
+    = Exercise Page.Exercise.Model
+    | Exercises Page.Exercises.Model
     | NotFound Session
     | Redirect Session
 
@@ -51,6 +53,9 @@ type Model
 toSession : Model -> Session
 toSession model =
     case model of
+        Exercise m ->
+            Page.Exercise.toSession m
+
         Exercises m ->
             Page.Exercises.toSession m
 
@@ -62,36 +67,6 @@ toSession model =
 
 
 
--- urlUpdate : Navigation.Location -> Model -> ( Model, Cmd Msg )
--- urlUpdate location model =
---     let
---         _ =
---             Debug.log "urlUpdate" location
---
---         newModel =
---             { model
---                 | route = UrlParser.parsePath Route.route location
---             }
---     in
---     ( newModel
---     , cmdForModelRoute newModel
---     )
-
-
-cmdForModelRoute : Model -> Cmd Msg
-cmdForModelRoute model =
-    -- case model.route of
-    --     Just ExercisesRoute ->
-    --         Api.fetchExercises model GotExercises
-    --     Just (ExerciseRoute id) ->
-    --         Api.fetchExercise model id GotExercise
-    --     Just (ResultRoute exerciseId) ->
-    --         Api.fetchAttempts model exerciseId GotAttempts
-    --     Nothing ->
-    Cmd.none
-
-
-
 -- UPDATE
 
 
@@ -99,28 +74,43 @@ type Msg
     = ChangedUrl Url
     | ClickedLink Browser.UrlRequest
     | GotExercisesMsg Page.Exercises.Msg
+    | GotExerciseMsg Page.Exercise.Msg
     | Ignored
+    | KeyDown Int
+    | KeyPress Int
 
 
 
 -- | CreatedAttempt (Result Http.Error Attempt)
 -- | GotAttempts (Result Http.Error (List Attempt))
--- | GotExercise (Result Http.Error Exercise)
 -- | GotTime Posix
--- | KeyDown KeyCode
--- | KeyPress KeyCode
 -- | Tick Float
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case ( logWithoutTick msg, model ) of
-        ( ChangedUrl _, _ ) ->
-            ( model, Cmd.none )
+        ( ChangedUrl url, _ ) ->
+            changeRouteTo (Route.fromUrl url) model
 
-        -- UrlChange location ->
-        --     UrlUpdate.urlUpdate location model
-        ( ClickedLink _, _ ) ->
+        ( ClickedLink urlRequest, _ ) ->
+            case urlRequest of
+                Browser.Internal url ->
+                    ( model
+                    , Nav.pushUrl (Session.navKey (toSession model))
+                        (Url.toString url)
+                    )
+
+                Browser.External href ->
+                    ( model
+                    , Nav.load href
+                    )
+
+        ( GotExerciseMsg subMsg, Exercise subModel ) ->
+            Page.Exercise.update subMsg subModel
+                |> updateWith Exercise GotExerciseMsg
+
+        ( GotExerciseMsg subMsg, subModel ) ->
             ( model, Cmd.none )
 
         ( GotExercisesMsg subMsg, Exercises subModel ) ->
@@ -133,12 +123,16 @@ update msg model =
         ( Ignored, _ ) ->
             ( model, Cmd.none )
 
+        ( KeyPress keyCode, _ ) ->
+            -- consumeChar keyCode model
+            ( model, Cmd.none )
+
+        ( KeyDown keyCode, _ ) ->
+            -- consumeChar keyCode model
+            ( model, Cmd.none )
 
 
--- KeyPress keyCode ->
---     consumeChar keyCode model
--- KeyDown keyCode ->
---     consumeChar keyCode model
+
 -- Tick elapsed ->
 --     -- ( { model | stopwatch = Stopwatch.tick elapsed model.stopwatch }
 --     ( model
@@ -201,6 +195,10 @@ changeRouteTo maybeRoute model =
         Nothing ->
             ( NotFound session, Cmd.none )
 
+        Just (Route.Exercise id) ->
+            Page.Exercise.init session id
+                |> updateWith Exercise GotExerciseMsg
+
         Just Route.Exercises ->
             Page.Exercises.init session
                 |> updateWith Exercises GotExercisesMsg
@@ -259,6 +257,9 @@ keyboardListeners =
 view : Model -> Document Msg
 view model =
     case model of
+        Exercise subModel ->
+            viewPage model GotExerciseMsg (Page.Exercise.view subModel)
+
         Exercises subModel ->
             viewPage model GotExercisesMsg (Page.Exercises.view subModel)
 

@@ -103,14 +103,14 @@ lastLap stopwatch =
 -- VIEW
 
 
-view : Float -> String
+view : Int -> String
 view t =
     let
         secs =
-            modBy 60 (round t // 1000)
+            modBy 60 (t // 1000)
 
         mins =
-            floor t // 60000
+            t // 60000
     in
     addLeadingZero mins ++ ":" ++ addLeadingZero secs
 

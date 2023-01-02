@@ -1,5 +1,6 @@
 module Api.Endpoint exposing
     ( Endpoint
+    , exercise
     , exercises
     , request
     )
@@ -44,6 +45,11 @@ request config =
 
 
 -- EXERCISE ENDPOINTS
+
+
+exercise : String -> Int -> Endpoint
+exercise apiRoot id =
+    url apiRoot [ "exercises", String.fromInt id ] []
 
 
 exercises : String -> Endpoint

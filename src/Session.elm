@@ -2,6 +2,8 @@ module Session exposing
     ( Session
     , apiRoot
     , init
+    , navKey
+    , stopwatch
     )
 
 import Attempt exposing (Attempt)
@@ -40,6 +42,16 @@ init key =
 apiRoot : Session -> String
 apiRoot =
     .apiRoot << config
+
+
+navKey : Session -> Nav.Key
+navKey (Session n _) =
+    n
+
+
+stopwatch : Session -> Stopwatch
+stopwatch =
+    .stopwatch << config
 
 
 

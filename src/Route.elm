@@ -6,16 +6,16 @@ import Url.Parser as Parser exposing ((</>), Parser)
 
 type Route
     = Exercises
+    | Exercise Int
 
 
 
--- | Exercise Int
 -- | Result Int
 
 
 fromUrl : Url -> Maybe Route
 fromUrl url =
-    Parser.parse parser (Debug.log "url" url)
+    Parser.parse parser url
 
 
 urlFor : Route -> String
@@ -24,10 +24,11 @@ urlFor r =
         Exercises ->
             "/exercises"
 
+        Exercise id ->
+            "/exercises/" ++ String.fromInt id
 
 
--- Exercise id ->
---     "/exercises/" ++ String.fromInt id
+
 -- Result id ->
 --     "/results/" ++ String.fromInt id
 -- PRIVATE
@@ -39,7 +40,8 @@ parser =
         [ Parser.map Exercises Parser.top
 
         -- , Parser.map Exercises (Parser.s "")
-        -- , Parser.map Exercise (Parser.s "exercises" </> Parser.int)
+        , Parser.map Exercise (Parser.s "exercises" </> Parser.int)
+
         -- , Parser.map Exercises (Parser.s "exercises")
         -- , Parser.map Result (Parser.s "results" </> Parser.int)
         ]

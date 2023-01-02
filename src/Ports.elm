@@ -1,4 +1,5 @@
 port module Ports exposing (scrollIfNearEdge)
+
 -- port module Ports exposing (keyDown, keyPress, scrollIfNearEdge, showChart)
 
 import Attempt exposing (Attempt)
@@ -12,16 +13,18 @@ type alias ChartData =
     }
 
 
--- port keyDown : (KeyCode -> msg) -> Sub msg
---
---
--- port keyPress : (KeyCode -> msg) -> Sub msg
+port keyDown : (Int -> msg) -> Sub msg
+
+
+port keyPress : (Int -> msg) -> Sub msg
+
 
 
 -- port chartAttempts : List ChartData -> Cmd msg
 
 
 port scrollIfNearEdge : Int -> Cmd msg
+
 
 
 -- showChart : List Attempt -> Cmd msg
