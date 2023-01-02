@@ -6,18 +6,23 @@
   "author": "Rupert Voelcker",
   "license": "MIT",
   "scripts": {
-    "build": "NODE_ENV=production parcel build assets/index.html --no-source-maps",
-    "dev": "parcel assets/index.html"
+    "dev": "webpack serve --port 3000 --config config/webpack.dev.js",
+    "start": "npm run dev"
   },
   "devDependencies": {
-    "@parcel/transformer-elm": "^2.8.2",
+    "clean-webpack-plugin": "^4.0.0",
     "elm": "^0.19.1-5",
-    "elm-hot": "^1.1.6",
+    "elm-format": "^0.8.5",
+    "elm-reloader": "^1.0.0",
+    "elm-review": "^2.9.1",
     "elm-test": "^0.19.1-revision10",
-    "graceful-fs": "^4.2.10",
+    "elm-webpack-loader": "^8.0.0",
+    "html-webpack-plugin": "^5.5.0",
     "json-server": "^0.17.1",
-    "parcel": "^2.8.0",
-    "parcel-plugin-clean-dist": "0.0.6"
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.11.1",
+    "webpack-merge": "^5.8.0"
   },
   "repository": {
     "type": "git",

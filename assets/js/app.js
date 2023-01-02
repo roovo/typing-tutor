@@ -1,5 +1,27 @@
 'use strict';
 
+const { Elm } = require('../../src/Main.elm');
+
+var app = Elm.Main.init();
+
+document.onkeydown = function(e) {
+  if (e.keyCode === 8) {
+    app.ports.keyDown.send(e.keyCode)
+
+    e.preventDefault();
+    e.stopPropagation()
+  }
+}
+
+document.onkeypress = function(e) {
+  if (e.keyCode !== 8) {
+    app.ports.keyPress.send(e.keyCode)
+
+    e.preventDefault();
+    e.stopPropagation()
+  }
+}
+
 // require('./moment.min.js')
 // require('./Chart.bundle.min.js')
 
@@ -9,34 +31,34 @@
 //   });
 // }
 
-import { Elm } from '../../src/Main.elm'
+// import { Elm } from '../../src/Main.elm'
 
 // function initializeApp() {
   // debugger;
 
-  var app = Elm.Main.init({
-    node: document.getElementById('main')
-  });
+  // var app = Elm.Main.init({
+  //   node: document.getElementById('main')
+  // });
 
-  that = this;
+  // that = this;
 
-  document.onkeydown = function(e) {
-    if (e.keyCode === 8) {
-      app.ports.keyDown.send(e.keyCode)
+  // document.onkeydown = function(e) {
+  //   if (e.keyCode === 8) {
+  //     app.ports.keyDown.send(e.keyCode)
 
-      e.preventDefault();
-      e.stopPropagation()
-    }
-  }
+  //     e.preventDefault();
+  //     e.stopPropagation()
+  //   }
+  // }
 
-  document.onkeypress = function(e) {
-    if (e.keyCode !== 8) {
-      app.ports.keyPress.send(e.keyCode)
+  // document.onkeypress = function(e) {
+  //   if (e.keyCode !== 8) {
+  //     app.ports.keyPress.send(e.keyCode)
 
-      e.preventDefault();
-      e.stopPropagation()
-    }
-  }
+  //     e.preventDefault();
+  //     e.stopPropagation()
+  //   }
+  // }
 
   // function newDate(epoc) {
   //   return moment(epoc).toDate();
