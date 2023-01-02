@@ -4,14 +4,17 @@ module Page.Exercises exposing
     , init
     , toSession
     , update
+    , view
     )
 
 import Api
 import Api.Endpoint as Endpoint
 import Exercise exposing (Exercise)
+import Html exposing (Html)
 import Http
 import Json.Decode as JD
 import Json.Encode as JE
+import Page.Error
 import Session exposing (Session)
 
 
@@ -65,7 +68,66 @@ update msg model =
 
 
 
--- HTTP
+-- VIEW
+
+
+view : Model -> { title : String, content : Html Msg }
+view model =
+    let
+        pageTitle =
+            "Exercises"
+    in
+    case model.exercises of
+        Loaded exercises ->
+            { title = pageTitle
+            , content = content exercises
+            }
+
+        Loading ->
+            { title = pageTitle
+            , content = Html.text ""
+            }
+
+        LoadingSlowly ->
+            { title = pageTitle
+            , content = Html.text "Loading..."
+            }
+
+        Failed ->
+            Page.Error.view "exercises"
+
+
+content : List Exercise -> Html Msg
+content exercises =
+    Html.div []
+        [ Html.h2 [] [ Html.text "Available exercises" ]
+        , Html.div []
+            [ exercisesList exercises ]
+        ]
+
+
+exercisesList : List Exercise -> Html Msg
+exercisesList exercises =
+    Html.ul []
+        (List.map exerciseItem exercises)
+
+
+exerciseItem : Exercise -> Html Msg
+exerciseItem exercise =
+    Html.li []
+        [ Html.a
+            []
+            [ Html.text exercise.title ]
+        , Html.text " ("
+        , Html.a
+            []
+            [ Html.text "results" ]
+        , Html.text ")"
+        ]
+
+
+
+-- PRIVATE
 
 
 fetchExercises : Session -> Cmd Msg

@@ -8,7 +8,10 @@ import Exercise exposing (Exercise)
 import Html exposing (Html)
 import Http
 import Json.Decode as Decode
+import Page
+import Page.Blank
 import Page.Exercises
+import Page.NotFound
 import Ports
 import Route exposing (Route)
 import Session exposing (Session)
@@ -96,6 +99,7 @@ type Msg
     = ChangedUrl Url
     | ClickedLink Browser.UrlRequest
     | GotExercisesMsg Page.Exercises.Msg
+    | Ignored
 
 
 
@@ -124,6 +128,9 @@ update msg model =
                 |> updateWith Exercises GotExercisesMsg
 
         ( GotExercisesMsg subMsg, subModel ) ->
+            ( model, Cmd.none )
+
+        ( Ignored, _ ) ->
             ( model, Cmd.none )
 
 
@@ -251,22 +258,29 @@ keyboardListeners =
 
 view : Model -> Document Msg
 view model =
-    -- Html.div
-    --     []
-    --     [ body model ]
-    { title = "foo"
-    , body = [ Html.text "Hi there" ]
-    }
+    case model of
+        Exercises subModel ->
+            viewPage model GotExercisesMsg (Page.Exercises.view subModel)
+
+        NotFound _ ->
+            viewPage model (\_ -> Ignored) Page.NotFound.view
+
+        Redirect _ ->
+            viewPage model (\_ -> Ignored) Page.Blank.view
 
 
-body : Model -> Html Msg
-body model =
-    -- case model.route of
-    --     Just ExercisesRoute ->
-    --         View.Exercises.List.view model
-    --     Just (ExerciseRoute id) ->
-    --         View.Exercises.Run.view model
-    --     Just (ResultRoute id) ->
-    --         View.Exercises.Result.view model
-    --     Nothing ->
-    Html.text "Sorry - not round these parts - 404"
+viewPage :
+    Model
+    -> (msg -> Msg)
+    -> { title : String, content : Html msg }
+    -> Document Msg
+viewPage model toMsg pageView =
+    let
+        mappedView =
+            { title = pageView.title
+            , content = Html.map toMsg pageView.content
+            }
+    in
+    Page.view
+        (toSession model)
+        mappedView
