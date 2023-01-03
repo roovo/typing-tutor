@@ -51,6 +51,13 @@ toSession =
     .session
 
 
+fetchExercises : Session -> Cmd Msg
+fetchExercises session =
+    JD.list Exercise.decoder
+        |> Http.expectJson CompletedExercisesFetch
+        |> Api.getMany (Endpoint.exercises (Session.apiRoot session))
+
+
 
 -- UPDATE
 
@@ -122,18 +129,7 @@ exerciseItem exercise =
             [ Html.text exercise.title ]
         , Html.text " ("
         , Html.a
-            []
+            [ Html.Attributes.href (Route.urlFor (Route.Attempts exercise.id)) ]
             [ Html.text "results" ]
         , Html.text ")"
         ]
-
-
-
--- PRIVATE
-
-
-fetchExercises : Session -> Cmd Msg
-fetchExercises session =
-    JD.list Exercise.decoder
-        |> Http.expectJson CompletedExercisesFetch
-        |> Api.getMany (Endpoint.exercises (Session.apiRoot session))

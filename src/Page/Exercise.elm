@@ -10,6 +10,7 @@ module Page.Exercise exposing
 
 import Api
 import Api.Endpoint as Endpoint
+import Attempt exposing (Attempt)
 import Browser.Events exposing (onAnimationFrameDelta)
 import Event
 import Exercise exposing (Exercise, Printable, Style(..))
@@ -64,6 +65,7 @@ toSession =
 
 type Msg
     = CompletedExerciseFetch (Result Http.Error Exercise)
+      -- | CreatedAttempt (Result Http.Error Attempt)
     | GotTime Posix
     | KeyDown Int
     | KeyPress Int
@@ -81,9 +83,9 @@ update msg model =
 
         ( GotTime timeNow, exercise ) ->
             -- case model.exercise of
-            --     Loaded exercise ->
+            --     Loaded e ->
             --         ( model
-            --         , Api.createAttempt model (Attempt.init timeNow exercise) CreatedAttempt
+            --         , Api.createAttempt model (Attempt.init timeNow e) CreatedAttempt
             --         )
             --     _ ->
             ( model, Cmd.none )
@@ -153,6 +155,11 @@ consumeCharCmd model =
 
 
 
+-- createAttempt : Session -> Attempt -> Cmd Msg
+-- createAttempt session attempt =
+--     JD.list Exercise.decoder
+--         |> Http.expectJson CompletedExercisesFetch
+--         |> Api.getMany (Endpoint.exercises (Session.apiRoot session))
 -- SUBSCRIPTIONS
 
 

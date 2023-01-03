@@ -8,6 +8,7 @@ import Html exposing (Html)
 import Http
 import Json.Decode as Decode
 import Page
+import Page.Attempts
 import Page.Blank
 import Page.Exercise
 import Page.Exercises
@@ -44,7 +45,8 @@ init flags url navKey =
 
 
 type Model
-    = Exercise Page.Exercise.Model
+    = Attempts Page.Attempts.Model
+    | Exercise Page.Exercise.Model
     | Exercises Page.Exercises.Model
     | NotFound Session
     | Redirect Session
@@ -53,6 +55,9 @@ type Model
 toSession : Model -> Session
 toSession model =
     case model of
+        Attempts m ->
+            Page.Attempts.toSession m
+
         Exercise m ->
             Page.Exercise.toSession m
 
@@ -73,19 +78,15 @@ toSession model =
 type Msg
     = ChangedUrl Url
     | ClickedLink Browser.UrlRequest
+    | GotAttemptsMsg Page.Attempts.Msg
     | GotExercisesMsg Page.Exercises.Msg
     | GotExerciseMsg Page.Exercise.Msg
     | Ignored
 
 
-
--- | CreatedAttempt (Result Http.Error Attempt)
--- | GotAttempts (Result Http.Error (List Attempt))
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case ( logWithoutTick msg, model ) of
+    case ( msg, model ) of
         ( ChangedUrl url, _ ) ->
             changeRouteTo (Route.fromUrl url) model
 
@@ -101,6 +102,13 @@ update msg model =
                     ( model
                     , Nav.load href
                     )
+
+        ( GotAttemptsMsg subMsg, Attempts subModel ) ->
+            Page.Attempts.update subMsg subModel
+                |> updateWith Attempts GotAttemptsMsg
+
+        ( GotAttemptsMsg subMsg, subModel ) ->
+            ( model, Cmd.none )
 
         ( GotExerciseMsg subMsg, Exercise subModel ) ->
             Page.Exercise.update subMsg subModel
@@ -121,40 +129,7 @@ update msg model =
 
 
 
--- GotExercises (Result.Ok exercises) ->
---     -- ( { model
---     --     | exercises = exercises
---     --     , exercise = Nothing
---     --     , attempts = []
---     --   }
---     -- , Cmd.none
---     -- )
---     ( model, Cmd.none )
--- GotExercise (Result.Ok exercise) ->
---     -- ( { model
---     --     | exercise = Just exercise
---     --     , stopwatch = Stopwatch.reset model.stopwatch
---     --     , exercises = []
---     --     , attempts = []
---     --   }
---     -- , Cmd.none
---     -- )
---     ( model, Cmd.none )
--- GotExercise (Result.Err _) ->
---     ( model, Cmd.none )
 -- CreatedAttempt _ ->
---     ( model, Cmd.none )
--- GotAttempts (Result.Ok attempts) ->
---     -- ( { model
---     --     | attempts = attempts
---     --     , exercises = []
---     --     , exercise = Nothing
---     --   }
---     -- , Cmd.none
---     --   -- , Ports.showChart attempts
---     -- )
---     ( model, Cmd.none )
--- GotAttempts (Result.Err _) ->
 --     ( model, Cmd.none )
 
 
@@ -176,14 +151,9 @@ changeRouteTo maybeRoute model =
             Page.Exercises.init session
                 |> updateWith Exercises GotExercisesMsg
 
-
-logWithoutTick : Msg -> Msg
-logWithoutTick msg =
-    case msg of
-        -- Tick time ->
-        --     msg
-        _ ->
-            Debug.log "msg" msg
+        Just (Route.Attempts id) ->
+            Page.Attempts.init session id
+                |> updateWith Attempts GotAttemptsMsg
 
 
 updateWith :
@@ -219,6 +189,9 @@ subscriptions model =
 view : Model -> Document Msg
 view model =
     case model of
+        Attempts subModel ->
+            viewPage model GotAttemptsMsg (Page.Attempts.view subModel)
+
         Exercise subModel ->
             viewPage model GotExerciseMsg (Page.Exercise.view subModel)
 

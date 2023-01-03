@@ -1,12 +1,13 @@
 module Api.Endpoint exposing
     ( Endpoint
+    , attempts
     , exercise
     , exercises
     , request
     )
 
 import Http
-import Url.Builder as Builder exposing (QueryParameter)
+import Url.Builder as Builder exposing (QueryParameter, string)
 
 
 
@@ -41,6 +42,20 @@ request config =
         , url = unwrap config.url
         , tracker = config.tracker
         }
+
+
+
+-- ATTEMPTS ENDPOINTS
+
+
+attempts : String -> Int -> Endpoint
+attempts apiRoot exerciseId =
+    url apiRoot
+        [ "attempts" ]
+        [ string "exerciseId" (String.fromInt exerciseId)
+        , string "_sort" "completedAt"
+        , string "_order" "DESC"
+        ]
 
 
 
