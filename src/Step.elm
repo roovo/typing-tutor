@@ -1,36 +1,33 @@
-module Step
-    exposing
-        ( Step
-        , toString
-        , init
-        , initEnd
-        , initSkip
-        , isEnd
-        , isSkipable
-        , isSkipableWhitespace
-        , isTypeable
-        , isTypeableEnter
-        , matchesTyped
-        )
+module Step exposing
+    ( Step
+    , init
+    , initEnd
+    , initSkip
+    , isEnd
+    , isSkipable
+    , isSkipableWhitespace
+    , isTypeable
+    , isTypeableEnter
+    , matchesTyped
+    , toString
+    )
 
 import Char
 import String
 
 
-backspaceCode : Int
-backspaceCode =
-    8
 
-
-enterChar : Char
-enterChar =
-    (Char.fromCode 13)
+-- TYPE
 
 
 type Step
     = Typeable Char
     | Skip String
     | End
+
+
+
+-- BUILDING
 
 
 init : Char -> Step
@@ -48,27 +45,8 @@ initEnd =
     End
 
 
-toString : Step -> String
-toString step =
-    case step of
-        Typeable char ->
-            String.fromChar char
 
-        Skip string ->
-            string
-
-        End ->
-            ""
-
-
-matchesTyped : Char -> Step -> Bool
-matchesTyped char step =
-    case step of
-        Typeable actual ->
-            actual == char
-
-        _ ->
-            False
+-- PREDICATES
 
 
 isEnd : Step -> Bool
@@ -119,3 +97,44 @@ isTypeableEnter step =
 
         _ ->
             False
+
+
+matchesTyped : Char -> Step -> Bool
+matchesTyped char step =
+    case step of
+        Typeable actual ->
+            actual == char
+
+        _ ->
+            False
+
+
+
+-- CONVERSION
+
+
+toString : Step -> String
+toString step =
+    case step of
+        Typeable char ->
+            String.fromChar char
+
+        Skip string ->
+            string
+
+        End ->
+            ""
+
+
+
+-- PRIVATE
+
+
+backspaceCode : Int
+backspaceCode =
+    8
+
+
+enterChar : Char
+enterChar =
+    Char.fromCode 13

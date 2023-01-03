@@ -1,9 +1,5 @@
 updating
 ========
-- create attempt at end of exercise
-- put data and functions (including parsers) into the same module
-- separate out Exercise parsers from the top level toSteps function
-- does scroll if near edge work??
 - elm-review
 - have I covered all the Update message combinations?
 - tests will need re-visiting
