@@ -1,6 +1,12 @@
-module Event exposing (Event, howManyTyped, timeTaken)
+module Event exposing
+    ( Event
+    , encoder
+    , howManyTyped
+    , timeTaken
+    )
 
 import Char
+import Json.Encode as JE
 
 
 type alias Event =
@@ -14,9 +20,14 @@ howManyTyped =
     List.length << typedEvents
 
 
-timeTaken : List Event -> Int
+timeTaken : List Event -> Float
 timeTaken =
-    List.sum << List.map .timeTaken
+    toFloat << List.sum << List.map .timeTaken
+
+
+encoder : Event -> JE.Value
+encoder event =
+    JE.list JE.string [ String.fromChar event.char, String.fromInt event.timeTaken ]
 
 
 
@@ -28,9 +39,9 @@ backspaceChar =
     Char.fromCode 8
 
 
-timeTakenMins : List Event -> Int
+timeTakenMins : List Event -> Float
 timeTakenMins events =
-    timeTaken events // 60000
+    timeTaken events / 60000
 
 
 typedEvents : List Event -> List Event

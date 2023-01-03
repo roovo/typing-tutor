@@ -121,12 +121,15 @@ isRunning exercise =
 
 wpm : Exercise -> Float
 wpm exercise =
-    case Event.timeTaken exercise.events of
-        0 ->
-            toFloat 0
+    let
+        timeTaken =
+            Event.timeTaken exercise.events
+    in
+    if timeTaken == 0.0 then
+        0.0
 
-        n ->
-            howManyWords exercise / toFloat n * 60000
+    else
+        howManyWords exercise / timeTaken * 60000
 
 
 

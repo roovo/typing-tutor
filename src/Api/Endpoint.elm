@@ -1,6 +1,7 @@
 module Api.Endpoint exposing
     ( Endpoint
     , attempts
+    , createAttempt
     , exercise
     , exercises
     , request
@@ -56,6 +57,11 @@ attempts apiRoot exerciseId =
         , string "_sort" "completedAt"
         , string "_order" "DESC"
         ]
+
+
+createAttempt : String -> Endpoint
+createAttempt apiRoot =
+    url apiRoot [ "attempts" ] []
 
 
 

@@ -1,6 +1,7 @@
 module Attempt exposing
     ( Attempt
     , decoder
+    , encoder
     , init
     )
 
@@ -8,6 +9,7 @@ import Event exposing (Event)
 import Exercise exposing (Exercise)
 import Json.Decode as JD exposing (Decoder)
 import Json.Decode.Pipeline as JDP
+import Json.Encode as JE
 import Time exposing (Posix)
 
 
@@ -45,3 +47,14 @@ decoder =
         |> JDP.required "accuracy" JD.float
         |> JDP.required "wpm" JD.float
         |> JDP.hardcoded []
+
+
+encoder : Attempt -> JE.Value
+encoder attempt =
+    JE.object
+        [ ( "exerciseId", JE.int attempt.exerciseId )
+        , ( "completedAt", JE.int <| Time.posixToMillis attempt.completedAt )
+        , ( "accuracy", JE.float attempt.accuracy )
+        , ( "wpm", JE.float attempt.wpm )
+        , ( "events", JE.list Event.encoder attempt.events )
+        ]

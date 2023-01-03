@@ -59,13 +59,20 @@ toSession =
     .session
 
 
+fetchExercise : Session -> Int -> Cmd Msg
+fetchExercise session id =
+    Exercise.decoder
+        |> Http.expectJson CompletedExerciseFetch
+        |> Api.getOne (Endpoint.exercise (Session.apiRoot session) id)
+
+
 
 -- UPDATE
 
 
 type Msg
     = CompletedExerciseFetch (Result Http.Error Exercise)
-      -- | CreatedAttempt (Result Http.Error Attempt)
+    | CompletedAttemptCreation (Result Http.Error Attempt)
     | GotTime Posix
     | KeyDown Int
     | KeyPress Int
@@ -75,6 +82,9 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case ( msg, model.exercise ) of
+        ( CompletedAttemptCreation _, _ ) ->
+            ( model, Cmd.none )
+
         ( CompletedExerciseFetch (Ok exercise), _ ) ->
             ( { model | exercise = Loaded exercise }, Cmd.none )
 
@@ -82,13 +92,14 @@ update msg model =
             ( { model | exercise = Failed }, Cmd.none )
 
         ( GotTime timeNow, exercise ) ->
-            -- case model.exercise of
-            --     Loaded e ->
-            --         ( model
-            --         , Api.createAttempt model (Attempt.init timeNow e) CreatedAttempt
-            --         )
-            --     _ ->
-            ( model, Cmd.none )
+            case model.exercise of
+                Loaded e ->
+                    ( model
+                    , createAttempt (toSession model) (Attempt.init timeNow e)
+                    )
+
+                _ ->
+                    ( model, Cmd.none )
 
         ( KeyPress keyCode, _ ) ->
             consumeChar keyCode model
@@ -154,12 +165,16 @@ consumeCharCmd model =
             Cmd.none
 
 
+createAttempt : Session -> Attempt -> Cmd Msg
+createAttempt session attempt =
+    Attempt.decoder
+        |> Http.expectJson CompletedAttemptCreation
+        |> Api.post
+            (Endpoint.createAttempt (Session.apiRoot session))
+            (Attempt.encoder attempt |> Http.jsonBody)
 
--- createAttempt : Session -> Attempt -> Cmd Msg
--- createAttempt session attempt =
---     JD.list Exercise.decoder
---         |> Http.expectJson CompletedExercisesFetch
---         |> Api.getMany (Endpoint.exercises (Session.apiRoot session))
+
+
 -- SUBSCRIPTIONS
 
 
@@ -327,25 +342,13 @@ viewResults exercise =
                 , Html.br [] []
                 , Html.text <|
                     "Time taken: "
-
-                -- ++ Stopwatch.view (Event.timeTaken exercise.events)
+                        ++ Stopwatch.view (Event.timeTaken exercise.events)
                 ]
             ]
         ]
 
     else
         []
-
-
-
--- PRIVATE
-
-
-fetchExercise : Session -> Int -> Cmd Msg
-fetchExercise session id =
-    Exercise.decoder
-        |> Http.expectJson CompletedExerciseFetch
-        |> Api.getOne (Endpoint.exercise (Session.apiRoot session) id)
 
 
 percentage : Float -> String

@@ -1,6 +1,7 @@
 module Api exposing
     ( getMany
     , getOne
+    , post
     )
 
 import Api.Endpoint as Endpoint exposing (Endpoint)
@@ -28,6 +29,19 @@ getMany url expect =
         , expect = expect
         , headers = []
         , body = Http.emptyBody
+        , timeout = Nothing
+        , tracker = Nothing
+        }
+
+
+post : Endpoint -> Http.Body -> Http.Expect a -> Cmd a
+post url body expect =
+    Endpoint.request
+        { method = "POST"
+        , url = url
+        , expect = expect
+        , headers = []
+        , body = body
         , timeout = Nothing
         , tracker = Nothing
         }

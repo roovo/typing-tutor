@@ -157,7 +157,7 @@ timeString time =
         month =
             case Time.toMonth Time.utc time of
                 Time.Jan ->
-                    "Janm"
+                    "Jan"
 
                 Time.Feb ->
                     "Feb"
