@@ -1,19 +1,11 @@
-module Page exposing (Page(..), view)
+module Page exposing (view)
 
 import Browser exposing (Document)
 import Html exposing (Html)
-import Html.Attributes
-import Route
-import Session exposing (Session)
 
 
-type Page
-    = Exercises
-    | Other
-
-
-view : Session -> { title : String, content : Html msg } -> Document msg
-view session { title, content } =
+view : { title : String, content : Html msg } -> Document msg
+view { title, content } =
     { title = title ++ " - Typing Tutor"
     , body = [ content ]
     }

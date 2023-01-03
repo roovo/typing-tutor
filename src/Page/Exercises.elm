@@ -1,6 +1,7 @@
 module Page.Exercises exposing
     ( Model
     , Msg
+    , Status
     , init
     , toSession
     , update
@@ -11,10 +12,9 @@ import Api
 import Api.Endpoint as Endpoint
 import Exercise exposing (Exercise)
 import Html exposing (Html)
-import Html.Attributes
+import Html.Attributes as Attr
 import Http
 import Json.Decode as JD
-import Json.Encode as JE
 import Page.Error
 import Route
 import Session exposing (Session)
@@ -32,7 +32,6 @@ type alias Model =
 
 type Status a
     = Loading
-    | LoadingSlowly
     | Loaded a
     | Failed
 
@@ -83,6 +82,7 @@ update msg model =
 view : Model -> { title : String, content : Html Msg }
 view model =
     let
+        pageTitle : String
         pageTitle =
             "Exercises"
     in
@@ -95,11 +95,6 @@ view model =
         Loading ->
             { title = pageTitle
             , content = Html.text ""
-            }
-
-        LoadingSlowly ->
-            { title = pageTitle
-            , content = Html.text "Loading..."
             }
 
         Failed ->
@@ -125,11 +120,11 @@ exerciseItem : Exercise -> Html Msg
 exerciseItem exercise =
     Html.li []
         [ Html.a
-            [ Html.Attributes.href (Route.urlFor (Route.Exercise exercise.id)) ]
+            [ Attr.href (Route.urlFor (Route.Exercise exercise.id)) ]
             [ Html.text exercise.title ]
         , Html.text " ("
         , Html.a
-            [ Html.Attributes.href (Route.urlFor (Route.Attempts exercise.id)) ]
+            [ Attr.href (Route.urlFor (Route.Attempts exercise.id)) ]
             [ Html.text "results" ]
         , Html.text ")"
         ]

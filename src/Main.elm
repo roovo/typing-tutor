@@ -1,11 +1,8 @@
-module Main exposing (..)
+module Main exposing (Model(..), Msg(..), main)
 
-import Attempt exposing (Attempt)
 import Browser exposing (Document)
 import Browser.Navigation as Nav
-import Exercise exposing (Exercise)
 import Html exposing (Html)
-import Http
 import Json.Decode as Decode
 import Page
 import Page.Attempts
@@ -13,12 +10,8 @@ import Page.Blank
 import Page.Exercise
 import Page.Exercises
 import Page.NotFound
-import Ports
 import Route exposing (Route)
 import Session exposing (Session)
-import Stopwatch
-import Task
-import Time exposing (Posix)
 import Url exposing (Url)
 
 
@@ -35,7 +28,7 @@ main =
 
 
 init : Decode.Value -> Url -> Nav.Key -> ( Model, Cmd Msg )
-init flags url navKey =
+init _ url navKey =
     changeRouteTo (Route.fromUrl url)
         (Redirect (Session.init navKey))
 
@@ -107,21 +100,21 @@ update msg model =
             Page.Attempts.update subMsg subModel
                 |> updateWith Attempts GotAttemptsMsg
 
-        ( GotAttemptsMsg subMsg, subModel ) ->
+        ( GotAttemptsMsg _, _ ) ->
             ( model, Cmd.none )
 
         ( GotExerciseMsg subMsg, Exercise subModel ) ->
             Page.Exercise.update subMsg subModel
                 |> updateWith Exercise GotExerciseMsg
 
-        ( GotExerciseMsg subMsg, subModel ) ->
+        ( GotExerciseMsg _, _ ) ->
             ( model, Cmd.none )
 
         ( GotExercisesMsg subMsg, Exercises subModel ) ->
             Page.Exercises.update subMsg subModel
                 |> updateWith Exercises GotExercisesMsg
 
-        ( GotExercisesMsg subMsg, subModel ) ->
+        ( GotExercisesMsg _, _ ) ->
             ( model, Cmd.none )
 
         ( Ignored, _ ) ->
@@ -136,6 +129,7 @@ update msg model =
 changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
 changeRouteTo maybeRoute model =
     let
+        session : Session
         session =
             toSession model
     in
@@ -190,33 +184,31 @@ view : Model -> Document Msg
 view model =
     case model of
         Attempts subModel ->
-            viewPage model GotAttemptsMsg (Page.Attempts.view subModel)
+            viewPage GotAttemptsMsg (Page.Attempts.view subModel)
 
         Exercise subModel ->
-            viewPage model GotExerciseMsg (Page.Exercise.view subModel)
+            viewPage GotExerciseMsg (Page.Exercise.view subModel)
 
         Exercises subModel ->
-            viewPage model GotExercisesMsg (Page.Exercises.view subModel)
+            viewPage GotExercisesMsg (Page.Exercises.view subModel)
 
         NotFound _ ->
-            viewPage model (\_ -> Ignored) Page.NotFound.view
+            viewPage (\_ -> Ignored) Page.NotFound.view
 
         Redirect _ ->
-            viewPage model (\_ -> Ignored) Page.Blank.view
+            viewPage (\_ -> Ignored) Page.Blank.view
 
 
 viewPage :
-    Model
-    -> (msg -> Msg)
+    (msg -> Msg)
     -> { title : String, content : Html msg }
     -> Document Msg
-viewPage model toMsg pageView =
+viewPage toMsg pageView =
     let
+        mappedView : { title : String, content : Html Msg }
         mappedView =
             { title = pageView.title
             , content = Html.map toMsg pageView.content
             }
     in
-    Page.view
-        (toSession model)
-        mappedView
+    Page.view mappedView

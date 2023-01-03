@@ -4,9 +4,6 @@ port module Ports exposing
     , scrollIfNearEdge
     )
 
-import Attempt exposing (Attempt)
-import Time exposing (Posix)
-
 
 port keyDown : (Int -> msg) -> Sub msg
 

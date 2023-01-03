@@ -5,7 +5,6 @@ module Step exposing
     , initSkip
     , isEnd
     , isSkipable
-    , isSkipableWhitespace
     , isTypeable
     , isTypeableEnter
     , matchesTyped
@@ -69,16 +68,6 @@ isSkipable step =
             False
 
 
-isSkipableWhitespace : Step -> Bool
-isSkipableWhitespace step =
-    case step of
-        Skip string ->
-            String.length (String.trim string) == 0
-
-        _ ->
-            False
-
-
 isTypeable : Step -> Bool
 isTypeable step =
     case step of
@@ -128,11 +117,6 @@ toString step =
 
 
 -- PRIVATE
-
-
-backspaceCode : Int
-backspaceCode =
-    8
 
 
 enterChar : Char

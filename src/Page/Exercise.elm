@@ -1,6 +1,7 @@
 module Page.Exercise exposing
     ( Model
     , Msg
+    , Status
     , init
     , subscriptions
     , toSession
@@ -15,13 +16,10 @@ import Browser.Events exposing (onAnimationFrameDelta)
 import Event
 import Exercise exposing (Exercise, Printable, Style(..))
 import Html exposing (Html)
-import Html.Attributes
+import Html.Attributes as Attr
 import Http
-import Json.Decode as JD
-import Json.Encode as JE
 import Page.Error
 import Ports
-import Route
 import Session exposing (Session)
 import Stopwatch exposing (Stopwatch)
 import Task
@@ -40,7 +38,6 @@ type alias Model =
 
 type Status a
     = Loading
-    | LoadingSlowly
     | Loaded a
     | Failed
 
@@ -72,7 +69,7 @@ fetchExercise session id =
 
 type Msg
     = CompletedExerciseFetch (Result Http.Error Exercise)
-    | CompletedAttemptCreation (Result Http.Error Attempt)
+    | CompletedAttemptCreation
     | GotTime Posix
     | KeyDown Int
     | KeyPress Int
@@ -82,7 +79,7 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case ( msg, model.exercise ) of
-        ( CompletedAttemptCreation _, _ ) ->
+        ( CompletedAttemptCreation, _ ) ->
             ( model, Cmd.none )
 
         ( CompletedExerciseFetch (Ok exercise), _ ) ->
@@ -91,7 +88,7 @@ update msg model =
         ( CompletedExerciseFetch (Err _), _ ) ->
             ( { model | exercise = Failed }, Cmd.none )
 
-        ( GotTime timeNow, exercise ) ->
+        ( GotTime timeNow, _ ) ->
             case model.exercise of
                 Loaded e ->
                     ( model
@@ -109,9 +106,11 @@ update msg model =
 
         ( Tick elapsed, _ ) ->
             let
+                tickedWatch : Stopwatch
                 tickedWatch =
                     Stopwatch.tick elapsed (Session.stopwatch (toSession model))
 
+                performTick : Session.Config -> Session.Config
                 performTick c =
                     { c | stopwatch = tickedWatch }
             in
@@ -123,6 +122,7 @@ update msg model =
 consumeChar : Int -> Model -> ( Model, Cmd Msg )
 consumeChar keyCode model =
     let
+        lappedWatch : Stopwatch
         lappedWatch =
             Stopwatch.lap <| Session.stopwatch (toSession model)
 
@@ -140,6 +140,7 @@ consumeChar keyCode model =
                 _ ->
                     model.exercise
 
+        newModel : Model
         newModel =
             { model
                 | exercise = newExercise
@@ -168,7 +169,7 @@ consumeCharCmd model =
 createAttempt : Session -> Attempt -> Cmd Msg
 createAttempt session attempt =
     Attempt.decoder
-        |> Http.expectJson CompletedAttemptCreation
+        |> Http.expectJson (always CompletedAttemptCreation)
         |> Api.post
             (Endpoint.createAttempt (Session.apiRoot session))
             (Attempt.encoder attempt |> Http.jsonBody)
@@ -208,9 +209,11 @@ keyboardListeners =
 view : Model -> { title : String, content : Html Msg }
 view model =
     let
+        pageTitle : String
         pageTitle =
             "Exercise"
 
+        stopwatch : Stopwatch
         stopwatch =
             Session.stopwatch <| toSession model
     in
@@ -223,11 +226,6 @@ view model =
         Loading ->
             { title = pageTitle
             , content = Html.text ""
-            }
-
-        LoadingSlowly ->
-            { title = pageTitle
-            , content = Html.text "Loading..."
             }
 
         Failed ->
@@ -284,25 +282,25 @@ viewPrintable printable =
     Html.span
         ((case printable.style of
             Completed ->
-                [ Html.Attributes.style "color" "black"
+                [ Attr.style "color" "black"
                 ]
 
             Current ->
-                [ Html.Attributes.style "color" "black"
-                , Html.Attributes.style "background-color" "orange"
+                [ Attr.style "color" "black"
+                , Attr.style "background-color" "orange"
                 ]
 
             Error ->
-                [ Html.Attributes.style "color" "gray"
-                , Html.Attributes.style "background-color" "red"
+                [ Attr.style "color" "gray"
+                , Attr.style "background-color" "red"
                 ]
 
             Waiting ->
-                [ Html.Attributes.style "color" "gray"
+                [ Attr.style "color" "gray"
                 ]
          )
             ++ (if printable.style == Current then
-                    [ Html.Attributes.id "current" ]
+                    [ Attr.id "current" ]
 
                 else
                     []

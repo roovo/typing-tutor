@@ -39,11 +39,6 @@ backspaceChar =
     Char.fromCode 8
 
 
-timeTakenMins : List Event -> Float
-timeTakenMins events =
-    timeTaken events / 60000
-
-
 typedEvents : List Event -> List Event
 typedEvents =
     List.filter (\e -> e.char /= backspaceChar)

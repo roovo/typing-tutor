@@ -1,6 +1,6 @@
 module Stopwatch exposing
-    ( Stopwatch
-    , delta
+    ( Status
+    , Stopwatch
     , init
     , lap
     , laps
@@ -11,10 +11,6 @@ module Stopwatch exposing
     , tick
     , view
     )
-
-import Time exposing (Posix)
-
-
 
 -- MODEL
 
@@ -60,6 +56,7 @@ reset stopwatch =
 tick : Float -> Stopwatch -> Stopwatch
 tick elapsedTime stopwatch =
     let
+        elapseIfRuning : Float
         elapseIfRuning =
             case stopwatch.status of
                 Stopped ->
@@ -69,11 +66,6 @@ tick elapsedTime stopwatch =
                     stopwatch.delta + elapsedTime
     in
     { stopwatch | delta = elapseIfRuning }
-
-
-delta : Stopwatch -> Float
-delta stopwatch =
-    stopwatch.delta
 
 
 lap : Stopwatch -> Stopwatch
@@ -106,9 +98,11 @@ lastLap stopwatch =
 view : Float -> String
 view t =
     let
+        secs : Int
         secs =
             modBy 60 (round t // 1000)
 
+        mins : Int
         mins =
             floor t // 60000
     in

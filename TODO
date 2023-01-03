@@ -1,13 +1,14 @@
 updating
 ========
-- elm-review
 - have I covered all the Update message combinations?
 - tests will need re-visiting
 - why can't I go direct to a url (it's not serving the elm app)
+- elm-review
 
 obsidian
 ========
 - what about if tabs are used instead of spaces
+- support control characters for things like enter and backspace
 
 original dev
 ============

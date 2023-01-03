@@ -1,14 +1,8 @@
 module StepTests exposing (all)
 
-import Char
 import Expect
-import Step exposing (Step)
+import Step
 import Test exposing (..)
-
-
-backspaceChar : Char
-backspaceChar =
-    (Char.fromCode 8)
 
 
 all : Test

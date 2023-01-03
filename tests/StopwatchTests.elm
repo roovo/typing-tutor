@@ -1,7 +1,7 @@
 module StopwatchTests exposing (all)
 
-import Stopwatch exposing (Stopwatch)
 import Expect
+import Stopwatch
 import Test exposing (..)
 
 

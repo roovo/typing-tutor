@@ -1,7 +1,7 @@
 module ExerciseTests exposing (all)
 
 import Char
-import Exercise exposing (Exercise, Printable, Style(..))
+import Exercise exposing (Exercise, Style(..))
 import Expect
 import Test exposing (..)
 

@@ -122,6 +122,7 @@ isRunning exercise =
 wpm : Exercise -> Float
 wpm exercise =
     let
+        timeTaken : Float
         timeTaken =
             Event.timeTaken exercise.events
     in
@@ -179,6 +180,7 @@ howManyWords exercise =
 logEvent : Char -> Float -> Exercise -> List Event
 logEvent char timeTaken exercise =
     let
+        newEvent : Event
         newEvent =
             { char = char
             , timeTaken = round timeTaken
@@ -190,20 +192,26 @@ logEvent char timeTaken exercise =
 followEvents : List Event -> Zipper Step -> ( Zipper Step, Int )
 followEvents events initialSteps =
     let
+        consumeEvent : Event -> ( Zipper Step, Int ) -> ( Zipper Step, Int )
         consumeEvent event ( steps1, errorCount ) =
             let
+                currentStep : Step
                 currentStep =
                     Zipper.current steps1
 
+                isMatchingChar : Bool
                 isMatchingChar =
                     Step.matchesTyped event.char currentStep
 
+                isErrorFree : Bool
                 isErrorFree =
                     errorCount <= 0
 
+                isBackSpace : Bool
                 isBackSpace =
                     event.char == backspaceChar
 
+                atEnd : Bool
                 atEnd =
                     Step.isEnd currentStep
             in
@@ -228,6 +236,7 @@ followEvents events initialSteps =
 beforeStyles : Zipper Step -> List Printable
 beforeStyles steps1 =
     let
+        toPrintable : Step -> Printable
         toPrintable step =
             { content = Step.toString step
             , style = Completed
@@ -241,6 +250,7 @@ beforeStyles steps1 =
 currentStyle : Int -> Zipper Step -> List Printable
 currentStyle errorCount steps1 =
     let
+        style : Style
         style =
             if errorCount <= 0 then
                 Current
@@ -248,11 +258,13 @@ currentStyle errorCount steps1 =
             else
                 Error
 
+        toPrintable : Step -> Printable
         toPrintable step =
             { content = Step.toString step
             , style = style
             }
 
+        current : Step
         current =
             Zipper.current steps1
     in
@@ -262,6 +274,7 @@ currentStyle errorCount steps1 =
 afterStyles : Int -> Zipper Step -> List Printable
 afterStyles errorCount steps1 =
     let
+        toPrintable : Int -> Step -> Printable
         toPrintable index step =
             if index < (errorCount - 1) then
                 { content = Step.toString step
@@ -288,6 +301,7 @@ setStyles ( steps1, errorCount ) =
 skipOver : Direction -> Zipper Step -> Zipper Step
 skipOver direction steps1 =
     let
+        newSteps : Zipper Step
         newSteps =
             zipperMover direction steps1
     in
@@ -301,6 +315,7 @@ skipOver direction steps1 =
 goForwardIfSkip : Zipper Step -> Zipper Step
 goForwardIfSkip steps1 =
     let
+        currentStep : Step
         currentStep =
             Zipper.current steps1
     in

@@ -1,6 +1,7 @@
 module Page.Attempts exposing
     ( Model
     , Msg
+    , Status
     , init
     , toSession
     , update
@@ -10,19 +11,12 @@ module Page.Attempts exposing
 import Api
 import Api.Endpoint as Endpoint
 import Attempt exposing (Attempt)
-import Browser.Events exposing (onAnimationFrameDelta)
-import Event
 import Html exposing (Html)
-import Html.Attributes
 import Http
 import Json.Decode as JD
-import Json.Encode as JE
 import Page.Error
-import Ports
 import Round
-import Route
 import Session exposing (Session)
-import Task
 import Time exposing (Posix)
 
 
@@ -38,7 +32,6 @@ type alias Model =
 
 type Status a
     = Loading
-    | LoadingSlowly
     | Loaded a
     | Failed
 
@@ -89,6 +82,7 @@ update msg model =
 view : Model -> { title : String, content : Html Msg }
 view model =
     let
+        pageTitle : String
         pageTitle =
             "Results"
     in
@@ -101,11 +95,6 @@ view model =
         Loading ->
             { title = pageTitle
             , content = Html.text ""
-            }
-
-        LoadingSlowly ->
-            { title = pageTitle
-            , content = Html.text "Loading..."
             }
 
         Failed ->
@@ -151,9 +140,11 @@ attmeptView attempt =
 timeString : Posix -> String
 timeString time =
     let
+        day : String
         day =
             String.fromInt <| Time.toDay Time.utc time
 
+        month : String
         month =
             case Time.toMonth Time.utc time of
                 Time.Jan ->
@@ -192,6 +183,7 @@ timeString time =
                 Time.Dec ->
                     "Dec"
 
+        year : String
         year =
             String.fromInt <| Time.toYear Time.utc time
     in

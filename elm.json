@@ -16,7 +16,6 @@
             "elm/time": "1.0.0",
             "elm/url": "1.0.0",
             "elm-community/list-extra": "8.7.0",
-            "justinmimbs/date": "4.0.1",
             "myrho/elm-round": "1.0.5",
             "pithub/elm-parser-extra": "1.0.0",
             "wernerdegroot/listzipper": "4.0.0"

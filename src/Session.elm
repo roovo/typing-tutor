@@ -1,5 +1,6 @@
 module Session exposing
-    ( Session
+    ( Config
+    , Session
     , apiRoot
     , init
     , mapConfig
@@ -7,10 +8,7 @@ module Session exposing
     , stopwatch
     )
 
-import Attempt exposing (Attempt)
 import Browser.Navigation as Nav
-import Exercise exposing (Exercise)
-import Route exposing (Route)
 import Stopwatch exposing (Stopwatch)
 
 
