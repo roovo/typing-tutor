@@ -26,7 +26,6 @@ var DETECT_MARGIN_LINES = 3;
 var TARGET_MARGIN_LINES = 5;
 
 app.ports.scrollIfNearEdge.subscribe(function(nothing) {
-  console.log("Port (js): scrollIfNearEdge");
   setTimeout(function() {
     var currentStep = document.getElementById("current");
 

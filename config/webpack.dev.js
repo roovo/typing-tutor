@@ -6,6 +6,9 @@ const common = require('./webpack.common.js');
 
 const dev = {
     mode: 'development',
+    output: {
+        publicPath: "/"
+    },
     devServer: {
         hot: "only",
         client: {
@@ -16,9 +19,7 @@ const dev = {
             stats: "errors-only"
         },
         historyApiFallback: true,
-        // feel free to delete this section if you don't need anything like this
         onBeforeSetupMiddleware: function (devServer) {
-            // on port 3000
             devServer.app.get("/test", function (req, res) {
                 res.json({result: "You reached the dev server"});
             });
