@@ -287,7 +287,7 @@ viewPrintable printable =
 
             Current ->
                 [ Attr.style "color" "black"
-                , Attr.style "background-color" "orange"
+                , Attr.style "background-color" "green"
                 ]
 
             Error ->
