@@ -1,6 +1,7 @@
 module Stopwatch exposing
     ( Status
     , Stopwatch
+    , delta
     , init
     , lap
     , laps
@@ -33,6 +34,31 @@ init =
     , delta = 0
     , status = Stopped
     }
+
+
+
+-- INFO
+
+
+delta : Stopwatch -> Float
+delta =
+    .delta
+
+
+laps : Stopwatch -> List Float
+laps stopwatch =
+    List.reverse stopwatch.laps
+
+
+lastLap : Stopwatch -> Float
+lastLap stopwatch =
+    stopwatch.laps
+        |> List.head
+        |> Maybe.withDefault 0
+
+
+
+-- TRANSFORM
 
 
 start : Stopwatch -> Stopwatch
@@ -79,18 +105,6 @@ lap stopwatch =
     }
 
 
-laps : Stopwatch -> List Float
-laps stopwatch =
-    List.reverse stopwatch.laps
-
-
-lastLap : Stopwatch -> Float
-lastLap stopwatch =
-    stopwatch.laps
-        |> List.head
-        |> Maybe.withDefault 0
-
-
 
 -- VIEW
 
@@ -110,7 +124,7 @@ view t =
 
 
 
--- PRIVATE FUNCTIONS
+-- PRIVATE
 
 
 lappedTime : Stopwatch -> Float

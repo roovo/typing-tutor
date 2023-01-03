@@ -1,12 +1,7 @@
 updating
 ========
-- have I covered all the Update message combinations?
-- tests will need re-visiting
 - why can't I go direct to a url (it's not serving the elm app)
-- elm-review
 
-obsidian
-========
 - what about if tabs are used instead of spaces
 - support control characters for things like enter and backspace
 
@@ -39,6 +34,7 @@ original dev
         the file contains them...
 - how to show a loading state when the page is drawn but we're waiting for
   data from the backend (have been some discussions/posts on this recently)
+  see jobs project and slow loading code (search for PassedSlowLoadThreshold)
 - [Rob, Joe, Tom] show characters wot are mis-typed as they are entered
 - auto-pause the timer if nothing typed for a while
 - track slow characters (as in slow to type)

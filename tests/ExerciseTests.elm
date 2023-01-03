@@ -3,6 +3,7 @@ module ExerciseTests exposing (all)
 import Char
 import Exercise exposing (Exercise, Style(..))
 import Expect
+import Json.Decode as JD
 import Test exposing (..)
 
 
@@ -11,6 +12,7 @@ all =
     describe "Exercise Tests"
         [ accuracyTests
         , consumeTests
+        , decoderTests
         , eventStreamTests
         , isCompleteTests
         , isRunningTests
@@ -166,6 +168,30 @@ printablesTests =
                         , { content = "d", style = Current }
                         , { content = "", style = Waiting }
                         ]
+        ]
+
+
+decoderTests : Test
+decoderTests =
+    describe "decoder"
+        [ test "decodes an exercise" <|
+            \() ->
+                """
+{
+  "title": "1 line",
+  "text": "a",
+  "id": 3
+}
+  """
+                    |> JD.decodeString Exercise.decoder
+                    |> Expect.equal
+                        (Ok
+                            { id = 3
+                            , title = "1 line"
+                            , text = "a"
+                            , events = []
+                            }
+                        )
         ]
 
 

@@ -21,7 +21,7 @@ basicOperationTests =
             \() ->
                 Stopwatch.init
                     |> Stopwatch.tick 1000
-                    |> Stopwatch.time
+                    |> Stopwatch.delta
                     |> Expect.equal 0
         , test "has a time of total ticks since started" <|
             \() ->
@@ -30,7 +30,7 @@ basicOperationTests =
                     |> Stopwatch.start
                     |> Stopwatch.tick 53
                     |> Stopwatch.tick 10
-                    |> Stopwatch.time
+                    |> Stopwatch.delta
                     |> Expect.equal 63
         , test "starting when already started has no effect" <|
             \() ->
@@ -41,7 +41,7 @@ basicOperationTests =
                     |> Stopwatch.start
                     |> Stopwatch.tick 10
                     |> Stopwatch.start
-                    |> Stopwatch.time
+                    |> Stopwatch.delta
                     |> Expect.equal 63
         , test "can be stopped" <|
             \() ->
@@ -51,7 +51,7 @@ basicOperationTests =
                     |> Stopwatch.tick 53
                     |> Stopwatch.stop
                     |> Stopwatch.tick 10
-                    |> Stopwatch.time
+                    |> Stopwatch.delta
                     |> Expect.equal 53
         , test "can be restarted" <|
             \() ->
@@ -62,7 +62,7 @@ basicOperationTests =
                     |> Stopwatch.stop
                     |> Stopwatch.start
                     |> Stopwatch.tick 10
-                    |> Stopwatch.time
+                    |> Stopwatch.delta
                     |> Expect.equal 63
         , test "can be reset" <|
             \() ->
@@ -74,7 +74,7 @@ basicOperationTests =
                     |> Stopwatch.reset
                     |> Stopwatch.start
                     |> Stopwatch.tick 10
-                    |> Stopwatch.time
+                    |> Stopwatch.delta
                     |> Expect.equal 10
         ]
 
